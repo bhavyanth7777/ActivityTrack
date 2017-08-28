@@ -1,0 +1,24 @@
+<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
+                ' <soap12:Body>    '+
+         '  <SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">      '+
+    '  <PackageXML>        '+
+
+       ' <Metrics SiteGUID="EAAAAIrGpOtKm5Fb/o7bKv38rw00KcdJs+6HGtvurtGmbYAI" EquipmentGUID="" SendTime="12/16/15 07:28:09">          '+
+
+         ' <WorkerTask EquipmentTypeID="HT" Comments="Task List Completed" EndDate="12/16/15 09:35" StartDate="12/16/15 07:01" TaskDesc="First Task List" TaskCode="TL1" WorkerGUID="EAAAACnuHeR2pFvuO/+gWWPqx1NJx37YB6CGeMhr0d+ch6Aa">            '+
+
+
+          '  <WorkerSubTask Comments="Task Completed" EndDate="12/16/15 08:35" StartDate="12/16/15 07:01" SubTaskDesc="First Task" SubTaskCode="T1">              '+
+
+            '  <WorkerSubTaskIssue EquipmentGUID="EAAAAFzubcblYNUnp0Gb65+x2eilluLYSvrJp3QzQhqspfB3" DoNotOperate="F" IssueImage="" Severity="Mild" IssueDesc="Broken Thing" TimeStamp="12/16/15 08:35"/>   '+
+
+           ' </WorkerSubTask>   '+
+
+          '  <WorkerSubTask Comments="" EndDate="12/16/15 09:35" StartDate="12/16/15 08:36" SubTaskDesc="Second Task" SubTaskCode="T2"> </WorkerSubTask>   '+
+
+         ' </WorkerTask>'+
+       ' </Metrics>'+
+     ' </PackageXML>'+
+   ' </SubmitTracking> '+
+  '</soap12:Body> '+
+'</soap12:Envelope>

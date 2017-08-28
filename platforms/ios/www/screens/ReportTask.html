@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 2px 2px!important;
+             padding: 15% !important;
+        }
+
+        body {
+            background: rgba(89,89,89,1);
+
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+        .collapsible-header {
+            background: rgba(157,93,154,1);
+            color: white;
+            padding: 2%;
+        }
+
+        .collapsible,.collapsible-body {
+            border:0px;
+        }
+        .collapsible-body {
+         background:rgba(197,158,195,1);
+        }
+
+            .collapsible-body label,.white1  {
+                color:white;
+            }
+       textarea
+       {
+               background: white;
+    color: black;
+       }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="LocationButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/Task"><b><</b>&nbsp;&nbsp</a>Problem Report</h6>
+            </div>
+        </div>
+    </div>
+    
+     <div class="col s12 m12" style="border:1px solid yellow">
+
+         <div style="margin:10px">
+         <h6 class="white1">Severity</h6>
+         <div class="row">
+            <a class="btn col s3" style="font-size:11px;background:rgba(195,222,211,1);color:black;border:1px solid rgba(76,125,104,1)">Mild</a>
+               <a class="btn col s3 offset-s1" style="font-size:11px;background:rgba(244,225,168,1);color:black;border:1px solid rgba(169,134,27,1);">Moderate</a>
+               <a class="btn col s3 offset-s1" style="font-size:11px;background:rgba(248,198,197,1);color:black;border:1px solid rgba(112,43,42,1);">Severe</a>
+
+         </div>
+
+         <div class="row">
+             <h6 class="white1">Asset</h6>
+             <div class="col s8">
+                 <input type="text" id="AssetIDText" />
+             </div>
+             <div class="col s4">
+                 <i class="material-icons medium white1" id="BarCodeIconButton" >select_all</i>
+             </div>
+         </div>
+         <div class="row">
+             <h6 class="white1">
+                 Description
+                 <textarea class="col s12" id="abc">
+
+                 </textarea>
+             </h6>
+         </div>
+         <div class="row">
+             <i class="col s1 material-icons medium white1" id="CameraIconButton">camera_alt</i>
+             <!--<img src="" alt="1234" id="PreviewImage">-->
+             <a class="col offset-s9 s1 white1" id="DoneButton">Done</a>
+
+         </div>
+             </div>
+         </div>
+</body>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.collapsible').collapsible();
+
+
+            $('#TaskListButton').click(function () {
+
+                window.location.href = "#/TaskList";
+            });
+
+            CameraIconButton
+            $('#CameraIconButton').click(function () {
+              
+                navigator.camera.getPicture(onSuccess, onFail, {
+                    quality: 2,
+                    destinationType: Camera.DestinationType.DATA_URL
+                });
+             
+                function onSuccess(imageData) {
+                    alert(imageData);
+
+                   // $('#abc').val(imageData);
+                    var image = $('#PreviewImage');
+                   // image.src = "data:image/jpeg;base64," + imageData;
+                   // alert(image.src);
+                }
+
+                function onFail(message) {
+                    alert('Failed because: ' + message);
+                }
+            });
+
+            $('#BarCodeIconButton').click(function () {
+
+                cordova.plugins.barcodeScanner.scan(
+          function (result) {
+
+              $('#AssetIDText').val(result.text);
+              //alert("We got a barcode\n" +
+              //      "Result: " + result.text + "\n" +
+              //      "Format: " + result.format + "\n" +
+              //      "Cancelled: " + result.cancelled);
+          },
+          function (error) {
+              alert("Scanning failed: " + error);
+          }
+       );
+            });
+            var longpress = 1000;
+            // holds the start time
+            var start;
+
+            jQuery(".SubTaskButton").on('mousedown', function (e) {
+                start = new Date().getTime();
+            });
+
+            jQuery(".SubTaskButton").on('mouseleave', function (e) {
+                start = 0;
+            });
+
+            jQuery(".SubTaskButton").on('mouseup', function (e) {
+                if (new Date().getTime() >= (start + longpress)) {
+                    alert('long press!');
+                } window.location.href = "#/ReportTask";
+            });
+
+
+            $('#DoneButton').click(function () {
+
+                alert('DoneClick');
+                var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
+                ' <soap12:Body>    '+
+         '  <SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">      '+
+    '  <PackageXML>        '+
+
+       ' <Metrics SiteGUID="EAAAAIrGpOtKm5Fb/o7bKv38rw00KcdJs+6HGtvurtGmbYAI" EquipmentGUID="" SendTime="12/16/15 07:28:09">          '+
+
+         ' <WorkerTask EquipmentTypeID="HT" Comments="Task List Completed" EndDate="12/16/15 09:35" StartDate="12/16/15 07:01" TaskDesc="First Task List" TaskCode="TL1" WorkerGUID="EAAAACnuHeR2pFvuO/+gWWPqx1NJx37YB6CGeMhr0d+ch6Aa">            '+
+
+
+          '  <WorkerSubTask Comments="Task Completed" EndDate="12/16/15 08:35" StartDate="12/16/15 07:01" SubTaskDesc="First Task" SubTaskCode="T1">              '+
+
+            '  <WorkerSubTaskIssue EquipmentGUID="EAAAAFzubcblYNUnp0Gb65+x2eilluLYSvrJp3QzQhqspfB3" DoNotOperate="F" IssueImage="" Severity="Mild" IssueDesc="Broken Thing" TimeStamp="12/16/15 08:35"/>   '+
+
+           ' </WorkerSubTask>   '+
+
+          '  <WorkerSubTask Comments="" EndDate="12/16/15 09:35" StartDate="12/16/15 08:36" SubTaskDesc="Second Task" SubTaskCode="T2"> </WorkerSubTask>   '+
+
+         ' </WorkerTask>'+
+       ' </Metrics>'+
+     ' </PackageXML>'+
+   ' </SubmitTracking> '+
+  '</soap12:Body> '+
+'</soap12:Envelope>';
+                var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=SubmitTracking";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    jsonpCallback: "MyCallbackDED",
+                    dataType: "xml",
+                    processData: false,
+                    contentType: "text/xml; charset=\"utf-8\"",
+                    data: SoaMessage,
+                    success: function (msg) {
+                        alert($(msg).text());
+                    },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                });
+            });
+        });
+
+    </script>
+</html>
+

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            padding: 8%!important;
+            border-radius: 0 0 2px 2px!important;
+        }
+
+        body {
+            background: black;
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div class="card" style="background: rgba(84,132,154,1)" id="LocationButton">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Location</span>
+                <h6 class="card-title"><span>Ameerpet,Hyderabad </span><i id="NavigateButton" class="material-icons">navigation</i></h6>
+
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card" id="TaskButton" style="background: rgba(158,94,155,1)">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Task</span>
+                <h6 class="card-title">Repair Air Door</h6>
+
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card" id="ActivityButton" style="background: rgba(84,132,154,1)">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Activity</span>
+                <h6 class="card-title">Working</h6>
+
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 10px;">
+        <div class="col offset-s6">
+            <i id="MessageIconButton" class="material-icons col s6 large Icons">message</i>
+            <i id="SettingsIconButton—a" class="material-icons col s6 large Icons">settings</i>
+        </div>
+    </div>
+
+
+    <script>
+
+        var db = null;
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {                                  
+                    $('#UserLabel').html(res.rows.item(0).WorkerName)
+
+                });
+            });
+        }, 500);
+
+
+        $(document).ready(function () {
+            $('#NavigateButton').click(function () {
+                var LocationToNavigate = $(this).parent().find('span').text();
+                alert("Apple maps");
+                window.location.href = "http://maps.apple.com/?daddr="+LocationToNavigate;
+                // launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function (isAvailable) {
+                //     var app;
+                //     if (isAvailable) {
+                //         app = launchnavigator.APP.GOOGLE_MAPS;
+                //     } else {
+                //         console.warn("Google Maps not available - falling back to user selection");
+                //         app = launchnavigator.APP.USER_SELECT;
+                //     }
+                //     //    launchnavigator.getTransportModes(app, platform, 'turn-by-turn')
+                //     launchnavigator.navigate(LocationToNavigate, {
+                //         app: app,
+                //         transportMode: 'transit',
+                //         launchModeGoogleMaps: 'turn-by-turn'
+                //     });
+                // });
+            });
+
+            $('#LocationButton').click(function () {
+                 window.location.href = '#/loations';
+            });
+
+            $('#ActivityButton').click(function () {
+                window.location.href = "#/ActivityorDelay";
+            });
+
+            $('#TaskButton').click(function () {
+                window.location.href = "#/Task";
+            });
+
+        });
+    </script>
+</body>
+</html>

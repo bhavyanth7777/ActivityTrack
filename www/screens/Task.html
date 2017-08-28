@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 2px 2px!important;
+             padding: 15% !important;
+        }
+
+        body {
+            background: black;
+
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+        .collapsible-header {
+            background: rgba(157,93,154,1);
+            color: white;
+            padding: 2%;
+        }
+
+        .collapsible,.collapsible-body {
+            border:0px;
+        }
+        .collapsible-body {
+         background:rgba(197,158,195,1);
+        }
+
+            .collapsible-body label {
+                color:white;
+            }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="LocationButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Tasks</h6>
+            </div>
+        </div>
+    </div>
+      <ul class="collapsible" data-collapsible="accordion">     
+      
+      
+      </ul>
+
+</body>
+
+    <script>
+
+
+        var db = null;
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {                  
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetWorkerTasksWithSubtasks xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID>      <workerTypeID>' + res.rows.item(0).WorkerType + '</workerTypeID>   <equipmentTypeID>ALL</equipmentTypeID>  </GetWorkerTasksWithSubtasks>  </soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var Collapse = ''
+                            $(xml).find('WorkerTaskPackage WorkerTask').each(function () {
+                                Collapse = Collapse + '<li>';
+                                Collapse = Collapse + '<div class="collapsible-header">' +
+                  '<div id="TaskListButton">' +
+                   '<h6>Task </h6>' +
+                   '<h5 style="font-size:20px" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '</div>' +
+                   ' </div><div class="collapsible-body">';
+                                
+                                if ($(this).find('WorkerSubTask').length != 0) {
+                                    $(this).find('WorkerSubTask').each(function () {
+                                        Collapse = Collapse + '<p class="SubTaskButton">' +
+                                                 '<input id="' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/>' +
+                                             '<label for="' + $(this).find('SubTaskCode').text() + '"  data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label> </p>'
+
+                                    });
+
+                                }
+                                Collapse = Collapse + '</div></li>'
+                            });
+                            alert(Collapse);
+                            $('.collapsible').html(Collapse);
+                            $('.collapsible').collapsible();
+                            var longpress;
+                            $(".SubTaskButton").on('touchstart', function () {                               
+                                longpress = true;
+                                setTimeout(function () {
+                                    if (longpress)
+                                        window.location.href = "#/ReportTask";
+                                }, 3000);
+                            })
+                            $(".SubTaskButton").on('touchend', function () {
+                                longpress = false;
+                            })
+                        },
+                        complete: function () {
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+        }, 500);
+
+
+
+    </script>
+</html>
+

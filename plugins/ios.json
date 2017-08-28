@@ -1,0 +1,57 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.phonegap.plugins.nativesettingsopener": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-camera": {
+            "CAMERA_USAGE_DESCRIPTION": " ",
+            "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-geolocation": {
+            "GEOLOCATION_USAGE_DESCRIPTION": " ",
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-mauron85-background-geolocation": {
+            "ALWAYS_USAGE_DESCRIPTION": "This app requires background location tracking",
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "CAMERA_USAGE_DESCRIPTION": " ",
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        }
+    }
+}

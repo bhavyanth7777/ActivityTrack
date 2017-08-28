@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>Logo</h1>
+
+     <div class="row">
+      <div class="input-field col s10 offset-s1">
+          <input id="UUID" type="text" class="validate" value="15987568" disabled="disabled" autofocus="autofocus" />
+          <label for="UUID" class="active">UUID</label>
+        </div>
+      </div>
+     <div class="row">
+     <div class="input-field col s10 offset-s1">
+          <input  id="Secret_Key" type="password"  class="validate" />
+          <label for="Secret_Key">Secret Key</label>
+        </div>
+      </div>
+
+    <div class="row">
+      <center>
+            <a  href="#/home" class="waves-effect waves-light btn pulse offset-s4"><i class="material-icons right">input</i>Login</a>
+      </center>
+             <!--<a href="geo:38.897096,-77.036545">open map</a>-->
+              <a href="#" onclick='abc();'>open map</a>
+    </div>
+  
+   
+   <!-- <a >login</a>-->
+</body>
+    <script>
+        function abc() {
+          
+            launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function (isAvailable) {
+                var app;
+                
+              
+                if (isAvailable) {
+                    app = launchnavigator.APP.GOOGLE_MAPS;
+                } else {
+                    console.warn("Google Maps not available - falling back to user selection");
+                    app = launchnavigator.APP.USER_SELECT;
+                }
+            //    launchnavigator.getTransportModes(app, platform, 'turn-by-turn')
+                launchnavigator.navigate("Ameerpet, Hyderabad", {
+                    app: app,
+                    transportMode: 'transit',
+                    launchModeGoogleMaps: 'turn-by-turn'
+                });
+            });
+
+
+        }
+       
+    </script>
+
+</html>
