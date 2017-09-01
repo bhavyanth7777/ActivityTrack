@@ -83,7 +83,6 @@
         $(document).ready(function () {
             $('#NavigateButton').click(function () {
                 var LocationToNavigate = $(this).parent().find('span').text();
-                alert("Apple maps");
                 window.location.href = "http://maps.apple.com/?daddr="+LocationToNavigate;
                 // launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function (isAvailable) {
                 //     var app;
@@ -103,7 +102,52 @@
             });
 
             $('#LocationButton').click(function () {
-                 window.location.href = '#/loations';
+                //  window.location.href = '#/loations';
+                alert("clicked");
+                window.geofence.initialize().then(function () {
+                    alert("Successful initialization");
+                }, function (error) {
+                    alert("Error", error);
+                });
+
+                 window.geofence.removeAll()
+                .then(function () {
+                    console.log('All geofences successfully removed.');
+                }
+                , function (error) {
+                    console.log('Removing geofences failed', error);
+                });
+ 
+                window.geofence.addOrUpdate({
+                    id: "69ca1b88-6fbe-4e80-a4d4-ff4d3748acdb",
+                    latitude: 17.4894555,
+                    longitude: 78.3927658,
+                    radius: 30,
+                    transitionType: TransitionType.ENTER,
+                    notification: {
+                        id: 1,
+                        title: "Welcome in Manjeera trinity",
+                        text: "You just arrived to Manjeera trinity.",
+                        openAppOnClick: true
+                    }
+                }).then(function () {
+                     alert('Geofence successfully added');
+                }, function (reason) {
+                    alert('Adding geofence failed', reason);
+                });
+
+                window.geofence.onTransitionReceived = function (geofences) {
+ 
+                    // alert(JSON.stringify(geofences));
+                    geofences.forEach(function (geo) {
+ 
+                        if (geo.id == "69ca1b88-6fbe-4e80-a4d4-ff4d3748acdb")
+                            alert('Geofence Entry detected', geo);
+                        else
+                            alert('Geofence Exit detected', geo);
+                    });
+                };
+                window.location.href = '#/loations';
             });
 
             $('#ActivityButton').click(function () {

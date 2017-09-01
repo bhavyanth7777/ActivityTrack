@@ -178,6 +178,9 @@
                 } window.location.href = "#/ReportTask";
             });
 
+            // get timestamp dynamically
+            //
+
 
             $('#DoneButton').click(function () {
 
@@ -187,21 +190,21 @@
          '  <SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">      '+
     '  <PackageXML>        '+
 
-       ' <Metrics SiteGUID="EAAAAIrGpOtKm5Fb/o7bKv38rw00KcdJs+6HGtvurtGmbYAI" EquipmentGUID="" SendTime="12/16/15 07:28:09">          '+
+       ' &lt;Metrics SiteGUID=&quot;EAAAAIrGpOtKm5Fb/o7bKv38rw00KcdJs+6HGtvurtGmbYAI&quot; EquipmentGUID=&quot;&quot; SendTime=&quot;12/16/15 09:28:09&quot;&gt;'+
 
-         ' <WorkerTask EquipmentTypeID="HT" Comments="Task List Completed" EndDate="12/16/15 09:35" StartDate="12/16/15 07:01" TaskDesc="First Task List" TaskCode="TL1" WorkerGUID="EAAAACnuHeR2pFvuO/+gWWPqx1NJx37YB6CGeMhr0d+ch6Aa">            '+
+         '&lt;WorkerTask EquipmentTypeID=&quot;HT&quot; Comments=&quot;Task List Completed&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:01&quot; TaskDesc=&quot;First Task List&quot; TaskCode=&quot;TL1&quot; WorkerGUID=&quot;EAAAACnuHeR2pFvuO/+gWWPqx1NJx37YB6CGeMhr0d+ch6Aa&quot;&gt;            '+
 
 
-          '  <WorkerSubTask Comments="Task Completed" EndDate="12/16/15 08:35" StartDate="12/16/15 07:01" SubTaskDesc="First Task" SubTaskCode="T1">              '+
+          '  &lt;WorkerSubTask Comments=&quot;Task Completed&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:01&quot; SubTaskDesc=&quot;First Task&quot; SubTaskCode=&quot;T1&quot;&gt;              '+
 
-            '  <WorkerSubTaskIssue EquipmentGUID="EAAAAFzubcblYNUnp0Gb65+x2eilluLYSvrJp3QzQhqspfB3" DoNotOperate="F" IssueImage="" Severity="Mild" IssueDesc="Broken Thing" TimeStamp="12/16/15 08:35"/>   '+
+            '  &lt;WorkerSubTaskIssue EquipmentGUID=&quot;EAAAAFzubcblYNUnp0Gb65+x2eilluLYSvrJp3QzQhqspfB3&quot; DoNotOperate=&quot;F&quot; IssueImage=&quot;&quot; Severity=&quot;Mild&quot; IssueDesc=&quot;Broken Thing&quot; TimeStamp=&quot;12/16/15 09:35&quot;/&gt;   '+
 
-           ' </WorkerSubTask>   '+
+           ' &lt;/WorkerSubTask&gt;   '+
 
-          '  <WorkerSubTask Comments="" EndDate="12/16/15 09:35" StartDate="12/16/15 08:36" SubTaskDesc="Second Task" SubTaskCode="T2"> </WorkerSubTask>   '+
+          '  &lt;WorkerSubTask Comments=&quot;&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:36&quot; SubTaskDesc=&quot;Second Task&quot; SubTaskCode=&quot;T2&quot;&gt; &lt;/WorkerSubTask&gt;   '+
 
-         ' </WorkerTask>'+
-       ' </Metrics>'+
+         ' &lt;/WorkerTask&gt;'+
+       ' &lt;/Metrics&gt;'+
      ' </PackageXML>'+
    ' </SubmitTracking> '+
   '</soap12:Body> '+

@@ -119,5 +119,16 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova-plugin-geofence": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-geofence"
+        },
+        "is_top_level": true,
+        "variables": {
+            "GEOFENCE_IN_USE_USAGE_DESCRIPTION": "your usage message",
+            "GEOFENCE_ALWAYS_USAGE_DESCRIPTION": "Activity track wants to use your location"
+        }
     }
 }

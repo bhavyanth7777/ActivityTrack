@@ -41,6 +41,11 @@
         "phonegap-plugin-barcodescanner": {
             "CAMERA_USAGE_DESCRIPTION": " ",
             "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-geofence": {
+            "GEOFENCE_ALWAYS_USAGE_DESCRIPTION": "Activity track wants to use your location",
+            "GEOFENCE_IN_USE_USAGE_DESCRIPTION": "your usage message",
+            "PACKAGE_NAME": "com.visionsoft.Activity"
         }
     },
     "dependent_plugins": {
@@ -51,6 +56,12 @@
             "PACKAGE_NAME": "com.visionsoft.Activity"
         },
         "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-add-swift-support": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "es6-promise-plugin": {
             "PACKAGE_NAME": "com.visionsoft.Activity"
         }
     }

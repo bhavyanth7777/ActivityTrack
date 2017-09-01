@@ -50,6 +50,9 @@
     <feature name="BarcodeScanner">
         <param name="ios-package" value="CDVBarcodeScanner" />
     </feature>
+    <feature name="GeofencePlugin">
+        <param name="ios-package" value="HWPGeofencePlugin" />
+    </feature>
     <name>Activity</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
