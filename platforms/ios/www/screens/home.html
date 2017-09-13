@@ -87,7 +87,45 @@
         $(document).ready(function () {
             $('#NavigateButton').click(function () {
                 var LocationToNavigate = $(this).parent().find('span').text();
-                window.location.href = "http://maps.apple.com/?daddr="+LocationToNavigate;
+                var locFromLS = localStorage.getItem("locationID");
+
+                // --------- API ---------------
+
+                db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetLocationData xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID>          <locationID>' + locFromLS + '</locationID>    </GetLocationData>  </soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetLocationData";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var minLatitude = $(xml).find("MinLatitude").text();
+                            var minLongitude = $(xml).find("MinLongitude").text();
+                            var destCoords = minLatitude+","+minLongitude;
+                            window.location.href = "http://maps.apple.com/?daddr="+destCoords+"&dirflg=d";
+                        
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+                // -----------------
             });
 
             $('#LocationButton').click(function () {
