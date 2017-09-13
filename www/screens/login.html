@@ -71,7 +71,7 @@
             <div class="card-content white-text">
                 <div class="row">
      <div class="input-field col s10 offset-s1">
-          <input autofocus="autofocus"  id="RegistrationTextField" type="text"  class="validate" maxlength="20" style="color:black" />
+          <input autofocus="autofocus"  id="RegistrationTextField" type="text"  class="validate" style="color:black" />
           <label for="RegistrationTextField" class="active">Secret Key</label>
         </div>
       </div>
@@ -129,7 +129,7 @@
                 $('#RegisterButtton').click(function () {
 
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <ActivateLinkKey xmlns="https://www.SmarterASP.NET/UIF">      <linkKey>'+$('#RegistrationTextField').val()+'</linkKey>      <objectType>WORKER</objectType>    </ActivateLinkKey>  </soap12:Body></soap12:Envelope>';
-                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=ActivateLinkKey";
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=ActivateLinkKey";
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",

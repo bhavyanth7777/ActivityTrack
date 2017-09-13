@@ -78,9 +78,9 @@
          <div style="margin:10px">
          <h6 class="white1">Severity</h6>
          <div class="row">
-            <a class="btn col s3" style="font-size:11px;background:rgba(195,222,211,1);color:black;border:1px solid rgba(76,125,104,1)">Mild</a>
-               <a class="btn col s3 offset-s1" style="font-size:11px;background:rgba(244,225,168,1);color:black;border:1px solid rgba(169,134,27,1);">Moderate</a>
-               <a class="btn col s3 offset-s1" style="font-size:11px;background:rgba(248,198,197,1);color:black;border:1px solid rgba(112,43,42,1);">Severe</a>
+            <a id="MildButton" class="btn col s3 sev" style="font-size:11px;background:rgba(195,222,211,1);color:black;border:1px solid rgba(76,125,104,1)">Mild</a>
+               <a class="btn col s3 offset-s1 sev" style="font-size:11px;background:rgba(244,225,168,1);color:black;border:1px solid rgba(169,134,27,1);">Moderate</a>
+               <a class="btn col s3 offset-s1 sev" style="font-size:11px;background:rgba(248,198,197,1);color:black;border:1px solid rgba(112,43,42,1);">Severe</a>
 
          </div>
 
@@ -96,7 +96,7 @@
          <div class="row">
              <h6 class="white1">
                  Description
-                 <textarea class="col s12" id="abc">
+                 <textarea class="col s12" id="IssueDescTextArea">
 
                  </textarea>
              </h6>
@@ -114,6 +114,12 @@
     <script>
 
         $(document).ready(function () {
+           
+            if (sevierity == '') {
+                sevierity = 'Mild';
+                $('#MildButton').css('border', '2px solid green');
+            }
+
             $('.collapsible').collapsible();
 
 
@@ -121,8 +127,14 @@
 
                 window.location.href = "#/TaskList";
             });
+            $('.sev').click(function () { 
+                $('.sev').css('border', '2px solid transparent');
+                $(this).css('border', '2px solid green');
+                sevierity = $(this).text();
 
-            CameraIconButton
+            });
+           
+            
             $('#CameraIconButton').click(function () {
               
                 navigator.camera.getPicture(onSuccess, onFail, {
@@ -131,12 +143,8 @@
                 });
              
                 function onSuccess(imageData) {
-                    alert(imageData);
-
-                   // $('#abc').val(imageData);
-                    var image = $('#PreviewImage');
-                   // image.src = "data:image/jpeg;base64," + imageData;
-                   // alert(image.src);
+                    camPIC = imageData;
+                    $('#CameraIconButton').css('color','green');
                 }
 
                 function onFail(message) {
@@ -146,7 +154,7 @@
 
             $('#BarCodeIconButton').click(function () {
 
-                cordova.plugins.barcodeScanner.scan(
+          cordova.plugins.barcodeScanner.scan(
           function (result) {
 
               $('#AssetIDText').val(result.text);
@@ -178,53 +186,84 @@
                 } window.location.href = "#/ReportTask";
             });
 
-            // get timestamp dynamically
-            //
+            function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
 
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
 
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck - 12;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
             $('#DoneButton').click(function () {
+                var date = new Date().toString();
+                date = formatDate(date);
+                IssueDesc = $('#IssueDescTextArea').val();
+                var EquipmentGUID = $('#AssetIDText').val();
+                db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                db.transaction(function (tx) {
+                    tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+                        SiteGUID = res.rows.item(0).SiteGUID;
+                        WorkerGUID = res.rows.item(0).WorkerGUID;
 
-                alert('DoneClick');
-                var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
-                ' <soap12:Body>    '+
-         '  <SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">      '+
-    '  <PackageXML>        '+
+                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">' +
+                        ' <soap12:Body>    ' +
+                 '  <SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">      ' +
+            '  <PackageXML>        ' +
+             '  &lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + date + ' &quot; &gt;          ' +
 
-       ' &lt;Metrics SiteGUID=&quot;EAAAAIrGpOtKm5Fb/o7bKv38rw00KcdJs+6HGtvurtGmbYAI&quot; EquipmentGUID=&quot;&quot; SendTime=&quot;12/16/15 09:28:09&quot;&gt;'+
-
-         '&lt;WorkerTask EquipmentTypeID=&quot;HT&quot; Comments=&quot;Task List Completed&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:01&quot; TaskDesc=&quot;First Task List&quot; TaskCode=&quot;TL1&quot; WorkerGUID=&quot;EAAAACnuHeR2pFvuO/+gWWPqx1NJx37YB6CGeMhr0d+ch6Aa&quot;&gt;            '+
+                 '  &lt;WorkerTask  EquipmentTypeID= &quot;' + EquipmentTypeID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + date + ' &quot; StartDate= &quot;' + date + ' &quot; TaskDesc= &quot;' + TaskDesc + ' &quot; TaskCode= &quot;' + TaskCode + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;            ' +
 
 
-          '  &lt;WorkerSubTask Comments=&quot;Task Completed&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:01&quot; SubTaskDesc=&quot;First Task&quot; SubTaskCode=&quot;T1&quot;&gt;              '+
+                  '     &lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + date + ' &quot; StartDate= &quot;' + date + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + subTaskCode + ' &quot; &gt;              ' +
+                    '  &lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage= &quot;' + camPIC + ' &quot; Severity= &quot;' + sevierity + ' &quot; IssueDesc= &quot;' + IssueDesc + ' &quot; TimeStamp= &quot;' + date + ' &quot;/&gt;   ' +
+                   '  &lt;/WorkerSubTask &gt;   ' +
+                 '  &lt;/WorkerTask &gt;' +
+               '  &lt;/Metrics &gt;' +
+             ' </PackageXML>' +
+           ' </SubmitTracking> ' +
+          '</soap12:Body> ' +
+        '</soap12:Envelope>';
+                        var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            jsonpCallback: "MyCallbackDED",
+                            dataType: "xml",
+                            processData: false,
+                            contentType: "text/xml; charset=\"utf-8\"",
+                            data: SoaMessage,
+                            success: function (msg) {
+                                alert($(msg).text());
+                            },
+                            error: function (msg) {
+                                alert("Failed: " + msg.status + ": " + msg.statusText);
+                            }
+                        });
 
-            '  &lt;WorkerSubTaskIssue EquipmentGUID=&quot;EAAAAFzubcblYNUnp0Gb65+x2eilluLYSvrJp3QzQhqspfB3&quot; DoNotOperate=&quot;F&quot; IssueImage=&quot;&quot; Severity=&quot;Mild&quot; IssueDesc=&quot;Broken Thing&quot; TimeStamp=&quot;12/16/15 09:35&quot;/&gt;   '+
-
-           ' &lt;/WorkerSubTask&gt;   '+
-
-          '  &lt;WorkerSubTask Comments=&quot;&quot; EndDate=&quot;12/16/15 09:35&quot; StartDate=&quot;12/16/15 09:36&quot; SubTaskDesc=&quot;Second Task&quot; SubTaskCode=&quot;T2&quot;&gt; &lt;/WorkerSubTask&gt;   '+
-
-         ' &lt;/WorkerTask&gt;'+
-       ' &lt;/Metrics&gt;'+
-     ' </PackageXML>'+
-   ' </SubmitTracking> '+
-  '</soap12:Body> '+
-'</soap12:Envelope>';
-                var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=SubmitTracking";
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    jsonpCallback: "MyCallbackDED",
-                    dataType: "xml",
-                    processData: false,
-                    contentType: "text/xml; charset=\"utf-8\"",
-                    data: SoaMessage,
-                    success: function (msg) {
-                        alert($(msg).text());
-                    },
-                        error: function (msg) {
-                            alert("Failed: " + msg.status + ": " + msg.statusText);
-                        }
+                    });
                 });
+       
             });
         });
 

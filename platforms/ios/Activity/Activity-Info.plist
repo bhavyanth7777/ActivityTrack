@@ -24,14 +24,45 @@
     <string>1.0.0</string>
     <key>CFBundleSignature</key>
     <string>????</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>prefs</string>
+        </array>
+      </dict>
+    </array>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
+    <key>NSCameraUsageDescription</key>
+    <string/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Activity track wants to use your location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>your usage message</string>
     <key>NSMainNibFile</key>
     <string/>
     <key>NSMainNibFile~ipad</key>
     <string/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string/>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>location</string>
+      <string>remote-notification</string>
+    </array>
+    <key>UIRequiresFullScreen</key>
+    <true/>
     <key>UISupportedInterfaceOrientations</key>
     <array>
       <string>UIInterfaceOrientationPortrait</string>
@@ -45,36 +76,5 @@
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
-    <key>UIRequiresFullScreen</key>
-    <true/>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-      <key>NSAllowsArbitraryLoads</key>
-      <true/>
-    </dict>
-    <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>prefs</string>
-        </array>
-      </dict>
-    </array>
-    <key>NSCameraUsageDescription</key>
-    <string/>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string/>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>location</string>
-      <string>remote-notification</string>
-    </array>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>your usage message</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Activity track wants to use your location</string>
   </dict>
 </plist>

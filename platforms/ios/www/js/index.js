@@ -49,3 +49,13 @@ app.initialize();
 
 
 var ActData;
+var sevierity = '';
+var camPIC = '';
+var IssueDesc = '';
+var SiteGUID = '';
+var WorkerGUID = '';
+var subTaskCode = '';
+var subTaskDesc = '';
+var TaskDesc = '';
+var TaskCode = '';
+var EquipmentTypeID = '';

@@ -83,7 +83,7 @@
             db.transaction(function (tx) {
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {                  
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetWorkerTasksWithSubtasks xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID>      <workerTypeID>' + res.rows.item(0).WorkerType + '</workerTypeID>   <equipmentTypeID>ALL</equipmentTypeID>  </GetWorkerTasksWithSubtasks>  </soap12:Body></soap12:Envelope>';
-                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
                     $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
@@ -102,7 +102,7 @@
                                 Collapse = Collapse + '<div class="collapsible-header">' +
                   '<div id="TaskListButton">' +
                    '<h6>Task </h6>' +
-                   '<h5 style="font-size:20px" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<h5 style="font-size:20px"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '</div>' +
                    ' </div><div class="collapsible-body">';
                                 
@@ -117,15 +117,22 @@
                                 }
                                 Collapse = Collapse + '</div></li>'
                             });
-                            alert(Collapse);
+                            //alert(Collapse);
                             $('.collapsible').html(Collapse);
                             $('.collapsible').collapsible();
                             var longpress;
                             $(".SubTaskButton").on('touchstart', function () {                               
                                 longpress = true;
+                                subTaskCode = $(this).find('label').attr('data-SubTaskCode');
+                                subTaskDesc = $(this).find('label').text();
+                            
+                                TaskDesc = $(this).parent().parent().find('h5').text();
+                                TaskCode = $(this).parent().parent().find('h5').attr('data-TaskCode');
+                                EquipmentTypeID = $(this).parent().parent().find('h5').attr('data-TaskEquipmentTypeID');
                                 setTimeout(function () {
-                                    if (longpress)
+                                    if (longpress) {                                       
                                         window.location.href = "#/ReportTask";
+                                    }
                                 }, 3000);
                             })
                             $(".SubTaskButton").on('touchend', function () {

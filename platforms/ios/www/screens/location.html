@@ -52,8 +52,6 @@
     <div class="col s12 m12">
         <div class="card" style="background: rgba(84,132,154,1)">
             <div id="LocationContainer" class="card-content white-text" style="width: 100%">
-             
-                
             </div>
         </div>
     </div>
@@ -66,7 +64,7 @@
             db.transaction(function (tx) {
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetLocations xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID>    </GetLocations>  </soap12:Body></soap12:Envelope>';
-                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetLocations";
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
                     $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
@@ -81,11 +79,18 @@
                             var xml = $.parseXML($(msg).text());
                             var LocationString = '';
                             $(xml).find('LocationPackage Location').each(function () {
-                                LocationString = LocationString + '<h6 class="card-title">' + $(this).find('LocationName').text() + '</h6>';
+                                LocationString = LocationString + '<h6 class="card-title" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
                                 
                             });
                           
                             $('#LocationContainer').html(LocationString);
+
+                            $('#LocationContainer').find('h6').click(function () {
+                                LocationID =  $(this).attr('data-LocationID');
+                                LocationName = $(this).text();
+                                window.location.href = '#/home';
+                                localStorage.setItem("locationID",LocationID);
+                            });
 
                         },
                         complete:function(){
