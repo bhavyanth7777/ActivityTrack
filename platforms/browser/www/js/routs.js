@@ -38,6 +38,12 @@ Path.map("#/loations").to(function () {
     $("#stage").load("screens/location.html");
     $('#bars').show();
 });
+
+Path.map("#/workers").to(function () {
+    $("#stage").load("screens/workers.html");
+    $('#bars').show();
+});
+
 Path.map("#/login").to(function () {
     $("#stage").load("screens/login.html");
     $('#bars').show();
@@ -52,8 +58,6 @@ Path.map("#/currentStatus").to(function () {
     $("#stage").load("screens/currentStatus.html");
     $('#bars').show();
 });
-
-
 
 Path.root("#/login");
 Path.listen();

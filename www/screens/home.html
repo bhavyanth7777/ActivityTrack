@@ -29,7 +29,15 @@
 </head>
 <body>
     <div class="col s12 m12">
-        <div class="card" style="background: rgba(84,132,154,1)" id="LocationButton">
+                <div class="card" style="background:#96B6C3" id="workerButton">
+                    <div class="card-content white-text" style="width: 100%">
+                        <h6 class="card-title"><span id="LocationLabel">Jim Bond</span></h6>
+                    </div>
+                </div>
+    </div>
+
+    <div class="col s12 m12">
+        <div class="card" style="background:rgba(83,132,154,1)" id="LocationButton">
             <div class="card-content white-text" style="width: 100%">
 
                 <span>Location</span>
@@ -39,7 +47,7 @@
         </div>
     </div>
     <div class="col s12 m12">
-        <div class="card" id="TaskButton" style="background: rgba(158,94,155,1)">
+        <div class="card" id="TaskButton" style="background:rgba(63,98,117,1)">
             <div class="card-content white-text" style="width: 100%">
 
                 <span>Task</span>
@@ -49,7 +57,7 @@
         </div>
     </div>
     <div class="col s12 m12">
-        <div class="card" id="ActivityButton" style="background: rgba(84,132,154,1)">
+        <div class="card" id="ActivityButton" style="background:rgba(43,65,80,1)">
             <div class="card-content white-text" style="width: 100%">
 
                 <span>Activity</span>
@@ -60,8 +68,8 @@
     </div>
     <div class="row" style="padding: 10px;">
         <div class="col offset-s6">
-            <i id="MessageIconButton" class="material-icons col s6 large Icons">message</i>
-            <i id="SettingsIconButton—a" class="material-icons col s6 large Icons">settings</i>
+            <i id="MessageIconButton" class="material-icons col s6 medium Icons">message</i>
+            <i id="SettingsIconButton—a" class="material-icons col s6 medium Icons">settings</i>
         </div>
     </div>
 
@@ -126,6 +134,10 @@
                 });
             });
                 // -----------------
+            });
+
+            $('#workerButton').click(function (){
+                window.location.href = '#/workers';
             });
 
             $('#LocationButton').click(function () {
