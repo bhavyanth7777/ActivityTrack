@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 2px 2px!important;
+            padding: 15% !important;
+        }
+
+        body {
+            background: black;
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+
+        .collapsible-body {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="LocationButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/ActivityorDelay"><b><</b>&nbsp;&nbsp</a><span id="ActivityHeading"></span></h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12" style="background-color:white;padding:5px" id="checkContainer">
+    
+   
+    </div>
+   
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('#ActivityHeading').html($('#ActivityTypeHiddenTextBox').val() + ' List');
+        var HTMLgen = "";
+        $.each(ActData, function (index, item) {           
+            HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
+            HTMLgen = HTMLgen + '<label for="' + item.CategoryID +index+ '">' + item.CategoryName + '</label></p>';           
+        });
+        $('#checkContainer').html(HTMLgen);
+    });
+</script>
+</html>

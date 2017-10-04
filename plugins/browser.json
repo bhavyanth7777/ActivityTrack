@@ -1,0 +1,61 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.phonegap.plugins.nativesettingsopener": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-geofence": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-mauron85-background-geolocation": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-add-swift-support": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        },
+        "es6-promise-plugin": {
+            "PACKAGE_NAME": "com.visionsoft.Activity"
+        }
+    }
+}

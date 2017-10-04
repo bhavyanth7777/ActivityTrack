@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 2px 2px!important;
+             padding: 15% !important;
+        }
+
+        body {
+            background: black;
+
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="LocationButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Activity / Delay</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card ActivityListButton" style="background: rgba(176,21,19,1)" >
+            <div class="card-content white-text" style="width: 100%">
+                <h6 class="card-title" data-actual="Stop">Inactive</h6>               
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card ActivityListButton" style="background: rgba(230,183,41,1)">
+            <div class="card-content white-text" style="width: 100%">
+                <h6 class="card-title" data-actual="Delay">Delay</h6>               
+            </div>
+        </div>
+    </div>
+     <div class="col s12 m12">
+        <div class="card ActivityListButton" style="background: rgba(105,171,143,1)">
+            <div class="card-content white-text" style="width: 100%">
+                <h6 class="card-title" data-actual="Ready">Active</h6>               
+            </div>
+        </div>
+    </div>
+
+</body>
+
+    <script>
+
+        var db = null;
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+
+                 
+                    var main = [];
+                    var delay = {};
+;                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <equipmentOrWorkerTypeID>' + res.rows.item(0).WorkerType + '</equipmentOrWorkerTypeID>    </GetActivitiesRecursive>  </soap12:Body></soap12:Envelope>';
+var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
+$('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            $(xml).find('ActivityPackage Activity').each(function () {
+                               
+                                if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
+                                    main.push($(this).find('BaseCategoryID').text());
+                                }                              
+                                
+                            });
+                          
+                            var mainArray = [];
+                            var array = []
+                            $.each(main, function (index, item) {
+                                 array  = [];
+                                $(xml).find('ActivityPackage Activity').each(function () {
+                                    var obj = {};
+                                    if ($(this).find('BaseCategoryID').text() == item) {
+                                       // main.push($(this).find('BaseCategoryID').text());
+                                        obj.CategoryID = $(this).find('CategoryID').text();
+                                        obj.CategoryName = $(this).find('CategoryName').text();
+                                        obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                    }
+                                    if (!$.isEmptyObject(obj)) {
+                                        array.push(obj)
+                                    }
+                                });
+                                mainArray.push(array);
+                            })
+                            $('.ActivityListButton div h6').click(function () {
+                                ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
+                                $('#ActivityTypeHiddenTextBox').val($(this).text());
+                                window.location.href = "#/ActivityList";
+                            });
+
+                        },
+                        complete: function () {
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+        }, 500);
+
+
+        //$(document).ready(function () {
+          
+        //});
+      
+    </script>
+</html>

@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8 ;">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--<meta http-equiv="Content-Security-Policy" content="script-src 'self' http://onlineerp.solution.quebec 'unsafe-inline' 'unsafe-eval'; style-src 'self' maxcdn.bootstrapcdn.com">-->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <!-- Compiled and minified CSS -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">-->
+    <link href="css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Activity Tracker</title>
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        #stage {
+            flex: 1 0 auto;
+        }
+
+        nav .brand-logo {
+            font-size:1rem;
+        }
+    </style>
+
+</head>
+<body>
+
+    <nav>
+        <ul id="slide-out" class="side-nav">
+           <li><div class="user-view">
+            <div class="background">
+              <img src="img/office.jpg">
+            </div>
+            <a href="#!user"><img style="margin:0 auto" class="circle" src="img/CEO.jpg"></a>
+               <center>
+            <a href="#!name"><span class="white-text name" id="UserLabel">Dummy User</span></a>
+            <a href="#!email"><span class="white-text email" >Dummy@gmail.com</span></a>
+                   </center>
+          </div></li>
+            
+             <li><a class="waves-effect" href="#/home"><i class="material-icons">home</i>Home</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li><a class="waves-effect" href="#/home"><i class="material-icons">assignment_ind</i>Tasks  <span class="new badge blue">4</span></a> </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+           <!-- <li><a class="waves-effect" href="#/createPin"><i class="material-icons">fiber_pin</i>Request New Task</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>-->
+             <li><a class="waves-effect" href="#/login"><i class="material-icons">message</i>Message</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/currentStatus"><i class="material-icons">transfer_within_a_station</i>Current Status</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li><a class="waves-effect" href="#!"><i class="material-icons">account_circle</i>User Profile</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li><a class="waves-effect" id="LogoutMenu"><i class="material-icons">power_settings_new</i>Logout</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>  
+        </ul>
+
+
+
+
+
+        <div class="nav-wrapper  #009688 teal ">
+            <div class="">
+                <a id="bars" href="#" data-activates="slide-out" class="button-collapse  pulse col s2"><i class="material-icons">menu</i></a>
+                <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker</a>
+            </div>
+        </div>
+
+
+    </nav>
+
+
+    <div style="overflow-y: auto;" id="stage">
+
+
+
+    </div>
+
+
+     <div id="LoderImage" class="preloader-wrapper small active" style=" position: absolute;margin-top: 45%; margin-left: 50%;display:none">
+    <div class="spinner-layer spinner-blue-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+
+    <footer class="page-footer  #009688 teal">
+        <div class="center" style="color: white;">
+            © All rights reseved, Visionsoft Solutions
+
+            <div id="xml"> </div>
+        </div>
+    </footer>
+    
+    <input type="hidden"  id="ActivityTypeHiddenTextBox" value="" />
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+          <script src="js/path.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <!--<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>-->
+    <!-- Compiled and minified JavaScript -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>-->
+    <script src="js/materialize.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/path.js/0.8.4/path.min.js"></script>-->
+    <script src="js/routs.js" type="text/javascript"></script>
+    <script src="js/jquery.soap.js"></script>
+    <script type="text/javascript">
+
+        var db = null;
+
+       // app.initialize();
+        document.addEventListener('deviceready', function () { alert('1111'); }, true);
+       
+        // Initialize collapse button
+        $(".button-collapse").sideNav({ closeOnClick: true, draggable: true });
+        // Initialize collapsible (uncomment the line below if you use the dropdown variation)
+        $('.collapsible').collapsible();
+       
+        $(document).ready(function () {
+         
+            $('#LogoutMenu').click(function () {
+                db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                db.transaction(function (tx) {
+                    tx.executeSql("delete from  Registration ", [], function (tx, res) {
+                        window.location.href =  "#/login"
+                    });
+                });
+            });
+            
+        });
+
+    </script>
+</body>
+</html>
