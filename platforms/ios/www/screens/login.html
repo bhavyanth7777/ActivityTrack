@@ -132,8 +132,9 @@
         $(document).ready(function () {
           
                 $('#RegisterButtton').click(function () {
+                    console.log('Clicked');
 
-                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <ActivateLinkKey xmlns="https://www.SmarterASP.NET/UIF">      <linkKey>'+$('#RegistrationTextField').val()+'</linkKey>      <objectType>WORKER</objectType>    </ActivateLinkKey>  </soap12:Body></soap12:Envelope>';
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><ActivateLinkKey xmlns="https://www.SmarterASP.NET/UIF"><linkKey>'+$('#RegistrationTextField').val()+'</linkKey><objectType>Equipment</objectType></ActivateLinkKey></soap12:Body></soap12:Envelope>';
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=ActivateLinkKey";
                     $.support.cors = true;
                     $.ajax({
@@ -145,27 +146,31 @@
                         contentType: "text/xml; charset=\"utf-8\"",
                         data: SoaMessage,
                         success: function (msg) {
+                            console.log("In success");
                             var xml = $.parseXML($(msg).text());
                             var ClientGUID = $(xml).find('NewGUID ClientGUID').text();
                             var ClientName = $(xml).find('NewGUID ClientName').text();
                             var SiteGUID = $(xml).find('NewGUID SiteGUID').text();
                             var SiteName = $(xml).find('NewGUID SiteName').text();
-                            var WorkerGUID = $(xml).find('NewGUID WorkerGUID').text();
-                            var WorkerName = $(xml).find('NewGUID WorkerName').text();
-                            var WorkerID = $(xml).find('NewGUID WorkerID').text();
-                            var WorkerType = $(xml).find('NewGUID WorkerType').text();
+                            var EquipmentGUID = $(xml).find('NewGUID EquipmentGUID').text();
+                            var EquipmentName = $(xml).find('NewGUID EquipmentName').text();
+                            var EquipmentTypeID = $(xml).find('NewGUID EquipmentTypeID').text();
+                            // var WorkerGUID = $(xml).find('NewGUID WorkerGUID').text();
+                            // var WorkerName = $(xml).find('NewGUID WorkerName').text();
+                            // var WorkerID = $(xml).find('NewGUID WorkerID').text();
+                            // var WorkerType = $(xml).find('NewGUID WorkerType').text();
                       
                             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                             db.transaction(function (tx) {
 
-                                tx.executeSql('CREATE TABLE IF NOT EXISTS Registration (id integer primary key, ClientGUID text, ClientName text,SiteGUID text,SiteName text,WorkerGUID text,WorkerName text,WorkerID text,WorkerType text,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+                                tx.executeSql('CREATE TABLE IF NOT EXISTS Registration (id integer primary key, ClientGUID text, ClientName text,SiteGUID text,SiteName text,EquipmentGUID text,EquipmentName text,EquipmentTypeID text,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
                                 tx.executeSql('DELETE from Registration');
-                                tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,WorkerGUID,WorkerName,WorkerID,WorkerType) VALUES (?,?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, WorkerGUID, WorkerName, WorkerID, WorkerType], function (tx, res) {
+                                tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,EquipmentGUID,EquipmentName,EquipmentTypeID) VALUES (?,?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, EquipmentGUID, EquipmentName, EquipmentTypeID], function (tx, res) {
                                 window.location.href = '#/home';
                                 });
 
                             }, function (e) {
-                                alert("Failed to Register User");
+                                alert("Failed to Register Asset");
                                 alert("ERROR: " + e.message);
                             });
 
@@ -173,7 +178,7 @@
                         },
                         error: function (msg) {
 
-                            alert("Failed to Register User");
+                            alert("Failed to Register Asset");
                             alert("Failed: " + msg.status + ": " + msg.statusText);
                         }
 
