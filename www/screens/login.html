@@ -148,6 +148,7 @@
                         success: function (msg) {
                             console.log("In success");
                             var xml = $.parseXML($(msg).text());
+                            console.log(xml);
                             var ClientGUID = $(xml).find('NewGUID ClientGUID').text();
                             var ClientName = $(xml).find('NewGUID ClientName').text();
                             var SiteGUID = $(xml).find('NewGUID SiteGUID').text();
@@ -155,18 +156,14 @@
                             var EquipmentGUID = $(xml).find('NewGUID EquipmentGUID').text();
                             var EquipmentName = $(xml).find('NewGUID EquipmentName').text();
                             var EquipmentTypeID = $(xml).find('NewGUID EquipmentTypeID').text();
-                            // var WorkerGUID = $(xml).find('NewGUID WorkerGUID').text();
-                            // var WorkerName = $(xml).find('NewGUID WorkerName').text();
-                            // var WorkerID = $(xml).find('NewGUID WorkerID').text();
-                            // var WorkerType = $(xml).find('NewGUID WorkerType').text();
-                      
+                    
                             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                             db.transaction(function (tx) {
-
+                                tx.executeSql('DROP TABLE Registration');
                                 tx.executeSql('CREATE TABLE IF NOT EXISTS Registration (id integer primary key, ClientGUID text, ClientName text,SiteGUID text,SiteName text,EquipmentGUID text,EquipmentName text,EquipmentTypeID text,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-                                tx.executeSql('DELETE from Registration');
-                                tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,EquipmentGUID,EquipmentName,EquipmentTypeID) VALUES (?,?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, EquipmentGUID, EquipmentName, EquipmentTypeID], function (tx, res) {
-                                window.location.href = '#/home';
+                                // tx.executeSql('DELETE FROM Registration');
+                                tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,EquipmentGUID,EquipmentName,EquipmentTypeID) VALUES (?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, EquipmentGUID, EquipmentName, EquipmentTypeID], function (tx, res) {
+                                window.location.href = '#/workers';
                                 });
 
                             }, function (e) {
