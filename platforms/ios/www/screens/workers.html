@@ -59,6 +59,37 @@
 
     <script>
         var db = null;
+
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck - 12;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
@@ -79,7 +110,9 @@
                             var xml = $.parseXML($(msg).text());
                             var workerString = '';
                             $(xml).find('WorkerPackage Worker').each(function () {
-                                workerString = workerString + '<h6 class="card-title" data-WorkerID="'+$(this).find('WorkerID').text()+'">' + $(this).find('WorkerName').text() + '</h6>';
+                                if($(this).find('TaskAssignable').text() === "TRUE"){
+                                    workerString = workerString + '<h6 class="card-title" data-WorkerTypeName="'+$(this).find('WorkerTypeName').text()+'" data-WorkerType="'+$(this).find('WorkerType').text()+'" data-WorkerGUID="'+$(this).find('WorkerGUID').text()+'" data-WorkerID="'+$(this).find('WorkerID').text()+'">' + $(this).find('WorkerName').text() + '</h6>';
+                                }
                                 
                             });
                           
@@ -87,9 +120,60 @@
 
                             $('#workerContainer').find('h6').click(function () {
                                 WorkerID =  $(this).attr('data-WorkerID');
+                                WorkerGUID =  $(this).attr('data-WorkerGUID');
                                 WorkerName = $(this).text();
+                                WorkerType = $(this).attr('data-WorkerType');
+                                WorkerTypeName = $(this).attr('data-WorkerTypeName');
+                                var dateToSend = new Date().toString();
+                                dateToSend = formatDate(dateToSend);
+                                db.transaction(function (tx) {
+                                                    tx.executeSql('DROP TABLE Present');
+                                                    tx.executeSql('CREATE TABLE Present (id integer primary key, WorkerID text, WorkerGUID text,WorkerName text,WorkerType text,WorkerTypeName text,LocationID text,LocationName text,TaskName text,ActivityName text, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+                                                    tx.executeSql("INSERT INTO Present (WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName) VALUES (?,?,?,?,?)", [WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName], function (tx, res) {
+                                                    });
+
+                                    }, function (e) {
+                                                    alert("Failed to Register CurrentValues");
+                                                    alert("ERROR: " + e.message);
+                                });
                                 window.location.href = '#/home';
-                                localStorage.setItem("WorkerID",WorkerID);
+                                // GetWorkerSiteAssignment API call
+                                // $.ajax({
+                                //     type: "POST",
+                                //     url: 'https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkerSiteAssignment',
+                                //     jsonpCallback: "MyCallbackDED",
+                                //     dataType: "xml",
+                                //     processData: false,
+                                //     contentType: "text/xml; charset=\"utf-8\"",
+                                //     data:'<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetWorkerSiteAssignment xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+res.rows.item(0).ClientGUID+'</clientGUID><siteGUID>'+res.rows.item(0).SiteGUID+'</siteGUID><dateAssigned>'+dateToSend+'</dateAssigned></GetWorkerSiteAssignment></soap12:Body></soap12:Envelope>',
+                                //     success: function (msg) {
+                                //         var xml2 = $.parseXML($(msg).text());
+                                //         //get location id
+                                //         $(xml).find('WorkerSiteAssignPackage Worker').each(function () {
+                                //             if($(this).find('WorkerID').text() === WorkerID){
+                                //                 LocationID = $(this).find('LocationID').text();
+                                //                 db.transaction(function (tx) {
+                                //                     // tx.executeSql('DROP TABLE Registration');
+                                //                     tx.executeSql('CREATE TABLE IF NOT EXISTS Present (id integer primary key, WorkerID text, WorkerGUID text,WorkerName text,LocationID text,LocationName text,TaskName text,ActivityName text, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+                                //                     tx.executeSql('DELETE FROM Present');
+                                //                     tx.executeSql("INSERT INTO Present (WorkerID,WorkerGUID,WorkerName,LocationID) VALUES (?,?,?,?)", [WorkerID,WorkerGUID,WorkerName,LocationID], function (tx, res) {
+                                //                     window.location.href = '#/home';
+                                //                     });
+
+                                //                 }, function (e) {
+                                //                     alert("Failed to Register CurrentValues");
+                                //                     alert("ERROR: " + e.message);
+                                //                 });
+                                //                 }
+                                //         });
+
+                                //     },
+                                //     error: function (msg) {
+                                //         alert("Failed: " + msg.status + ": " + msg.statusText);
+                                //     }
+
+                                // });
+                                //-----------------------------------------
                             });
 
                         },

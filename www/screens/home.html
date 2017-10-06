@@ -31,7 +31,7 @@
     <div class="col s12 m12">
                 <div class="card" style="background:#96B6C3" id="workerButton">
                     <div class="card-content white-text" style="width: 100%">
-                        <h6 class="card-title"><span id="LocationLabel">Jim Bond</span></h6>
+                        <h6 class="card-title"><span id="WorkerLabel">Jim Bond</span></h6>
                     </div>
                 </div>
     </div>
@@ -51,7 +51,7 @@
             <div class="card-content white-text" style="width: 100%">
 
                 <span>Task</span>
-                <h6 class="card-title">Repair Air Door</h6> 
+                <h6 class="card-title" id="TaskLabel">Repair Air Door</h6> 
 
             </div>
         </div>
@@ -61,8 +61,7 @@
             <div class="card-content white-text" style="width: 100%">
 
                 <span>Activity</span>
-                <h6 class="card-title">Working</h6>
-
+                <h6 class="card-title" id="ActivityLabel">Working</h6>
             </div>
         </div>
     </div>
@@ -80,9 +79,14 @@
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
-                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {                                  
-                    $('#UserLabel').html(res.rows.item(0).WorkerName)
-
+                tx.executeSql("SELECT *  from Present ", [], function (tx, res) {
+                    //assign WorkerLabel
+                    //assign LocationLabel
+                    //assign TaskLabel
+                    //assignActivityLabel                              
+                    $('#UserLabel').html(res.rows.item(0).WorkerName);
+                    $('#WorkerLabel').html(res.rows.item(0).WorkerName);
+                    
                 });
             });           
             if (LocationName != '')
