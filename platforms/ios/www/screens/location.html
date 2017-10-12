@@ -79,7 +79,7 @@
                             var xml = $.parseXML($(msg).text());
                             var LocationString = '';
                             $(xml).find('LocationPackage Location').each(function () {
-                                LocationString = LocationString + '<h6 class="card-title" id="location'+$(this).find('LocationID').text()+'" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
+                                LocationString = LocationString + '<h6 class="card-title" id="location'+$(this).find('LocationID').text()+'" data-LocationID="'+$(this).find('LocationID').text()+'">&nbsp;&nbsp' + $(this).find('LocationName').text() + '</h6>';
                                 
                             });
                           
