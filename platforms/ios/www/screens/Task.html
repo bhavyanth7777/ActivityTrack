@@ -19,7 +19,7 @@
         }
 
         body {
-            background: black;
+            background: rgba(83,132,154,1);
 
         }
 
@@ -101,11 +101,11 @@
                             $(xml).find('WorkerTaskPackage WorkerTask').each(function () {
                                 Collapse = Collapse + '<li>';
                                 Collapse = Collapse + '<div class="collapsible-header">' +
-                  '<div id="TaskListButton" style="margin-left:3.4em">' +
+                  '<div id="TaskListButton" style="margin-left:2.5em;">' +
                    '<h6>Task </h6>' +
                    '<h5 style="font-size:20px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '</div>' +
-                   ' </div><div class="collapsible-body">';
+                   ' </div><div class="collapsible-body" style="margin-left:1em">';
                                 
                                 if ($(this).find('WorkerSubTask').length != 0) {
                                     $(this).find('WorkerSubTask').each(function () {
