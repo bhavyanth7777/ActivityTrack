@@ -81,9 +81,15 @@
                     //assign WorkerLabel
                     //assign LocationLabel
                     //assign TaskLabel
-                    //assignActivityLabel                              
-                    $('#UserLabel').html(localStorage.getItem("WorkerName"));
-                    $('#WorkerLabel').html(localStorage.getItem("WorkerName"));
+                    //assignActivityLabel
+                    if(localStorage.getItem("WorkerName")){
+                        $('#UserLabel').html(localStorage.getItem("WorkerName"));
+                        $('#WorkerLabel').html(localStorage.getItem("WorkerName"));
+                    }
+                    else {
+                        $('#UserLabel').html("Select Worker");
+                        $('#WorkerLabel').html("Select Worker");
+                    }                             
                     var TaskDesc = localStorage.getItem("TaskDesc");
                     if(TaskDesc){
                         $('#TaskLabel').html(TaskDesc);

@@ -14,12 +14,12 @@
         }
 
         .card .card-content {
-            border-radius: 0 0 2px 2px!important;
+            border-radius: 0 0 0px 0px!important;
             padding: 15% !important;
         }
 
         body {
-            background: black;
+            background: rgba(83,132,154,1);
         }
 
         .Icons {
@@ -42,7 +42,7 @@
         }
 
         .collapsible-body {
-            background: white;
+            background: rgba(83,132,154,1);
         }
     </style>
 </head>
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="col s12" style="background-color:white;padding:5px" id="checkContainer">
+    <div class="col s12" style="background-color:rgba(83,132,154,1);padding:5px" id="checkContainer">
     
    
     </div>
@@ -67,8 +67,8 @@
         $('#ActivityHeading').html($('#ActivityTypeHiddenTextBox').val() + ' List');
         var HTMLgen = "";
         $.each(ActData, function (index, item) {           
-            HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
-            HTMLgen = HTMLgen + '<label for="' + item.CategoryID +index+ '">' + item.CategoryName + '</label></p>';           
+            HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" style="border-color:white" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
+            HTMLgen = HTMLgen + '<label style="color:white;" for="' + item.CategoryID +index+ '">' + item.CategoryName + '</label></p>';           
         });
         $('#checkContainer').html(HTMLgen);
     });

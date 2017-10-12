@@ -14,11 +14,11 @@
         }
 
         .card .card-content {
-            border-radius: 0 0 2px 2px!important;
+            border-radius: 0 0 0px 0px!important;
         }
 
         body {
-            background: black;
+            background:rgba(84,132,154,1);
         }
 
         .Icons {
@@ -49,11 +49,9 @@
             </div>
         </div>
     </div>
-    <div class="col s12 m12">
-        <div class="card" style="background: rgba(84,132,154,1)">
-            <div id="workerContainer" class="card-content white-text" style="width: 100%">
+    <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
+            <div id="workerContainer" class="white-text" style="width: 100%">
             </div>
-        </div>
     </div>
 
 
@@ -111,13 +109,16 @@
                             var workerString = '';
                             $(xml).find('WorkerPackage Worker').each(function () {
                                 if($(this).find('TaskAssignable').text() === "TRUE"){
-                                    workerString = workerString + '<h6 class="card-title" data-WorkerTypeName="'+$(this).find('WorkerTypeName').text()+'" data-WorkerType="'+$(this).find('WorkerType').text()+'" data-WorkerGUID="'+$(this).find('WorkerGUID').text()+'" data-WorkerID="'+$(this).find('WorkerID').text()+'">' + $(this).find('WorkerName').text() + '</h6>';
+                                    workerString = workerString + '<h6 id="worker'+$(this).find('WorkerID').text()+'" style="font-size:25px; margin-top:5%" class="card-title" data-WorkerTypeName="'+$(this).find('WorkerTypeName').text()+'" data-WorkerType="'+$(this).find('WorkerType').text()+'" data-WorkerGUID="'+$(this).find('WorkerGUID').text()+'" data-WorkerID="'+$(this).find('WorkerID').text()+'">' + $(this).find('WorkerName').text() + '</h6>';
                                 }
                                 
                             });
                           
                             $('#workerContainer').html(workerString);
-
+                            var alreadySelectedWorkerID = localStorage.getItem("WorkerID");
+                            if(alreadySelectedWorkerID){
+                                $('#worker'+alreadySelectedWorkerID).css("color","green");
+                            }
                             $('#workerContainer').find('h6').click(function () {
                                 WorkerID =  $(this).attr('data-WorkerID');
                                 WorkerGUID =  $(this).attr('data-WorkerGUID');
@@ -126,16 +127,14 @@
                                 WorkerTypeName = $(this).attr('data-WorkerTypeName');
                                 var dateToSend = new Date().toString();
                                 dateToSend = formatDate(dateToSend);
-                                db.transaction(function (tx) {
-                                                    tx.executeSql('DROP TABLE Present');
-                                                    tx.executeSql('CREATE TABLE Present (id integer primary key, WorkerID text, WorkerGUID text,WorkerName text,WorkerType text,WorkerTypeName text,LocationID text,LocationName text,TaskName text,ActivityName text, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-                                                    tx.executeSql("INSERT INTO Present (WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName) VALUES (?,?,?,?,?)", [WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName], function (tx, res) {
-                                                    });
-
-                                    }, function (e) {
-                                                    alert("Failed to Register CurrentValues");
-                                                    alert("ERROR: " + e.message);
-                                });
+                                localStorage.setItem("WorkerID",WorkerID);
+                                localStorage.setItem("WorkerGUID",WorkerGUID);
+                                localStorage.setItem("WorkerName",WorkerName);
+                                localStorage.setItem("WorkerType",WorkerType);
+                                localStorage.setItem("WorkerTypeName",WorkerTypeName);
+                                localStorage.removeItem("TaskDesc");
+                                localStorage.removeItem("ActivitySelection");
+                                
                                 window.location.href = '#/home';
                                 // GetWorkerSiteAssignment API call
                                 // $.ajax({

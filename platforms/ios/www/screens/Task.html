@@ -42,7 +42,7 @@
             text-transform: capitalize;
         }
         .collapsible-header {
-            background: rgba(157,93,154,1);
+            background: rgba(63,98,117,1);
             color: white;
             padding: 2%;
         }
@@ -51,7 +51,7 @@
             border:0px;
         }
         .collapsible-body {
-         background:rgba(197,158,195,1);
+         background:rgba(83,132,154,1);
         }
 
             .collapsible-body label {
@@ -101,9 +101,9 @@
                             $(xml).find('WorkerTaskPackage WorkerTask').each(function () {
                                 Collapse = Collapse + '<li>';
                                 Collapse = Collapse + '<div class="collapsible-header">' +
-                  '<div id="TaskListButton">' +
+                  '<div id="TaskListButton" style="margin-left:3.4em">' +
                    '<h6>Task </h6>' +
-                   '<h5 style="font-size:20px"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<h5 style="font-size:20px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '</div>' +
                    ' </div><div class="collapsible-body">';
                                 
@@ -119,6 +119,10 @@
                                 Collapse = Collapse + '</div></li>'
                             });
                             //alert(Collapse);
+                            var alreadySelectedTaskCode = localStorage.getItem("TaskCode");
+                            if(alreadySelectedTaskCode){
+                                $('#task'+alreadySelectedTaskCode).css("color","green");
+                            }
                             $('.collapsible').html(Collapse);
                             $('.collapsible').collapsible();
                             var longpress;
@@ -126,11 +130,10 @@
                                 longpress = true;
                                 subTaskCode = $(this).find('label').attr('data-SubTaskCode');
                                 subTaskDesc = $(this).find('label').text();
-                            
                                 TaskDesc = $(this).parent().parent().find('h5').text();
                                 localStorage.setItem("TaskDesc",TaskDesc);
-                                // tx.executeSql("UPDATE Present SET TaskName="+TaskDesc);// storing the task name
                                 TaskCode = $(this).parent().parent().find('h5').attr('data-TaskCode');
+                                localStorage.setItem("TaskCode",TaskCode);
                                 EquipmentTypeID = $(this).parent().parent().find('h5').attr('data-TaskEquipmentTypeID');
                                 setTimeout(function () {
                                     if (longpress) {                                       

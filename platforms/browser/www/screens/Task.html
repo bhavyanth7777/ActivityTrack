@@ -42,7 +42,7 @@
             text-transform: capitalize;
         }
         .collapsible-header {
-            background: rgba(157,93,154,1);
+            background: rgba(63,98,117,1);
             color: white;
             padding: 2%;
         }
@@ -51,7 +51,7 @@
             border:0px;
         }
         .collapsible-body {
-         background:rgba(197,158,195,1);
+         background:rgba(83,132,154,1);
         }
 
             .collapsible-body label {
@@ -81,10 +81,7 @@
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
-                tx.executeSql("SELECT * from Present",[],function(tx, res){
-                    WorkerType = res.rows.item(0).WorkerType;
-                });
-                alert(WorkerType);
+                    WorkerType = localStorage.getItem("WorkerType");
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {                  
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetWorkerTasksWithSubtasks xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID><workerTypeID>' + WorkerType + '</workerTypeID><equipmentTypeID>ALL</equipmentTypeID></GetWorkerTasksWithSubtasks></soap12:Body></soap12:Envelope>';
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
@@ -104,9 +101,9 @@
                             $(xml).find('WorkerTaskPackage WorkerTask').each(function () {
                                 Collapse = Collapse + '<li>';
                                 Collapse = Collapse + '<div class="collapsible-header">' +
-                  '<div id="TaskListButton">' +
+                  '<div id="TaskListButton" style="margin-left:3.4em">' +
                    '<h6>Task </h6>' +
-                   '<h5 style="font-size:20px"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<h5 style="font-size:20px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '</div>' +
                    ' </div><div class="collapsible-body">';
                                 
@@ -122,6 +119,10 @@
                                 Collapse = Collapse + '</div></li>'
                             });
                             //alert(Collapse);
+                            var alreadySelectedTaskCode = localStorage.getItem("TaskCode");
+                            if(alreadySelectedTaskCode){
+                                $('#task'+alreadySelectedTaskCode).css("color","green");
+                            }
                             $('.collapsible').html(Collapse);
                             $('.collapsible').collapsible();
                             var longpress;
@@ -129,9 +130,10 @@
                                 longpress = true;
                                 subTaskCode = $(this).find('label').attr('data-SubTaskCode');
                                 subTaskDesc = $(this).find('label').text();
-                            
                                 TaskDesc = $(this).parent().parent().find('h5').text();
+                                localStorage.setItem("TaskDesc",TaskDesc);
                                 TaskCode = $(this).parent().parent().find('h5').attr('data-TaskCode');
+                                localStorage.setItem("TaskCode",TaskCode);
                                 EquipmentTypeID = $(this).parent().parent().find('h5').attr('data-TaskEquipmentTypeID');
                                 setTimeout(function () {
                                     if (longpress) {                                       

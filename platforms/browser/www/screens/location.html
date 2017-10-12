@@ -14,11 +14,11 @@
         }
 
         .card .card-content {
-            border-radius: 0 0 2px 2px!important;
+            border-radius: 0 0 0px 0px!important;
         }
 
         body {
-            background: black;
+            background: rgba(84,132,154,1);
         }
 
         .Icons {
@@ -49,11 +49,9 @@
             </div>
         </div>
     </div>
-    <div class="col s12 m12">
-        <div class="card" style="background: rgba(84,132,154,1)">
-            <div id="LocationContainer" class="card-content white-text" style="width: 100%">
+    <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
+            <div id="LocationContainer" class="white-text" style="width:100%;">
             </div>
-        </div>
     </div>
 
 
@@ -79,12 +77,15 @@
                             var xml = $.parseXML($(msg).text());
                             var LocationString = '';
                             $(xml).find('LocationPackage Location').each(function () {
-                                LocationString = LocationString + '<h6 class="card-title" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
+                                LocationString = LocationString + '<h6 style="font-size:25px; margin-top:5%" class="card-title" id="location'+$(this).find('LocationID').text()+'" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
                                 
                             });
                           
                             $('#LocationContainer').html(LocationString);
-
+                            var alreadySelectedLocationID = localStorage.getItem("locationID");
+                            if(alreadySelectedLocationID){
+                                $('#location'+alreadySelectedLocationID).css("color","green");
+                            }
                             $('#LocationContainer').find('h6').click(function () {
                                 LocationID =  $(this).attr('data-LocationID');
                                 LocationName = $(this).text();
