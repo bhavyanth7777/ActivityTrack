@@ -81,12 +81,13 @@
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
+                WorkerType = localStorage.getItem("WorkerType");
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
 
                  
                     var main = [];
                     var delay = {};
-;                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">  <soap12:Body>    <GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF">      <clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID>      <equipmentOrWorkerTypeID>' + res.rows.item(0).WorkerType + '</equipmentOrWorkerTypeID>    </GetActivitiesRecursive>  </soap12:Body></soap12:Envelope>';
+;                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><equipmentOrWorkerTypeID>' + WorkerType + '</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
 $('#LoderImage').show();
                     $.support.cors = true;
@@ -129,6 +130,7 @@ $('#LoderImage').show();
                             $('.ActivityListButton div h6').click(function () {
                                 ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
                                 $('#ActivityTypeHiddenTextBox').val($(this).text());
+                                localStorage.setItem('ActivitySelection',$(this).text());
                                 window.location.href = "#/ActivityList";
                             });
 

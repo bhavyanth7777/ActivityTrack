@@ -126,16 +126,14 @@
                                 WorkerTypeName = $(this).attr('data-WorkerTypeName');
                                 var dateToSend = new Date().toString();
                                 dateToSend = formatDate(dateToSend);
-                                db.transaction(function (tx) {
-                                                    tx.executeSql('DROP TABLE Present');
-                                                    tx.executeSql('CREATE TABLE Present (id integer primary key, WorkerID text, WorkerGUID text,WorkerName text,WorkerType text,WorkerTypeName text,LocationID text,LocationName text,TaskName text,ActivityName text, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-                                                    tx.executeSql("INSERT INTO Present (WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName) VALUES (?,?,?,?,?)", [WorkerID,WorkerGUID,WorkerName,WorkerType,WorkerTypeName], function (tx, res) {
-                                                    });
-
-                                    }, function (e) {
-                                                    alert("Failed to Register CurrentValues");
-                                                    alert("ERROR: " + e.message);
-                                });
+                                localStorage.setItem("WorkerID",WorkerID);
+                                localStorage.setItem("WorkerGUID",WorkerGUID);
+                                localStorage.setItem("WorkerName",WorkerName);
+                                localStorage.setItem("WorkerType",WorkerType);
+                                localStorage.setItem("WorkerTypeName",WorkerTypeName);
+                                localStorage.removeItem("TaskDesc");
+                                localStorage.removeItem("ActivitySelection");
+                                
                                 window.location.href = '#/home';
                                 // GetWorkerSiteAssignment API call
                                 // $.ajax({

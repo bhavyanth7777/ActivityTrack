@@ -154,18 +154,18 @@
                             var SiteGUID = $(xml).find('NewGUID SiteGUID').text();
                             var SiteName = $(xml).find('NewGUID SiteName').text();
                             var EquipmentGUID = $(xml).find('NewGUID EquipmentGUID').text();
+                            localStorage.setItem("EquipmentGUID",EquipmentGUID);
                             var EquipmentName = $(xml).find('NewGUID EquipmentName').text();
                             var EquipmentTypeID = $(xml).find('NewGUID EquipmentTypeID').text();
                     
                             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                             db.transaction(function (tx) {
-                                tx.executeSql('DROP TABLE Registration');
+                                // tx.executeSql('DROP TABLE Registration');
                                 tx.executeSql('CREATE TABLE IF NOT EXISTS Registration (id integer primary key, ClientGUID text, ClientName text,SiteGUID text,SiteName text,EquipmentGUID text,EquipmentName text,EquipmentTypeID text,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-                                // tx.executeSql('DELETE FROM Registration');
+                                tx.executeSql('DELETE FROM Registration');
                                 tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,EquipmentGUID,EquipmentName,EquipmentTypeID) VALUES (?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, EquipmentGUID, EquipmentName, EquipmentTypeID], function (tx, res) {
                                 window.location.href = '#/workers';
                                 });
-
                             }, function (e) {
                                 alert("Failed to Register Asset");
                                 alert("ERROR: " + e.message);

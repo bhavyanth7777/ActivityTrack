@@ -149,6 +149,7 @@
         $(document).ready(function () {
          
             $('#LogoutMenu').click(function () {
+                localStorage.clear();
                 db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                 db.transaction(function (tx) {
                     tx.executeSql("delete from  Registration ", [], function (tx, res) {
