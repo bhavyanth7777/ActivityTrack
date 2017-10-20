@@ -145,10 +145,6 @@
                             });
                           
                             $('#EquipmentContainer').html(EquipmentString);
-                            // var alreadySelectedEquipmentID = localStorage.getItem("EquipmentID");
-                            // if(alreadySelectedEquipmentID){
-                            //     $('#equipment'+alreadySelectedEquipmentID).css("color","green");
-                            // }
                             $('#EquipmentContainer').find('h6').click(function () {
                                 EquipmentID =  $(this).attr('data-EquipmentID');
                                 for(var i=0;i<messageIDArray.length;i++){
@@ -158,20 +154,10 @@
                                 }
                                 $('#equipment'+EquipmentID).css("color","green");
                                 EquipmentGUID =  $(this).attr('data-EquipmentGUID');
+                                localStorage.setItem("DestEqGUID",EquipmentGUID);
                                 EquipmentName = $(this).text();
                                 EquipmentTypeID = $(this).attr('data-EquipmentTypeID');
                                 SiteGUID = $(this).attr('data-SiteGUID');
-                                var dateToSend = new Date().toString();
-                                dateToSend = formatDate(dateToSend);
-                                // if(alreadySelectedEquipmentID){
-                                //     $('#equipment'+alreadySelectedEquipmentID).css("color","white");
-                                //     $('#equipment'+EquipmentID).css("color","green");
-                                //     localStorage.setItem("EquipmentID",EquipmentID);
-                                //     // localStorage.setItem("EquipmentGUID",EquipmentGUID);
-                                //     // localStorage.setItem("EquipmentName",EquipmentName);
-                                //     // localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
-                                //     // localStorage.setItem("SiteGUID",SiteGUID);
-                                // }
                             });
 
                         },
@@ -187,6 +173,39 @@
                 });
             });
         }, 500);
+
+        $('#sendMessage').click(function(){
+            var dateToSend = new Date().toString();
+            dateToSend = formatDate(dateToSend);
+            var SiteGUIDToSend = localStorage.getItem("SiteGUID");
+            var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
+            var DestEqGUID = localStorage.getItem("DestEqGUID");
+
+            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SiteGUID=&quot;'+SiteGUIDToSend+'&quot; EquipmentGUID=&quot;'+EquipmentGUIDToSend+'&quot; SendTime=&quot;'+dateToSend+'&quot;&gt; &lt;Message Text=&quot;'+$('#messageText').val()+'&quot; TimeStamp=&quot;'+dateToSend+'&quot; Destination=&quot;'+DestEqGUID+'&quot;&gt; &lt;/Message&gt; &lt;/Metrics&gt; '+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+            alert(SoaMessage2);
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var xml2 = $.parseXML($(msg).text());
+                            alert(xml2);
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+        });
 
     </script>
 </body>
