@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 0px 0px!important;
+        }
+
+        body {
+            background:rgba(84,132,154,1);
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="workerButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Messages</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+            <textarea id="messageText" rows="4" cols="50" placeholder="Enter your message here"></textarea>
+            <a class="col offset-s9 s1 white1" id="sendMessage">Send</a>
+    </div>
+    <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
+            <div id="EquipmentContainer" class="white-text" style="width: 100%">
+            </div>
+    </div>
+
+
+    <script>
+        var db = null;
+
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck - 12;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetEquipment xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+res.rows.item(0).ClientGUID+'</clientGUID><eqType>ALL</eqType></GetEquipment></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetEquipment";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var EquipmentString = '';
+                            $(xml).find('EquipmentPackage Equipment').each(function () {
+                                    EquipmentString = EquipmentString + '<h6 id="equipment'+$(this).find('ID').text()+'" style="font-size:25px; margin-top:5%" class="card-title" data-EquipmentID="'+$(this).find('ID').text()+'" data-EquipmentGUID="'+$(this).find('EquipmentGUID').text()+'" data-SiteGUID="'+$(this).find('SiteGUID').text()+'" data-EquipmentTypeID="'+$(this).find('EquipmentTypeID').text()+'">' + $(this).find('Name').text() + '</h6>';
+                                
+                            });
+                          
+                            $('#EquipmentContainer').html(EquipmentString);
+                            var alreadySelectedEquipmentID = localStorage.getItem("EquipmentID");
+                            if(alreadySelectedEquipmentID){
+                                $('#equipment'+alreadySelectedEquipmentID).css("color","green");
+                            }
+                            $('#EquipmentContainer').find('h6').click(function () {
+                                EquipmentID =  $(this).attr('data-EquipmentID');
+                                EquipmentGUID =  $(this).attr('data-EquipmentGUID');
+                                EquipmentName = $(this).text();
+                                EquipmentTypeID = $(this).attr('data-EquipmentTypeID');
+                                SiteGUID = $(this).attr('data-SiteGUID');
+                                var dateToSend = new Date().toString();
+                                dateToSend = formatDate(dateToSend);
+                                localStorage.setItem("EquipmentID",EquipmentID);
+                                localStorage.setItem("EquipmentGUID",EquipmentGUID);
+                                localStorage.setItem("EquipmentName",EquipmentName);
+                                localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
+                                localStorage.setItem("SiteGUID",SiteGUID);
+                            });
+
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+        }, 500);
+
+    </script>
+</body>
+</html>

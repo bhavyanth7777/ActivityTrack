@@ -233,14 +233,14 @@
             '<PackageXML>' +
              '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + date + ' &quot; &gt;' +
                  '&lt;WorkerTask  EquipmentTypeID= &quot;' + EquipmentTypeID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + date + ' &quot; StartDate= &quot;' + date + ' &quot; TaskDesc= &quot;' + TaskDesc + ' &quot; TaskCode= &quot;' + TaskCode + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
-                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + date + ' &quot; StartDate= &quot;' + date + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + subTaskCode + ' &quot; &gt;              ' +
+                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + date + ' &quot; StartDate= &quot;' + date + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + subTaskCode + ' &quot; &gt;' +
                     '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage= &quot;' + camPIC + ' &quot; Severity= &quot;' + sevierity + ' &quot; IssueDesc= &quot;' + IssueDesc + ' &quot; TimeStamp= &quot;' + date + ' &quot;/&gt;' +
-                   '&lt;/WorkerSubTask &gt;   ' +
+                   '&lt;/WorkerSubTask &gt;' +
                  '&lt;/WorkerTask &gt;' +
                '&lt;/Metrics &gt;' +
              '</PackageXML>' +
-           '</SubmitTracking> ' +
-          '</soap12:Body> ' +
+           '</SubmitTracking>' +
+          '</soap12:Body>' +
         '</soap12:Envelope>';
                         var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                         $.ajax({

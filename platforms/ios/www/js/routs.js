@@ -44,6 +44,11 @@ Path.map("#/workers").to(function () {
     $('#bars').show();
 });
 
+Path.map("#/messages").to(function () {
+    $("#stage").load("screens/messages.html");
+    $('#bars').show();
+});
+
 Path.map("#/login").to(function () {
     $("#stage").load("screens/login.html");
     $('#bars').show();

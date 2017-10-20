@@ -580,6 +580,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = A24NVUZ55W;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -591,7 +592,7 @@
 				INFOPLIST_FILE = "Activity/Activity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.MarkSumner.-";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MarkSumner.TimePunch;
 				PRODUCT_NAME = Activity;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -613,6 +614,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = A24NVUZ55W;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -622,7 +624,7 @@
 				INFOPLIST_FILE = "Activity/Activity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.MarkSumner.-";
+				PRODUCT_BUNDLE_IDENTIFIER = com.MarkSumner.TimePunch;
 				PRODUCT_NAME = Activity;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
