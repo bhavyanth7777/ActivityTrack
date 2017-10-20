@@ -49,10 +49,32 @@
             </div>
         </div>
     </div>
-    <div class="col s12 m12">
-            <textarea id="messageText" rows="4" cols="50" placeholder="Enter your message here"></textarea>
-            <a class="col offset-s9 s1 white1" id="sendMessage">Send</a>
+    <div class="col s12 m12" style="margin-top:1em">
+            <div style="display:flex;flex-direction:row;justify-content:space-between;margin-left:1em;margin-right:1em;">
+                <textarea id="messageText" rows="4" cols="50" placeholder="Enter your message here" style="border:1px;font-size:2em;border-color:white"></textarea>
+                <a id="sendMessage" style="color:white;"  class="waves-effect waves-light btn small"><i class="material-icons right" id="">send</i>Send</a>
+            </div>
+            <div class="row" style="margin-top:1em;">
+                    <div class="col s4 m2">
+                      <div class="card-panel teal">
+                        <span class="white-text">Hello
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col s4 m2">
+                          <div class="card-panel teal">
+                            <span class="white-text">Stop
+                            </span>
+                          </div>
+                        </div>
+                     <div class="col s4 m2">
+                              <div class="card-panel teal">
+                                <span class="white-text">Call</span>
+                              </div>
+                      </div>
+                  </div>
     </div>
+
     <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
             <div id="EquipmentContainer" class="white-text" style="width: 100%">
             </div>
@@ -129,11 +151,15 @@
                                 SiteGUID = $(this).attr('data-SiteGUID');
                                 var dateToSend = new Date().toString();
                                 dateToSend = formatDate(dateToSend);
-                                localStorage.setItem("EquipmentID",EquipmentID);
-                                localStorage.setItem("EquipmentGUID",EquipmentGUID);
-                                localStorage.setItem("EquipmentName",EquipmentName);
-                                localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
-                                localStorage.setItem("SiteGUID",SiteGUID);
+                                if(alreadySelectedEquipmentID){
+                                    $('#equipment'+alreadySelectedEquipmentID).css("color","white");
+                                    $('#equipment'+EquipmentID).css("color","green");
+                                    localStorage.setItem("EquipmentID",EquipmentID);
+                                    // localStorage.setItem("EquipmentGUID",EquipmentGUID);
+                                    // localStorage.setItem("EquipmentName",EquipmentName);
+                                    // localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
+                                    // localStorage.setItem("SiteGUID",SiteGUID);
+                                }
                             });
 
                         },
