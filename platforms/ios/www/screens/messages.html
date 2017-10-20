@@ -52,24 +52,24 @@
     <div class="col s12 m12" style="margin-top:1em">
             <div style="display:flex;flex-direction:row;justify-content:space-between;margin-left:1em;margin-right:1em;">
                 <textarea id="messageText" rows="4" cols="50" placeholder="Enter your message here" style="border:1px;font-size:2em;border-color:white"></textarea>
-                <a id="sendMessage" style="color:white;"  class="waves-effect waves-light btn small"><i class="material-icons right" id="">send</i>Send</a>
+                <a id="sendMessage" style="color:white;"  class="waves-effect waves-light btn small">Send</a>
             </div>
             <div class="row" style="margin-top:1em;">
                     <div class="col s4 m2">
                       <div class="card-panel teal">
-                        <span class="white-text">Hello
+                        <span class="white-text messageData">Hello
                         </span>
                       </div>
                     </div>
                     <div class="col s4 m2">
                           <div class="card-panel teal">
-                            <span class="white-text">Stop
+                            <span class="white-text messageData">Stop
                             </span>
                           </div>
                         </div>
                      <div class="col s4 m2">
                               <div class="card-panel teal">
-                                <span class="white-text">Call</span>
+                                <span class="white-text messageData">Call</span>
                               </div>
                       </div>
                   </div>
@@ -113,6 +113,10 @@
             function padValue(value) {
                 return (value < 10) ? "0" + value : value;
             }
+        
+        $('.card-panel').click(function(){
+            $('#messageText').val($('.messageData').text());
+        });
 
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
@@ -131,35 +135,43 @@
                         contentType: "text/xml; charset=\"utf-8\"",
                         data: SoaMessage,
                         success: function (msg) {
+                            var messageIDArray = [];
                             var xml = $.parseXML($(msg).text());
                             var EquipmentString = '';
                             $(xml).find('EquipmentPackage Equipment').each(function () {
                                     EquipmentString = EquipmentString + '<h6 id="equipment'+$(this).find('ID').text()+'" style="font-size:25px; margin-top:5%" class="card-title" data-EquipmentID="'+$(this).find('ID').text()+'" data-EquipmentGUID="'+$(this).find('EquipmentGUID').text()+'" data-SiteGUID="'+$(this).find('SiteGUID').text()+'" data-EquipmentTypeID="'+$(this).find('EquipmentTypeID').text()+'">' + $(this).find('Name').text() + '</h6>';
+                                    messageIDArray.push($(this).find('ID').text());
                                 
                             });
                           
                             $('#EquipmentContainer').html(EquipmentString);
-                            var alreadySelectedEquipmentID = localStorage.getItem("EquipmentID");
-                            if(alreadySelectedEquipmentID){
-                                $('#equipment'+alreadySelectedEquipmentID).css("color","green");
-                            }
+                            // var alreadySelectedEquipmentID = localStorage.getItem("EquipmentID");
+                            // if(alreadySelectedEquipmentID){
+                            //     $('#equipment'+alreadySelectedEquipmentID).css("color","green");
+                            // }
                             $('#EquipmentContainer').find('h6').click(function () {
                                 EquipmentID =  $(this).attr('data-EquipmentID');
+                                for(var i=0;i<messageIDArray.length;i++){
+                                    if(messageIDArray[i]!==EquipmentID){
+                                        $('#equipment'+messageIDArray[i]).css("color","white");
+                                    }
+                                }
+                                $('#equipment'+EquipmentID).css("color","green");
                                 EquipmentGUID =  $(this).attr('data-EquipmentGUID');
                                 EquipmentName = $(this).text();
                                 EquipmentTypeID = $(this).attr('data-EquipmentTypeID');
                                 SiteGUID = $(this).attr('data-SiteGUID');
                                 var dateToSend = new Date().toString();
                                 dateToSend = formatDate(dateToSend);
-                                if(alreadySelectedEquipmentID){
-                                    $('#equipment'+alreadySelectedEquipmentID).css("color","white");
-                                    $('#equipment'+EquipmentID).css("color","green");
-                                    localStorage.setItem("EquipmentID",EquipmentID);
-                                    // localStorage.setItem("EquipmentGUID",EquipmentGUID);
-                                    // localStorage.setItem("EquipmentName",EquipmentName);
-                                    // localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
-                                    // localStorage.setItem("SiteGUID",SiteGUID);
-                                }
+                                // if(alreadySelectedEquipmentID){
+                                //     $('#equipment'+alreadySelectedEquipmentID).css("color","white");
+                                //     $('#equipment'+EquipmentID).css("color","green");
+                                //     localStorage.setItem("EquipmentID",EquipmentID);
+                                //     // localStorage.setItem("EquipmentGUID",EquipmentGUID);
+                                //     // localStorage.setItem("EquipmentName",EquipmentName);
+                                //     // localStorage.setItem("EquipmentTypeID",EquipmentTypeID);
+                                //     // localStorage.setItem("SiteGUID",SiteGUID);
+                                // }
                             });
 
                         },
