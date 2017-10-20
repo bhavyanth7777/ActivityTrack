@@ -56,19 +56,19 @@
             </div>
             <div class="row" style="margin-top:1em;">
                     <div class="col s4 m2">
-                      <div class="card-panel teal">
+                      <div class="card-panel teal" onclick="populateData('Hello')">
                         <span class="white-text messageData">Hello
                         </span>
                       </div>
                     </div>
                     <div class="col s4 m2">
-                          <div class="card-panel teal">
+                          <div class="card-panel teal" onclick="populateData('Stop')">
                             <span class="white-text messageData">Stop
                             </span>
                           </div>
                         </div>
                      <div class="col s4 m2">
-                              <div class="card-panel teal">
+                              <div class="card-panel teal" onclick="populateData('Call')">
                                 <span class="white-text messageData">Call</span>
                               </div>
                       </div>
@@ -114,9 +114,9 @@
                 return (value < 10) ? "0" + value : value;
             }
         
-        $('.card-panel').click(function(){
-            $('#messageText').val($('.messageData').text());
-        });
+        function populateData(textData){
+            $('#messageText').val(textData);
+        }
 
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
