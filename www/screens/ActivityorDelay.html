@@ -87,6 +87,8 @@
                  
                     var main = [];
                     var delay = {};
+                    console.log("CLIENT GUID "+res.rows.item(0).ClientGUID);
+                    console.log("WORKERTYPE "+ WorkerType);
 ;                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><equipmentOrWorkerTypeID>' + WorkerType + '</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
 $('#LoderImage').show();
@@ -120,6 +122,7 @@ $('#LoderImage').show();
                                         obj.CategoryID = $(this).find('CategoryID').text();
                                         obj.CategoryName = $(this).find('CategoryName').text();
                                         obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                        obj.ParentID = $(this).find('ParentID').text();
                                     }
                                     if (!$.isEmptyObject(obj)) {
                                         array.push(obj)

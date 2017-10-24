@@ -66,11 +66,49 @@
     $(document).ready(function () {
         $('#ActivityHeading').html($('#ActivityTypeHiddenTextBox').val() + ' List');
         var HTMLgen = "";
-        $.each(ActData, function (index, item) {           
-            HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" style="border-color:white" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
-            HTMLgen = HTMLgen + '<label style="color:white;" for="' + item.CategoryID +index+ '">' + item.CategoryName + '</label></p>';           
+        var CategoryIDDict = {};
+        // get all categoryIDs in an array
+        console.log(ActData);
+        $.each(ActData, function (index, item) {
+            var catergoryIDKeys = Object.keys(CategoryIDDict);
+            if(item.CategoryID in catergoryIDKeys){
+            }
+            else {
+                CategoryIDDict[item.CategoryID] = [];
+            }
+        });
+
+        console.log(CategoryIDDict);
+
+        $.each(ActData, function (index, item) {
+            // if parentID is there = push to that categoryID
+            if(item.ParentID){
+                console.log("ParentID "+item.ParentID);
+                CategoryIDDict[item.ParentID].push(item);
+            }
+            else {
+                CategoryIDDict[item.CategoryID].push(item);
+            }
+        });
+
+        console.log("CategoryID final "+JSON.stringify(CategoryIDDict));
+        var activityArray = [];
+        $.each(ActData, function (index, item) {   
+            activityArray.push(item.CategoryID+index);        
+            // HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" style="border-color:white" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
+            HTMLgen = HTMLgen + '<p style="color:white;font-size:2em;" id="' + item.CategoryID +index+ '" data-catID="' + item.CategoryID +index+ '">' + item.CategoryName + '</p>';           
         });
         $('#checkContainer').html(HTMLgen);
+
+        $('#checkContainer').find('p').click(function(){
+            $('#'+$(this).attr('data-catID')).css("color","green");
+            for(var i=0;i<activityArray.length;i++){
+                if(activityArray[i]!==$(this).attr('data-catID')){
+                    $('#'+activityArray[i]).css("color","white");
+                    }
+            }
+            alert($(this).text());
+        });
     });
 </script>
 </html>

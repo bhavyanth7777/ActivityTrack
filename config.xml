@@ -35,4 +35,7 @@
         <variable name="GEOFENCE_IN_USE_USAGE_DESCRIPTION" value="your usage message" />
         <variable name="GEOFENCE_ALWAYS_USAGE_DESCRIPTION" value="Activity track wants to use your location" />
     </plugin>
+    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.2.0">
+    <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app requires background tracking enabled" />
+    </plugin>
 </widget>
