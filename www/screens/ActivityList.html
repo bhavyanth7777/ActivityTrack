@@ -188,39 +188,50 @@
         }
         $('#checkContainer').html(HTMLgen);
 
-        // $('#checkContainer').find('p').click(function(){
+        var selectedCategoryIDArray = [];
+        $('#checkContainer').find('p').click(function(){
+            var selectedCategoryID = $(this).attr('data-categoryID')
+            console.log("CLICKED "+selectedCategoryID);
+            selectedCategoryIDArray.push(selectedCategoryID);
 
-        //     $('#'+$(this).attr('data-catID')).css("color","yellow");
-        //     for(var i=0;i<activityArray.length;i++){
-        //         if(activityArray[i]!==$(this).attr('data-catID')){
-        //             $('#'+activityArray[i]).css("color","white");
-        //             }
-        //     }
+            var parentName = $(this).text();
+            localStorage.setItem("ActivityItem",$(this).text());
+            //replace checkContainer With new list
+            var subCategoriesArray = CategoryIDDict[selectedCategoryID];
+            if(subCategoriesArray.length>0){
+                // if they have more subcategories
+                var subHTMLgen = "";
+                for(var j=0;j<subCategoriesArray.length;j++){
+                    if(subCategoriesArray[j]["CategoryID"]!== selectedCategoryID){
+                        //get categoryName and generate new html
+                        var subCategoryName = subCategoriesArray[j]["CategoryName"];
+                        var subCategoryParentID = subCategoriesArray[j]["ParentID"];
+                        subHTMLgen = subHTMLgen+ '<p style="color:white;font-size:2em;" id="' + subCategoriesArray[j]["CategoryID"] +'" data-catID="' + subCategoriesArray[j]["CategoryID"] +'" data-categoryID="' + subCategoriesArray[j]["CategoryID"] +'" data-parentID="' + subCategoryParentID +'">' + subCategoryName + '</p>';
+                    }
+                }
+                $('#ActivityListClass').append('<h6 class="BackButtonText" id="BackButton'+$(this).attr('data-categoryID')+'"><a href="#/ActivityorDelay"><b><</b>&nbsp;&nbsp</a><span>'+parentName+'</span></h6>');
+                $('#checkContainer').html(subHTMLgen);
+            }
+            else {
+                console.log("No sub categories --- selectedCategoryIDArray");
+                console.log(selectedCategoryIDArray);
+                // if they don't have any more sub categories
+                for(var l=0;l<categoryIDArray.length;l++){
+                    if(categoryIDArray[l] in selectedCategoryIDArray){
+                        $('#'+categoryIDArray[l]).css("color","yellow");
+                    }
+                    else {
+                        $('#'+categoryIDArray[l]).css("color","white"); 
+                    }
+                }
 
-        //     var parentName = $(this).text();
-        //     localStorage.setItem("ActivityItem",$(this).text());
+            }
+            // start sending geolocation.
+            // setInterval(function(){
+            //     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+            // },10000);
 
-        //     //replace checkContainer With new list
-        //     var subCategoriesArray = CategoryIDDict[$(this).attr('data-categoryID')];
-        //     if(subCategoriesArray.length>1){
-        //         var subHTMLgen = "";
-        //         for(var j=0;j<subCategoriesArray.length;j++){
-        //         if(subCategoriesArray[j]["CategoryID"]!==$(this).attr('data-categoryID')){
-        //             //get categoryName and generate new html
-        //             var subCategoryName = subCategoriesArray[j]["CategoryName"];
-        //             var subCategoryParentID = subCategoriesArray[j]["ParentID"];
-        //             subHTMLgen = subHTMLgen+ '<p style="color:white;font-size:2em;" id="' + subCategoriesArray[j]["CategoryID"] +'" data-catID="' + subCategoriesArray[j]["CategoryID"] +'" data-categoryID="' + subCategoriesArray[j]["CategoryID"] +'" data-parentID="' + subCategoryParentID +'">' + subCategoryName + '</p>';
-        //         }
-        //         }
-        //         $('#ActivityListClass').append('<h6 class="BackButtonText" id="BackButton'+$(this).attr('data-categoryID')+'"><a href="#/ActivityorDelay"><b><</b>&nbsp;&nbsp</a><span>'+parentName+'</span></h6>');
-        //         $('#checkContainer').html(subHTMLgen);
-        //     }
-        //     // start sending geolocation.
-        //     // setInterval(function(){
-        //     //     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
-        //     // },10000);
-
-        // });
+        });
     });
 </script>
 </html>
