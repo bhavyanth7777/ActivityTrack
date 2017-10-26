@@ -119,10 +119,12 @@ $('#LoderImage').show();
                                     var obj = {};
                                     if ($(this).find('BaseCategoryID').text() == item) {
                                        // main.push($(this).find('BaseCategoryID').text());
+                                       if($(this).find('EquipmentOrWorkerTypeID').text() == WorkerType){
                                         obj.CategoryID = $(this).find('CategoryID').text();
                                         obj.CategoryName = $(this).find('CategoryName').text();
                                         obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
                                         obj.ParentID = $(this).find('ParentID').text();
+                                       }
                                     }
                                     if (!$.isEmptyObject(obj)) {
                                         array.push(obj)
