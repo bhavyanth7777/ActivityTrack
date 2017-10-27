@@ -56,8 +56,6 @@
     </div>
 
     <div class="col s12" style="background-color:rgba(83,132,154,1);padding:5px" id="checkContainer">
-    
-   
     </div>
    
 </body>
@@ -65,6 +63,7 @@
 <script>
     $(document).ready(function () {
         $('#ActivityHeading').html($('#ActivityTypeHiddenTextBox').val() + ' List');
+
         var HTMLgen = "";
         var CategoryIDDict = {};
         // get all categoryIDs in an array
@@ -78,12 +77,9 @@
             }
         });
 
-        console.log(CategoryIDDict);
-
         $.each(ActData, function (index, item) {
             // if parentID is there = push to that categoryID
             if(item.ParentID){
-                console.log("ParentID "+item.ParentID);
                 CategoryIDDict[item.ParentID].push(item);
             }
             else {
@@ -92,6 +88,7 @@
         });
 
         console.log(CategoryIDDict);
+
         function formatDate(dateVal) {
                 var newDate = new Date(dateVal);
 
@@ -163,75 +160,86 @@
             alert("Error"+JSON.stringify(error));
         }
 
-        // var activityArray = [];
-        // $.each(ActData, function (index, item) {   
-        //     activityArray.push(item.CategoryID+index);        
-        //     // HTMLgen=HTMLgen+' <p style="padding:3px"> <input type="checkbox" style="border-color:white" id="'+item.CategoryID+index+'" data-equipid="'+item.EquipmentOrWorkerTypeID+'" />';
-        //     HTMLgen = HTMLgen + '<p style="color:white;font-size:2em;" id="' + item.CategoryID +index+ '" data-catID="' + item.CategoryID +index+ '" data-categoryID="' + item.CategoryID +'">' + item.CategoryName + '</p>';           
-        // });
-        // $('#checkContainer').html(HTMLgen);
-
+        var dataTree = [];
         var categoryIDArray = Object.keys(CategoryIDDict);
         for(var k=0;k<categoryIDArray.length;k++){
             if(CategoryIDDict[categoryIDArray[k]].length>0){
                 var objectsOfCategoryID = CategoryIDDict[categoryIDArray[k]];
                 console.log("---objectsOfCategoryID--");
                 console.log(objectsOfCategoryID);
-                var result = objectsOfCategoryID.filter(function(obj){
-                    return obj.CategoryID == categoryIDArray[k];
-                });
-                console.log("---RESULT----");
-                console.log(result);
-                HTMLgen = HTMLgen + '<p style="color:white;font-size:2em;" id="' + result[0].CategoryID +'" data-categoryID="' + result[0].CategoryID +'">' + result[0].CategoryName + '</p>';
+                var dataObj = {};
+                for(var f=0;f<objectsOfCategoryID.length;f++){
+                    if(objectsOfCategoryID[f]["CategoryID"] == categoryIDArray[k]){
+                        // parent item.
+                        dataObj["name"] = objectsOfCategoryID[f]["CategoryName"];
+                        dataObj["id"] = objectsOfCategoryID[f]["CategoryID"];
+                        dataObj["children"] = [];
+                    }
+                    else {
+                        // child of the parent.
+                        dataObj["children"].push({name:objectsOfCategoryID[f]["CategoryName"],id:objectsOfCategoryID[f]["CategoryID"],children:[]});
+                    }
+                }
+                // var result = objectsOfCategoryID.filter(function(obj){
+                //     return obj.CategoryID == categoryIDArray[k];
+                // });
+                console.log("---dataObj----");
+                console.log(dataObj);
+                dataTree.push(dataObj);
+                // HTMLgen = HTMLgen + '<p class="subCat" style="color:white;font-size:2em;" id="' + result[0].CategoryID +'" data-categoryID="' + result[0].CategoryID +'">' + result[0].CategoryName + '</p>';
                 
             }
         }
-        $('#checkContainer').html(HTMLgen);
-
-        var selectedCategoryIDArray = [];
-        $('#checkContainer').find('p').click(function(){
-            var selectedCategoryID = $(this).attr('data-categoryID')
-            console.log("CLICKED "+selectedCategoryID);
-            selectedCategoryIDArray.push(selectedCategoryID);
-
-            var parentName = $(this).text();
-            localStorage.setItem("ActivityItem",$(this).text());
-            //replace checkContainer With new list
-            var subCategoriesArray = CategoryIDDict[selectedCategoryID];
-            if(subCategoriesArray.length>0){
-                // if they have more subcategories
-                var subHTMLgen = "";
-                for(var j=0;j<subCategoriesArray.length;j++){
-                    if(subCategoriesArray[j]["CategoryID"]!== selectedCategoryID){
-                        //get categoryName and generate new html
-                        var subCategoryName = subCategoriesArray[j]["CategoryName"];
-                        var subCategoryParentID = subCategoriesArray[j]["ParentID"];
-                        subHTMLgen = subHTMLgen+ '<div><p style="color:white;font-size:2em;" id="' + subCategoriesArray[j]["CategoryID"] +'" data-catID="' + subCategoriesArray[j]["CategoryID"] +'" data-categoryID="' + subCategoriesArray[j]["CategoryID"] +'" data-parentID="' + subCategoryParentID +'">' + subCategoryName + '</p><button onclick='+function(){alert("Hello")};+';>Select</button></div>';
-                    }
-                }
-                $('#ActivityListClass').append('<h6 class="BackButtonText" id="BackButton'+$(this).attr('data-categoryID')+'"><a href="#/ActivityorDelay"><b><</b>&nbsp;&nbsp</a><span>'+parentName+'</span></h6>');
-                $('#checkContainer').html(subHTMLgen);
-            }
-            else {
-                console.log("No sub categories --- selectedCategoryIDArray");
-                console.log(selectedCategoryIDArray);
-                // if they don't have any more sub categories
-                for(var l=0;l<categoryIDArray.length;l++){
-                    if(categoryIDArray[l] in selectedCategoryIDArray){
-                        $('#'+categoryIDArray[l]).css("color","yellow");
-                    }
-                    else {
-                        $('#'+categoryIDArray[l]).css("color","white"); 
-                    }
-                }
-
-            }
-            // start sending geolocation.
-            // setInterval(function(){
-            //     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
-            // },10000);
-
+        console.log("-------dataTree---------");
+        console.log(dataTree);
+        $('#checkContainer').tree({
+            data: dataTree
         });
+        // var selectedCategoryIDArray = [];
+        // $('.subCat').click(function(){
+        //     var selectedCategoryID = $(this).attr('data-categoryID')
+        //     selectedCategoryIDArray.push(selectedCategoryID);
+
+        //     var parentName = $(this).text();
+        //     localStorage.setItem("ActivityItem",$(this).text());
+        //     //replace checkContainer With new list
+        //     var subCategoriesArray = CategoryIDDict[selectedCategoryID];
+        //     if(subCategoriesArray.length>0){
+        //         // if they have more subcategories
+        //         HTMLgen = "";
+        //         for(var j=0;j<subCategoriesArray.length;j++){
+        //             if(subCategoriesArray[j]["CategoryID"]!== selectedCategoryID){
+        //                 //get categoryName and generate new html
+        //                 var subCategoryName = subCategoriesArray[j]["CategoryName"];
+        //                 var subCategoryParentID = subCategoriesArray[j]["ParentID"];
+        //                 HTMLgen = HTMLgen+ '<p class="subCat" style="color:white;font-size:2em;" id="' + subCategoriesArray[j]["CategoryID"] +'" data-catID="' + subCategoriesArray[j]["CategoryID"] +'" data-categoryID="' + subCategoriesArray[j]["CategoryID"] +'" data-parentID="' + subCategoryParentID +'">' + subCategoryName + '</p>';
+        //             }
+        //         }
+        //         if(HTMLgen.length>0){
+        //             $('#ActivityListClass').append('<h6 class="BackButtonText" id="BackButton'+$(this).attr('data-categoryID')+'"><a href="#/ActivityorDelay"><b><</b>&nbsp;&nbsp</a><span>'+parentName+'</span></h6>');
+        //             $('#checkContainer').html(HTMLgen);
+        //         }
+        //     }
+        //     else {
+        //         console.log("No sub categories --- selectedCategoryIDArray");
+        //         console.log(selectedCategoryIDArray);
+        //         // if they don't have any more sub categories
+        //         for(var l=0;l<categoryIDArray.length;l++){
+        //             if(categoryIDArray[l] in selectedCategoryIDArray){
+        //                 $('#'+categoryIDArray[l]).css("color","yellow");
+        //             }
+        //             else {
+        //                 $('#'+categoryIDArray[l]).css("color","white"); 
+        //             }
+        //         }
+
+        //     }
+        //     // start sending geolocation.
+        //     // setInterval(function(){
+        //     //     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+        //     // },10000);
+
+        // });
     });
 </script>
 </html>
