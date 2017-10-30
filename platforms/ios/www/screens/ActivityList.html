@@ -147,15 +147,15 @@
                         contentType: "text/xml; charset=\"utf-8\"",
                         data: SoaMessage2,
                         success: function (msg) {
-                            alert($(msg).text());
+                            // alert($(msg).text());
                             var xml2 = $.parseXML($(msg).text());
                             console.log("XML2");
                             console.log(xml2);
                             var messageString = '';
-                            $(xml2).find('MessagePackage MESSAGE').each(function (message) {
-                                    console.log("Message found ----");
-                                    console.log(message);
-                            });
+                            // $(xml2).find('MessagePackage MESSAGE').each(function (message) {
+                            //         console.log("Message found ----");
+                            //         console.log(message);
+                            // });
                         },
                         complete:function(){
                             $('#LoderImage').hide();
@@ -219,10 +219,7 @@
                 // navigator code
                 setInterval(function(){
                     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
-                },10000);
-            }
-            else {
-                alert("Please select an activity");
+                },30000);
             }
         });
     });

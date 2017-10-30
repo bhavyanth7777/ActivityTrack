@@ -219,10 +219,7 @@
                 // navigator code
                 setInterval(function(){
                     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
-                },10000);
-            }
-            else {
-                alert("Please select an activity");
+                },30000);
             }
         });
     });

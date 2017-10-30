@@ -105,6 +105,7 @@ ul.jqtree-tree {
   ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
     font-size: 24px;
     background-color: yellow;
+    font-weight: bold;
     background: -webkit-gradient(linear, left top, left bottom, from(#BEE0F5), to(#89AFCA));
     background: -moz-linear-gradient(top, #BEE0F5, #89AFCA);
     background: -ms-linear-gradient(top, #BEE0F5, #89AFCA);
