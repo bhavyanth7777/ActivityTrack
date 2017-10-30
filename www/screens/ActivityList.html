@@ -201,9 +201,9 @@
         });
         $('#checkContainer').click(function(){
             console.log("GETSTATE-----");
-            var treeState = $('#checkContainer').tree('getState');
-            console.log(treeState);
-            $('#checkContainer').tree('setState', treeState);
+            // var treeState = $('#checkContainer').tree('getState');
+            console.log($('#checkContainer').tree('getSelectedNode'));
+            // $('#checkContainer').tree('setState', treeState);
         });
     });
 </script>
