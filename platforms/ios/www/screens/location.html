@@ -84,7 +84,8 @@
                             $('#LocationContainer').html(LocationString);
                             var alreadySelectedLocationID = localStorage.getItem("locationID");
                             if(alreadySelectedLocationID){
-                                $('#location'+alreadySelectedLocationID).css("color","green");
+                                $('#location'+alreadySelectedLocationID).css("color","yellow");
+                                $('#location'+alreadySelectedLocationID).css("font-weight","bold");
                             }
                             $('#LocationContainer').find('h6').click(function () {
                                 LocationID =  $(this).attr('data-LocationID');

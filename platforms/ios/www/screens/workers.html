@@ -117,7 +117,8 @@
                             $('#workerContainer').html(workerString);
                             var alreadySelectedWorkerID = localStorage.getItem("WorkerID");
                             if(alreadySelectedWorkerID){
-                                $('#worker'+alreadySelectedWorkerID).css("color","green");
+                                $('#worker'+alreadySelectedWorkerID).css("color","yellow");
+                                $('#worker'+alreadySelectedWorkerID).css("font-weight","bold");
                             }
                             $('#workerContainer').find('h6').click(function () {
                                 WorkerID =  $(this).attr('data-WorkerID');
