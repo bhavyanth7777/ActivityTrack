@@ -110,7 +110,7 @@
                                 if ($(this).find('WorkerSubTask').length != 0) {
                                     $(this).find('WorkerSubTask').each(function () {
                                         Collapse = Collapse + '<p class="SubTaskButton">' +
-                                                 '<input id="' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/>' +
+                                                 '<input id="subTask' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/>' +
                                              '<label for="' + $(this).find('SubTaskCode').text() + '"  data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label> </p>'
 
                                     });
@@ -118,13 +118,16 @@
                                 }
                                 Collapse = Collapse + '</div></li>'
                             });
-                            //alert(Collapse);
-                            var alreadySelectedTaskCode = localStorage.getItem("TaskCode");
-                            if(alreadySelectedTaskCode){
-                                $('#task'+alreadySelectedTaskCode).css("color","green");
-                            }
                             $('.collapsible').html(Collapse);
                             $('.collapsible').collapsible();
+                            var taskCompletedListFromLS = localStorage.getItem('TaskCompletedList');
+                            if(taskCompletedListFromLS){
+                                taskCompletedListFromLS = JSON.parse(taskCompletedListFromLS);
+
+                                for(var x=0;x<taskCompletedListFromLS.length;x++){
+                                    $('#subTask'+taskCompletedListFromLS[x]).prop('checked',true);
+                                }
+                            }
                             var longpress;
                             $(".SubTaskButton").on('touchstart', function () {                               
                                 longpress = true;
@@ -133,7 +136,7 @@
                                 TaskDesc = $(this).parent().parent().find('h5').text();
                                 localStorage.setItem("TaskDesc",TaskDesc);
                                 TaskCode = $(this).parent().parent().find('h5').attr('data-TaskCode');
-                                localStorage.setItem("TaskCode",TaskCode);
+                                localStorage.setItem("SubTaskCode",subTaskCode);
                                 EquipmentTypeID = $(this).parent().parent().find('h5').attr('data-TaskEquipmentTypeID');
                                 setTimeout(function () {
                                     if (longpress) {                                       
