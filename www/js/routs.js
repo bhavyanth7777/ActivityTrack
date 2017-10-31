@@ -49,6 +49,11 @@ Path.map("#/messages").to(function () {
     $('#bars').show();
 });
 
+Path.map("#/receivedMessages").to(function () {
+    $("#stage").load("screens/ReceivedMessages.html");
+    $('#bars').show();
+});
+
 Path.map("#/login").to(function () {
     $("#stage").load("screens/login.html");
     $('#bars').show();
