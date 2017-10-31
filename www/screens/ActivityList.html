@@ -155,6 +155,7 @@
                             var messageCount = 0;
                             if($(xml2).find('SUCCESS')){
                                 $(xml2).find('MessagePackage MESSAGE').each(function () {
+                                    console.log($(this).find('MESSAGE').text());
                                     messageString = messageString + '<h6>'+$(this).find('MESSAGE').text()+'</h6>'
                                     messageCount = messageCount+1;
                             });
@@ -197,6 +198,17 @@
                         // child of the parent.
                         if(dataObj["id"]){
                             dataObj["children"].push({name:objectsOfCategoryID[f]["CategoryName"],id:objectsOfCategoryID[f]["CategoryID"],children:[]});
+                        }
+                        else {
+                            for(var e=0;e<dataTree.length;e++){
+                                var objDataChildren = dataTree[e]["children"];
+                                var parentOfChild = objDataChildren.filter(function(obj){
+                                    return obj["CategoryID"] == objectsOfCategoryID[f]["ParentID"];
+                                });
+                                if(parentOfChild){
+                                    parentOfChild["children"].push({name:objectsOfCategoryID[f]["CategoryName"],id:objectsOfCategoryID[f]["CategoryID"],children:[]});
+                                }
+                            }
                         }
                     }
                 }
