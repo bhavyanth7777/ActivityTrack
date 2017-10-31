@@ -176,7 +176,12 @@
         }
 
         function onGeolocationError(error){
-            alert("Error"+JSON.stringify(error));
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
         }
 
         var dataTree = [];
