@@ -152,10 +152,18 @@
                             console.log("XML2 check");
                             console.log(xml2);
                             var messageString = '';
-                            // $(xml2).find('MessagePackage MESSAGE').each(function (message) {
-                            //         console.log("Message found ----");
-                            //         console.log(message);
-                            // });
+                            var messageCount = 0;
+                            if($(xml2).find('SUCCESS')){
+                                $(xml2).find('MessagePackage MESSAGE').each(function () {
+                                    messageString = messageString + '<h6>'+$(this).find('MESSAGE').text()+'</h6>'
+                                    messageCount = messageCount+1;
+                            });
+                            localStorage.setItem("MessageString",messageString);
+                            localStorage.setItem("MessageCount",messageCount);
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
                         },
                         complete:function(){
                             $('#LoderImage').hide();
