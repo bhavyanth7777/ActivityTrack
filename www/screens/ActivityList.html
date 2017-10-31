@@ -152,10 +152,10 @@
                             console.log("XML2");
                             console.log(xml2);
                             var messageString = '';
-                            // $(xml2).find('MessagePackage MESSAGE').each(function (message) {
-                            //         console.log("Message found ----");
-                            //         console.log(message);
-                            // });
+                            $(xml2).find('MessagePackage MESSAGE').each(function (message) {
+                                    console.log("Message found ----");
+                                    console.log(message);
+                            });
                         },
                         complete:function(){
                             $('#LoderImage').hide();
