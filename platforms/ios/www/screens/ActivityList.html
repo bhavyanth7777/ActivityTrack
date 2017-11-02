@@ -148,19 +148,24 @@
                         data: SoaMessage2,
                         success: function (msg) {
                             alert($(msg).text());
-                            var xml2 = $.parseXML($(msg).text());
                             console.log("XML2 check");
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
                             console.log(xml2);
-                            var messageString = '';
-                            var messageCount = 0;
-                            if($(xml2).find('SUCCESS')){
-                                $(xml2).find('MessagePackage MESSAGE').each(function () {
-                                    console.log($(this).find('MESSAGE').text());
-                                    messageString = messageString + '<h6>'+$(this).find('MESSAGE').text()+'</h6>'
-                                    messageCount = messageCount+1;
+                            var messageArray =[];
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage').each(function () {
+                                    if($(this).find('MESSAGE').text().length>0){
+                                        messageArray.push('<h6>'+$(this).find('MESSAGE').text()+'</h6>');
+                                    }
                             });
-                            localStorage.setItem("MessageString",messageString);
-                            localStorage.setItem("MessageCount",messageCount);
+                                console.log("MessageArray");
+                                console.log(messageArray);
+                                if(messageArray.length>0){
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+
                             }
                             else {
                                 alert($(msg).text());
@@ -176,7 +181,12 @@
         }
 
         function onGeolocationError(error){
-            alert("Error"+JSON.stringify(error));
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
         }
 
         var dataTree = [];

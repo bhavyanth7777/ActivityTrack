@@ -53,21 +53,21 @@
     </div>
     <div class="col s12 m12">
         <div class="card ActivityListButton" style="background: rgba(176,21,19,1)" >
-            <div class="card-content white-text" style="width: 100%">
+            <div class="card-content white-text" style="width: 100%;">
                 <h6 class="card-title" data-actual="Stop">Inactive</h6>               
             </div>
         </div>
     </div>
     <div class="col s12 m12">
         <div class="card ActivityListButton" style="background: rgba(230,183,41,1)">
-            <div class="card-content white-text" style="width: 100%">
+            <div class="card-content white-text" style="width: 100%;">
                 <h6 class="card-title" data-actual="Delay">Delay</h6>               
             </div>
         </div>
     </div>
      <div class="col s12 m12">
         <div class="card ActivityListButton" style="background: rgba(105,171,143,1)">
-            <div class="card-content white-text" style="width: 100%">
+            <div class="card-content white-text" style="width: 100%;">
                 <h6 class="card-title" data-actual="Ready">Active</h6>               
             </div>
         </div>
@@ -76,6 +76,24 @@
 </body>
 
     <script>
+        function doOnOrientationChange() {
+            switch(window.orientation) {  
+            case -90 || 90:
+                alert('landscape');
+                var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+                $('.card').css("height",physicalScreenHeight/3.5);
+                break; 
+            default:
+                alert('portrait');
+                $('.card').css("height","auto");
+                break; 
+            }
+        }
+    
+        window.addEventListener('orientationchange', doOnOrientationChange);
+  
+// Initial execution if needed
+        doOnOrientationChange();
 
         var db = null;
         setTimeout(function () {

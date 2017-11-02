@@ -49,28 +49,21 @@
             </div>
         </div>
     </div>
-    <div class="col s12 m12">
-            <div class="card" style="background: rgba(63,98,117,1)">
-                <div class="card-content white-text" style="width: 100%">
-                    <h6 class="card-title">Inspect Vonveyors</h6>                   
-                </div>
-            </div>
-            <div class="card" style="background: rgba(84,132,154,1)">
-                    <div class="card-content white-text" style="width: 100%">
-                        <h6 class="card-title">Inspect Vonveyors</h6>                   
-                    </div>
-                </div>
-                <div class="card" style="background: rgba(84,132,154,1)">
-                        <div class="card-content white-text" style="width: 100%">
-                            <h6 class="card-title">Inspect Vonveyors</h6>                   
-                        </div>
-                    </div>
+    <div class="col s12 m12" id="receivedMessagesContainer">
         </div>
 
 
     <script>
         $(document).ready(function () {
-
+            $('#unreadMessageCount').text('0');
+            $('#unreadIcon').css("color","white");
+            var msgArray = localStorage.getItem("MessageArray");
+            msgArray = JSON.parse(msgArray);
+            var messageStringToShow = '';
+            for(var c=0;c<msgArray.length;c++){
+                messageStringToShow = messageStringToShow+'<div class="card" style="background: rgba(63,98,117,1)"><div class="card-content white-text" style="width: 100%"><h6 class="card-title">'+msgArray[c]+'</h6></div></div>';
+            }
+            $('#receivedMessagesContainer').append(messageStringToShow);
         });
 
     </script>

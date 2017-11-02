@@ -85,9 +85,13 @@
 
 
         <div class="nav-wrapper  #009688 teal ">
-            <div class="">
+            <div class="" style="display:flex;flex-direction:row;justify-content:space-between;">
                 <a id="bars" href="#" data-activates="slide-out" class="button-collapse  pulse col s2"><i class="material-icons">menu</i></a>
                 <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker</a>
+                <div style="display:flex;flex-direction:row;">
+                    <a href="#/receivedMessages"><i class="material-icons medium" id="unreadIcon">markunread</i></a>
+                    <span id="unreadMessageCount" style="font-size:18px;margin-left:2px;color:white;margin-right:10px"></span>
+                </div>
             </div>
         </div>
 

@@ -43,13 +43,9 @@
 </head>
 <body>
     <div class="col s12 m12">
-        <div style="display:flex;flex-direction:row;justify-content:space-between;background: rgba(117,117,117,1)" id="workerButton">
+        <div style="background: rgba(117,117,117,1)" id="workerButton">
             <div class="white-text" style="width: 100%;">
                 <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Messages</h6>
-            </div>
-            <div style="display:flex;flex-direction:row;">
-                <a href="#/receivedMessages"><i class="material-icons medium">markunread</i></a>
-                <span style="font-size:18px;margin-left:2px;color:white;margin-right:10px">2</span>
             </div>
         </div>
     </div>
@@ -87,7 +83,6 @@
 
     <script>
         var db = null;
-
         function formatDate(dateVal) {
                 var newDate = new Date(dateVal);
 
@@ -186,7 +181,7 @@
             var DestEqGUID = localStorage.getItem("DestEqGUID");
             var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
 
-            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics WorkerGUID= &quot;'+WorkerGUIDToSend+' &quot; SiteGUID=&quot;'+SiteGUIDToSend+'&quot; EquipmentGUID=&quot;'+EquipmentGUIDToSend+'&quot; SendTime=&quot;'+dateToSend+'&quot;&gt; &lt;Message Text=&quot;'+$('#messageText').val()+'&quot; TimeStamp=&quot;'+dateToSend+'&quot; Destination=&quot;OUTBOUND&quot;&gt; &lt;/Message&gt; &lt;/Metrics&gt; '+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics WorkerGUID= &quot;'+WorkerGUIDToSend+' &quot; SiteGUID=&quot;'+SiteGUIDToSend+'&quot; EquipmentGUID=&quot;'+EquipmentGUIDToSend+'&quot; SendTime=&quot;'+dateToSend+'&quot;&gt; &lt;Message Text=&quot;'+$('#messageText').val()+'&quot; TimeStamp=&quot;'+dateToSend+'&quot; Destination=&quot;'+DestEqGUID+'&quot;&gt; &lt;/Message&gt; &lt;/Metrics&gt; '+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                     $('#LoderImage').show();
                     $.support.cors = true;
