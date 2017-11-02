@@ -45,11 +45,12 @@
     <div class="col s12 m12">
         <div style="background: rgba(117,117,117,1)" id="workerButton">
             <div class="white-text" style="width: 100%">
-                <h6 id="BackButton"><a href="#/messages"><b><</b>&nbsp;&nbsp</a>Received Messages</h6>
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Received Messages</h6>
             </div>
         </div>
     </div>
-    <div class="col s12 m12" id="receivedMessagesContainer">
+    <div class="col s12 m12 receivedMessagesContainer">
+
         </div>
 
 
@@ -59,11 +60,16 @@
             $('#unreadIcon').css("color","white");
             var msgArray = localStorage.getItem("MessageArray");
             msgArray = JSON.parse(msgArray);
+            console.log("MsgArray");
+            console.log(msgArray);
             var messageStringToShow = '';
-            for(var c=0;c<msgArray.length;c++){
+            if(msgArray){
+                for(var c=0;c<msgArray.length;c++){
                 messageStringToShow = messageStringToShow+'<div class="card" style="background: rgba(63,98,117,1)"><div class="card-content white-text" style="width: 100%"><h6 class="card-title">'+msgArray[c]+'</h6></div></div>';
+                }
+                console.log(messageStringToShow);
+                $('.receivedMessagesContainer').prepend(messageStringToShow);
             }
-            $('#receivedMessagesContainer').append(messageStringToShow);
         });
 
     </script>

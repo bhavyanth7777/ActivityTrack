@@ -1,6 +1,7 @@
 ﻿Path.map("#/home").to(function () {
     $("#stage").load("screens/home.html");
     $('#bars').show();
+    $('#unreadIcon').show();
 });
 
 Path.map("#/createPin").to(function () {
@@ -62,6 +63,7 @@ Path.map("#/login").to(function () {
 Path.map("#/login").to(function () {
     $("#stage").load("screens/login.html");
     $('#bars').hide();
+    $('#unreadIcon').hide();
 });
 
 Path.map("#/currentStatus").to(function () {
