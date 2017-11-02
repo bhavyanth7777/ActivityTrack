@@ -64,6 +64,7 @@
             console.log(msgArray);
             var messageStringToShow = '';
             if(msgArray){
+                msgArray.reverse();
                 for(var c=0;c<msgArray.length;c++){
                 messageStringToShow = messageStringToShow+'<div class="card" style="background: rgba(63,98,117,1)"><div class="card-content white-text" style="width: 100%"><h6 class="card-title">'+msgArray[c]+'</h6></div></div>';
                 }

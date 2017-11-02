@@ -79,13 +79,15 @@
         function doOnOrientationChange() {
             switch(window.orientation) {  
             case -90 || 90:
-                alert('landscape');
+                //landscape
                 var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
-                $('.card').css("height",physicalScreenHeight/3.5);
+                $('.card').css("height",physicalScreenHeight/10);
+                $('.card-title').css("margin-top","-50px");
                 break; 
             default:
-                alert('portrait');
+                //potrait
                 $('.card').css("height","auto");
+                $('.card-title').css("margin-top","auto");
                 break; 
             }
         }
