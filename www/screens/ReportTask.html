@@ -253,24 +253,24 @@
                             data: SoaMessage,
                             success: function (msg) {
                                 alert($(msg).text());
-                                window.location.href = '#/home';
-                                var taskCompleted = localStorage.getItem('SubTaskCode');
-                                console.log("taskCompleted "+taskCompleted);
-                                var taskCompletedList = localStorage.getItem('TaskCompletedList');
-                                console.log("taskCompletedList NOT parsed");
-                                console.log(taskCompletedList);
-                                if(taskCompletedList){
-                                    console.log("In if");
-                                    taskCompletedList = JSON.parse(taskCompletedList);
-                                    console.log("taskCompletedList parsed");
-                                    console.log(taskCompletedList);
-                                    taskCompletedList.push(taskCompleted);
-                                    localStorage.setItem("TaskCompletedList",JSON.stringify(taskCompletedList));
-                                }
-                                else {
-                                    console.log("In else");
-                                    localStorage.setItem("TaskCompletedList",JSON.stringify([taskCompleted]));
-                                }
+                                window.location.href = '#/Task';
+                                // var taskCompleted = localStorage.getItem('SubTaskCode');
+                                // console.log("taskCompleted "+taskCompleted);
+                                // var taskCompletedList = localStorage.getItem('TaskCompletedList');
+                                // console.log("taskCompletedList NOT parsed");
+                                // console.log(taskCompletedList);
+                                // if(taskCompletedList){
+                                //     console.log("In if");
+                                //     taskCompletedList = JSON.parse(taskCompletedList);
+                                //     console.log("taskCompletedList parsed");
+                                //     console.log(taskCompletedList);
+                                //     taskCompletedList.push(taskCompleted);
+                                //     localStorage.setItem("TaskCompletedList",JSON.stringify(taskCompletedList));
+                                // }
+                                // else {
+                                //     console.log("In else");
+                                //     localStorage.setItem("TaskCompletedList",JSON.stringify([taskCompleted]));
+                                // }
                             },
                             error: function (msg) {
                                 alert("Failed: " + msg.status + ": " + msg.statusText);
