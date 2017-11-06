@@ -112,7 +112,7 @@
                                         Collapse = Collapse + '<p class="SubTaskButton">'+
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
                                                 '<form style="display:flex;flex-direction:row">'+
-                                                '<p><input id="subTask' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="subTask'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label></p>'+
+                                                '<p><input id="itemSubTask' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="itemSubTask'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label></p>'+
                                                 '<p style="margin-left:10px;"><input id="subTaskComplete' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="subTaskComplete'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label></p>'+
                                                 '</form>'+
                                             '</p>'
@@ -131,6 +131,17 @@
                             //         $('#subTask'+taskCompletedListFromLS[x]).prop('checked',true);
                             //     }
                             // }
+
+                            $('input[id^=itemSubTask]').change(function(){
+                                console.log(this.id);
+                                console.log(this.checked);
+                            });
+
+                            $('input[id^=subTaskComplete]').change(function(){
+                                console.log(this.id);
+                                console.log(this.checked);
+                            });
+
                             var longpress;
                             $(".SubTaskButton").on('touchstart', function () {                               
                                 longpress = true;
