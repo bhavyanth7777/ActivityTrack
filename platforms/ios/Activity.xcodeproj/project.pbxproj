@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		0207DA581B56EA530066E2B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0207DA571B56EA530066E2B4 /* Images.xcassets */; };
 		0878FEAAE1144296A1FEAF44 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EA031072D3413EA1DA1B7A /* CDVLocalFilesystem.m */; };
@@ -440,7 +441,7 @@
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = A24NVUZ55W;
 						LastSwiftMigration = 830;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -579,7 +580,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = A24NVUZ55W;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -591,10 +592,10 @@
 				INFOPLIST_FILE = "Activity/Activity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.MarkSumner.TimePunch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.visionsoft.Activity;
 				PRODUCT_NAME = Activity;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "df9c077f-30c8-453f-8a41-4fe13c53186e";
+				PROVISIONING_PROFILE_SPECIFIER = devActivity;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -612,8 +613,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = A24NVUZ55W;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -623,10 +624,10 @@
 				INFOPLIST_FILE = "Activity/Activity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.MarkSumner.TimePunch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.visionsoft.Activity;
 				PRODUCT_NAME = Activity;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "1fe51928-5ca7-4a2c-a2ea-489ace6dc8f8";
+				PROVISIONING_PROFILE_SPECIFIER = disActivity;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
