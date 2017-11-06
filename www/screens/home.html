@@ -137,7 +137,12 @@
                             var minLatitude = $(xml).find("MinLatitude").text();
                             var minLongitude = $(xml).find("MinLongitude").text();
                             var destCoords = minLatitude+","+minLongitude;
-                            window.location.href = "http://maps.apple.com/?daddr="+destCoords+"&dirflg=d";
+                            if(localStorage.getItem('NavigationSwitch')== "ON"){
+                                window.location.href = "http://maps.apple.com/?daddr="+destCoords+"&dirflg=d";
+                            }
+                            else {
+                                window.location.href = "http://maps.apple.com/?ll="+destCoords;
+                            }
                         
                         },
                         complete:function(){
