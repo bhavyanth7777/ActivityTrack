@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 0px 0px!important;
+        }
+
+        body {
+            background:rgba(84,132,154,1);
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="workerButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Settings</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
+            <div id="settingsContainer" class="white-text" style="display:flex;flex-direction:row;width: 100%;justify-content:space-between;">
+                <h6 style="font-size:20px;margin-top:30px;margin-left:5px;">NAVIGATION</h6>
+                <div class="switch" style="margin-top:20px;margin-right:20px;">
+                        <label style="font-size:20px;color:white">
+                          Off
+                          <input type="checkbox" id="navigationSwitch">
+                          <span class="lever"></span>
+                          On
+                        </label>
+                      </div>
+            </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var navigationSwitchLS = localStorage.getItem('NavigationSwitch');
+            if(navigationSwitchLS == "ON"){
+                $('#navigationSwitch').prop('checked',true);
+            }
+            else {
+                $('#navigationSwitch').prop('checked',false);
+            }
+            $('#navigationSwitch').change(function(){
+                if(this.checked){
+                    localStorage.setItem('NavigationSwitch',"ON");
+                }
+                else {
+                    localStorage.setItem('NavigationSwitch',"OFF");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

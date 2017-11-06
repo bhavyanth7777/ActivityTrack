@@ -50,6 +50,11 @@ Path.map("#/messages").to(function () {
     $('#bars').show();
 });
 
+Path.map("#/settings").to(function () {
+    $("#stage").load("screens/Settings.html");
+    $('#bars').show();
+});
+
 Path.map("#/receivedMessages").to(function () {
     $("#stage").load("screens/ReceivedMessages.html");
     $('#bars').show();
