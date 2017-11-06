@@ -103,7 +103,7 @@
                                 Collapse = Collapse + '<div class="collapsible-header">' +
                   '<div id="TaskListButton" style="margin-left:2.5em;">' +
                    '<h6>Task </h6>' +
-                   '<h5 style="font-size:20px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '</div>' +
                    ' </div><div class="collapsible-body" style="margin-left:1em">';
                                 
@@ -111,7 +111,7 @@
                                     $(this).find('WorkerSubTask').each(function () {
                                         Collapse = Collapse + '<p class="SubTaskButton">' +
                                                  '<input id="subTask' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/>' +
-                                             '<label for="' + $(this).find('SubTaskCode').text() + '"  data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label> </p>'
+                                             '<label style="font-size:20px;" for="' + $(this).find('SubTaskCode').text() + '"  data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label> </p>'
 
                                     });
 

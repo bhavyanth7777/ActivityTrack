@@ -66,19 +66,13 @@
     <script>
         $(document).ready(function() {
             var navigationSwitchLS = localStorage.getItem('NavigationSwitch');
-            console.log(navigationSwitchLS);
             if(navigationSwitchLS == "ON"){
                 $('#navigationSwitch').prop('checked',true);
-                console.log("navigationSwitchLS true");
-                console.log($('#navigationSwitch').checked);
             }
             else {
                 $('#navigationSwitch').prop('checked',false);
-                console.log("navigationSwitchLS false");
-                console.log($('#navigationSwitch').checked);
             }
             $('#navigationSwitch').change(function(){
-                console.log(this.checked);
                 if(this.checked){
                     localStorage.setItem('NavigationSwitch',"ON");
                 }
