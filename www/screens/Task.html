@@ -157,10 +157,8 @@
                             if (localStorage.getItem("checkedList")){
                                 checkedList = localStorage.getItem("checkedList");
                                 checkedList = JSON.parse(checkedList);
-                                console.log(checkedList);
                                 for(let q=0;q<checkedList.length;q++){
                                     $('#'+checkedList[q]["id"]).prop('checked',true);
-                                    console.log(checkedList[q]["id"]);
                                     if(checkedList[q]["started"]){
                                         var taskTimeIdLS = checkedList[q]["id"].split("start");
                                         $('#taskTimeId'+taskTimeIdLS[1]).text(checkedList[q]["started"]);
@@ -178,7 +176,6 @@
 
                             $(':checkbox').change(function(){
                                 if(this.checked){
-                                    console.log(this.id);
                                     if((this.id).indexOf("start") !== -1){
                                         var taskTimeId = (this.id).split("start");
                                         var dateStart = new Date().toString();
@@ -189,7 +186,6 @@
                                     }
                                     else {
                                         var taskCompleteTimeId = (this.id).split("end");
-                                        console.log($('#start'+taskCompleteTimeId[1]).is(":checked"));
                                         if($('#start'+taskCompleteTimeId[1]).is(":checked")){
                                             var dateComplete = new Date().toString();
                                             dateComplete = formatDate(dateComplete);
