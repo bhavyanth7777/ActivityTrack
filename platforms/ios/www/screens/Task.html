@@ -78,6 +78,36 @@
 
 
         var db = null;
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck - 12;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
@@ -112,8 +142,8 @@
                                         Collapse = Collapse + '<p class="SubTaskButton">'+
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
                                                 '<form style="display:flex;flex-direction:row">'+
-                                                '<p><input id="subTask' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="subTask'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label></p>'+
-                                                '<p style="margin-left:10px;"><input id="subTaskComplete' + $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="subTaskComplete'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label></p>'+
+                                                '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '</form>'+
                                             '</p>'
                                     });
@@ -127,8 +157,19 @@
                             if (localStorage.getItem("checkedList")){
                                 checkedList = localStorage.getItem("checkedList");
                                 checkedList = JSON.parse(checkedList);
+                                console.log(checkedList);
                                 for(let q=0;q<checkedList.length;q++){
-                                    $('#'+checkedList[q]).prop('checked',true);
+                                    $('#'+checkedList[q]["id"]).prop('checked',true);
+                                    console.log(checkedList[q]["id"]);
+                                    if(checkedList[q]["started"]){
+                                        var taskTimeIdLS = checkedList[q]["id"].split("start");
+                                        $('#taskTimeId'+taskTimeIdLS[1]).text(checkedList[q]["started"]);
+                                    }
+                                    else if(checkedList[q]["completed"]) {
+                                        var taskCompleteTimeIdLS = checkedList[q]["id"].split("end");
+                                        $('#taskCompleteTimeId'+taskCompleteTimeIdLS[1]).text(checkedList[q]["completed"]);
+                                    }
+                                    
                                 }
                             }
                             else {
@@ -137,15 +178,51 @@
 
                             $(':checkbox').change(function(){
                                 if(this.checked){
-                                    //push to checked list
-                                    checkedList.push(this.id);
-                                    localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                    console.log(this.id);
+                                    if((this.id).indexOf("start") !== -1){
+                                        var taskTimeId = (this.id).split("start");
+                                        var dateStart = new Date().toString();
+                                        dateStart = formatDate(dateStart);
+                                        $('#taskTimeId'+taskTimeId[1]).text(dateStart);
+                                        checkedList.push({id:this.id,started:dateStart});
+                                        localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                    }
+                                    else {
+                                        var taskCompleteTimeId = (this.id).split("end");
+                                        console.log($('#start'+taskCompleteTimeId[1]).is(":checked"));
+                                        if($('#start'+taskCompleteTimeId[1]).is(":checked")){
+                                            var dateComplete = new Date().toString();
+                                            dateComplete = formatDate(dateComplete);
+                                            $('#taskCompleteTimeId'+taskCompleteTimeId[1]).text(dateComplete);
+                                            checkedList.push({id:this.id,completed:dateComplete});
+                                            localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                        }
+                                        else {
+                                            alert("Please start the task first");
+                                            $('#end'+taskCompleteTimeId[1]).prop('checked',false);
+                                        }
+
+                                    }
+
                                 }
                                 else {
                                     //remove from checked list
-                                    var checkIndex = checkedList.indexOf(this.id);
+                                    // var checkIndex = checkedList.indexOf(this.id);
+                                    var checkIndex = checkedList.findIndex(i=> i.id === this.id);
                                     if(checkIndex > -1){
                                         checkedList.splice(checkIndex,1);
+                                        if((this.id).indexOf("start") !== -1){
+                                            var taskTimeIdRemove = (this.id).split("start");
+                                            $('#taskTimeId'+taskTimeIdRemove[1]).text("");
+                                            $('#end'+taskTimeIdRemove[1]).prop('checked',false);
+                                            $('#taskCompleteTimeId'+taskTimeIdRemove[1]).text("");
+                                        }
+
+                                        if((this.id).indexOf("end") !== -1){
+                                            var taskCompleteTimeIdRemove = (this.id).split("end");
+                                            $('#end'+taskCompleteTimeIdRemove[1]).prop('checked',false);
+                                            $('#taskCompleteTimeId'+taskCompleteTimeIdRemove[1]).text("");
+                                        }
                                         localStorage.setItem("checkedList",JSON.stringify(checkedList));
                                     }
                                 }

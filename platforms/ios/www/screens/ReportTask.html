@@ -252,7 +252,6 @@
                             contentType: "text/xml; charset=\"utf-8\"",
                             data: SoaMessage,
                             success: function (msg) {
-                                alert($(msg).text());
                                 window.location.href = '#/Task';
                                 // var taskCompleted = localStorage.getItem('SubTaskCode');
                                 // console.log("taskCompleted "+taskCompleted);
@@ -273,7 +272,7 @@
                                 // }
                             },
                             error: function (msg) {
-                                alert("Failed: " + msg.status + ": " + msg.statusText);
+                                alert("Failed try again: " + msg.status + ": " + msg.statusText);
                             }
                         });
 
