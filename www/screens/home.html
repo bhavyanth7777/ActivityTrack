@@ -98,7 +98,12 @@
                         $('#TaskLabel').html("Select Task");
                     }
                     if(localStorage.getItem('ActivitySelection')){
-                        $('#ActivityLabel').html(localStorage.getItem('ActivitySelection'));
+                        if(localStorage.getItem('SelectedActivity')){
+                            $('#ActivityLabel').html(localStorage.getItem('ActivitySelection')+' -- '+localStorage.getItem('SelectedActivity'));
+                        }
+                        else {
+                            $('#ActivityLabel').html(localStorage.getItem('ActivitySelection'));
+                        }
                     }
                     else {
                         $('#ActivityLabel').html("Select Activity");
