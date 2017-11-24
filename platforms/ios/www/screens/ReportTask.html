@@ -59,8 +59,11 @@
             }
        textarea
        {
-               background: white;
-    color: black;
+            background: white;
+            color: black;
+            padding-top:5px;
+            padding-left:3px;
+            font-size:16px;
        }
     </style>
 </head>
@@ -94,12 +97,8 @@
              </div>
          </div>
          <div class="row">
-             <h6 class="white1">
-                 Description
-                 <textarea class="col s12" id="IssueDescTextArea">
-
-                 </textarea>
-             </h6>
+             <h6 class="white1">Description</h6>
+             <textarea class="col s12" id="IssueDescTextArea"></textarea>
          </div>
          <div class="row">
              <i class="col s1 material-icons medium white1" id="CameraIconButton">camera_alt</i>
@@ -114,10 +113,10 @@
     <script>
 
         $(document).ready(function () {
-            $('#AssetIDText').val(localStorage.getItem("EquipmentGUID"));
+            // $('#AssetIDText').val(localStorage.getItem("EquipmentGUID"));
             if (sevierity == '') {
                 sevierity = 'Mild';
-                $('#MildButton').css('border', '2px solid green');
+                $('#MildButton').css('border', '5px solid green');
             }
 
             $('.collapsible').collapsible();
@@ -243,7 +242,8 @@
                     tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
                         SiteGUID = res.rows.item(0).SiteGUID;
                         EquipmentTypeID = res.rows.item(0).EquipmentTypeID; // get from registration
-                        EquipmentGUID = res.rows.item(0).EquipmentGUID;
+                        // EquipmentGUID = res.rows.item(0).EquipmentGUID;
+                        EquipmentGUID = $('#AssetIDText').val();
                         var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">' +
                         ' <soap12:Body>' +
                  '<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +

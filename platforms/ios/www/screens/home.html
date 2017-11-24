@@ -92,7 +92,12 @@
                     }                             
                     var TaskDesc = localStorage.getItem("TaskDesc");
                     if(TaskDesc){
-                        $('#TaskLabel').html(TaskDesc);
+                        if(localStorage.getItem("SubTaskSelected")){
+                            $('#TaskLabel').html(TaskDesc+' -- '+localStorage.getItem("SubTaskSelected"));
+                        }
+                        else {
+                            $('#TaskLabel').html(TaskDesc); 
+                        }
                     }
                     else {
                         $('#TaskLabel').html("Select Task");

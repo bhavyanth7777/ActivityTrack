@@ -194,7 +194,6 @@
                         contentType: "text/xml; charset=\"utf-8\"",
                         data: SoaMessage2,
                         success: function (msg) {
-                            alert($(msg).text());
                             var xml2 = $.parseXML($(msg).text());
                         },
                         complete:function(){
