@@ -224,9 +224,9 @@
                                 }
                             });
 
-                            var longpress;
-                            $(".SubTaskButton").on('touchstart', function () {                               
-                                longpress = true;
+                            // var longpress;
+                            $(".SubTaskButton").on('click', function () {                               
+                                // longpress = true;
                                 subTaskCode = $(this).find('label').attr('data-SubTaskCode');
                                 subTaskDesc = $(this).find('label').text();
                                 TaskDesc = $(this).parent().parent().find('h5').text();
@@ -234,15 +234,16 @@
                                 TaskCode = $(this).parent().parent().find('h5').attr('data-TaskCode');
                                 localStorage.setItem("SubTaskCode",subTaskCode);
                                 EquipmentTypeID = $(this).parent().parent().find('h5').attr('data-TaskEquipmentTypeID');
-                                setTimeout(function () {
-                                    if (longpress) {                                       
-                                        window.location.href = "#/ReportTask";
-                                    }
-                                }, 3000);
+                                // setTimeout(function () {
+                                //     if (longpress) {                                       
+                                //         window.location.href = "#/ReportTask";
+                                //     }
+                                // }, 3000);
+                                window.location.href = "#/ReportTask";
                             })
-                            $(".SubTaskButton").on('touchend', function () {
-                                longpress = false;
-                            })
+                            // $(".SubTaskButton").on('touchend', function () {
+                            //     longpress = false;
+                            // })
                         },
                         complete: function () {
                             $('#LoderImage').hide();

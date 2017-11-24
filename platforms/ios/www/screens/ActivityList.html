@@ -253,6 +253,8 @@
                 setInterval(function(){
                     navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
                 },30000);
+
+                window.location.href = "#/home";
             }
         });
     });
