@@ -142,7 +142,7 @@
                                         Collapse = Collapse + '<p class="SubTaskButton">'+
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
                                                 '<form style="display:flex;flex-direction:row">'+
-                                                '<p><input data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '</form>'+
                                             '</p>'
@@ -179,8 +179,6 @@
                                     if((this.id).indexOf("start") !== -1){
                                         var taskTimeId = (this.id).split("start");
                                         var dateStart = new Date().toString();
-                                        var descToStore = ('#'+this.id).attr('data-SubTaskDesc');
-                                        localStorage.setItem("SubTaskSelected",descToStore);
                                         dateStart = formatDate(dateStart);
                                         $('#taskTimeId'+taskTimeId[1]).text(dateStart);
                                         checkedList.push({id:this.id,started:dateStart});
