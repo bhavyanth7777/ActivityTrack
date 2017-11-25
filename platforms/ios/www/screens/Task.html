@@ -135,8 +135,8 @@
                    '<h6>Task </h6>' +
                    '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '<form style="display:flex;flex-direction:row">'+
-                            '<p><input id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
-                            '<p style="margin-left:10px;"><input id="mainTaskEnd'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="mainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                     '</form>'+
                    '</div>' +
                    ' </div><div class="collapsible-body" style="margin-left:1em">';
@@ -161,6 +161,7 @@
                             if (localStorage.getItem("checkedList")){
                                 checkedList = localStorage.getItem("checkedList");
                                 checkedList = JSON.parse(checkedList);
+                                console.log(checkedList);
                                 for(let q=0;q<checkedList.length;q++){
                                     $('#'+checkedList[q]["id"]).prop('checked',true);
                                     let idOfTask = checkedList[q]["id"];
@@ -174,7 +175,7 @@
                                     if(idOfTask.indexOf("mainTaskStart") !== -1){
                                         if(checkedList[q]["started"]){
                                             var mainTaskTimeIdLS = idOfTask.split("mainTaskStart");
-                                            $('#mainTaskTimeId'+mainTaskTimeIdLS[1].text(checkedList[q]["started"]));
+                                            $('#mainTaskTimeId'+mainTaskTimeIdLS[1]).text(checkedList[q]["started"]);
                                         }
                                     }
 
@@ -185,10 +186,11 @@
                                     }
                                     }
 
-                                    if(idOfTask.indexOf("mainTaskEnd")){
+                                    if(idOfTask.indexOf("xmainTaskEnd") !== -1){
                                         if(checkedList[q]["completed"]){
-                                            var mainTaskCompleteTimeIDLS = idOfTask.split("mainTaskEnd");
-                                            $('#mainTaskCompleteTimeId'+mainTaskCompleteTimeIDLS[1]).text(checkedList[q]["completed"]);
+                                            var mainTaskCompleteTimeIDLS = idOfTask.split("xmainTaskEnd");
+                                            console.log("From LS "+checkedList[q]["completed"]);
+                                            $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeIDLS[1]).text(checkedList[q]["completed"]);
                                             // change color of Task
                                             $('#task'+mainTaskCompleteTimeIDLS[1]).css("color","orange");
                                         }
@@ -235,22 +237,27 @@
                                             $('#mainTaskTimeId'+mainTaskStartTimeId[1]).text(mainTaskDateStart);
                                             checkedList.push({id:this.id, started:mainTaskDateStart});
                                             localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                            localStorage.setItem("CurrentTaskStartDate",mainTaskDateStart);
+                                            localStorage.setItem("CurrentTaskId",mainTaskStartTimeId[1]);
+                                            console.log("Data-TaskDesc "+$('#'+this.id).attr('data-TaskDesc'));
+                                            localStorage.setItem("CurrentTaskDesc",$('#'+this.id).attr('data-TaskDesc'));
                                         }
 
-                                        if((this.id).indexOf("mainTaskEnd") !== -1){
+                                        if((this.id).indexOf("xmainTaskEnd") !== -1){
                                             console.log("mainTaskEnd"+ this.id);
-                                            var mainTaskCompleteTimeId = (this.id).split("mainTaskEnd");
+                                            var mainTaskCompleteTimeId = (this.id).split("xmainTaskEnd");
                                             if($('#mainTaskStart'+mainTaskCompleteTimeId[1]).is(":checked")){
                                                 var mainTaskDateComplete = new Date().toString();
                                                 mainTaskDateComplete = formatDate(mainTaskDateComplete);
-                                                $('#mainTaskCompleteTimeId'+mainTaskCompleteTimeId[1]).text(mainTaskDateComplete);
+                                                $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeId[1]).text(mainTaskDateComplete);
                                                 checkedList.push({id:this.id,completed:mainTaskDateComplete});
                                                 $('#task'+mainTaskCompleteTimeId[1]).css("color","orange");
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                                localStorage.setItem("CurrentTaskEndDate",mainTaskDateComplete);
                                             }
                                             else {
                                                 alert("Please start the task first");
-                                                $('#mainTaskEnd'+mainTaskCompleteTimeId[1]).prop('checked',false);
+                                                $('#xmainTaskEnd'+mainTaskCompleteTimeId[1]).prop('checked',false);
                                             }
 
                                         }
@@ -277,15 +284,15 @@
                                         if((this.id).indexOf("mainTaskStart") !== -1){
                                             var mainTaskTimeIdRemove = (this.id).split("mainTaskStart");
                                             $('#mainTaskTimeId'+mainTaskTimeIdRemove[1]).text("");
-                                            $('#mainTaskEnd'+mainTaskTimeIdRemove[1]).prop('checked',false);
-                                            $('#mainTaskCompleteTimeId'+mainTaskTimeIdRemove[1]).text("");
+                                            $('#xmainTaskEnd'+mainTaskTimeIdRemove[1]).prop('checked',false);
+                                            $('#xmainTaskCompleteTimeId'+mainTaskTimeIdRemove[1]).text("");
                                             $('#task'+mainTaskTimeIdRemove[1]).css("color","white");
                                         }
 
-                                        if((this.id).indexOf("mainTaskEnd") !== -1){
+                                        if((this.id).indexOf("xmainTaskEnd") !== -1){
                                             var mainTaskCompleteTimeIdRemove = (this.id).split("mainTaskEnd");
-                                            $('#mainTaskEnd'+mainTaskCompleteTimeIdRemove[1]).prop('checked',false);
-                                            $('#mainTaskCompleteTimeId'+mainTaskCompleteTimeIdRemove[1]).text("");
+                                            $('#xmainTaskEnd'+mainTaskCompleteTimeIdRemove[1]).prop('checked',false);
+                                            $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeIdRemove[1]).text("");
                                             $('#task'+mainTaskCompleteTimeIdRemove[1]).css("color","white");
                                         }
 

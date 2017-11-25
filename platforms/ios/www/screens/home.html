@@ -90,7 +90,7 @@
                         $('#UserLabel').html("Select Worker");
                         $('#WorkerLabel').html("Select Worker");
                     }                             
-                    var TaskDesc = localStorage.getItem("TaskDesc");
+                    var TaskDesc = localStorage.getItem("CurrentTaskDesc");
                     if(TaskDesc){
                         $('#TaskLabel').html(TaskDesc);
                     }
@@ -108,7 +108,7 @@
                     else {
                         $('#ActivityLabel').html("Select Activity");
                     }  
-            if (LocationName != '')
+            if (LocationName !== '')
             {
             $('#LocationLabel').text(LocationName);
         }

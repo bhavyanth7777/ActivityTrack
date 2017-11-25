@@ -131,6 +131,7 @@
         $(document).ready(function () {
          
             $('#LogoutMenu').click(function () {
+                window.clearInterval(localStorage.getItem("Interval"));
                 localStorage.clear();
                 db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                 db.transaction(function (tx) {

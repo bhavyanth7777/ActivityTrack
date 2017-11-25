@@ -204,9 +204,11 @@
 
                                 // start sending location data
 
-                                setInterval(function(){
+                                var interval = setInterval(function(){
                                 navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
                                 },30000);
+
+                                localStorage.setItem("Interval",interval);
                                 
                                 window.location.href = '#/home';
                                 // GetWorkerSiteAssignment API call
