@@ -163,13 +163,33 @@
                                 checkedList = JSON.parse(checkedList);
                                 for(let q=0;q<checkedList.length;q++){
                                     $('#'+checkedList[q]["id"]).prop('checked',true);
-                                    if(checkedList[q]["started"]){
-                                        var taskTimeIdLS = checkedList[q]["id"].split("start");
+                                    let idOfTask = checkedList[q]["id"];
+                                    if(idOfTask.indexOf("start") !== -1){
+                                        if(checkedList[q]["started"]){
+                                        var taskTimeIdLS = idOfTask.split("start");
                                         $('#taskTimeId'+taskTimeIdLS[1]).text(checkedList[q]["started"]);
                                     }
-                                    else if(checkedList[q]["completed"]) {
+                                    }
+
+                                    if(idOfTask.indexOf("mainTaskStart") !== -1){
+                                        if(checkedList[q]["started"]){
+                                            var mainTaskTimeIdLS = idOfTask.split("mainTaskStart");
+                                            $('#mainTaskTimeId'+mainTaskTimeIdLS[1].text(checkedList[q]["started"]));
+                                        }
+                                    }
+
+                                    if(idOfTask.indexOf("end")!== -1){
+                                        if(checkedList[q]["completed"]) {
                                         var taskCompleteTimeIdLS = checkedList[q]["id"].split("end");
                                         $('#taskCompleteTimeId'+taskCompleteTimeIdLS[1]).text(checkedList[q]["completed"]);
+                                    }
+                                    }
+
+                                    if(idOfTask.indexOf("mainTaskEnd")){
+                                        if(checkedList[q]["completed"]){
+                                            var mainTaskCompleteTimeIDLS = idOfTask.split("mainTaskEnd");
+                                            $('#mainTaskCompleteTimeId'+mainTaskCompleteTimeIDLS[1]).text(checkedList[q]["completed"]);
+                                        }
                                     }
                                     
                                 }
