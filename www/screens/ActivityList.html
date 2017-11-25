@@ -122,19 +122,33 @@
         function onGeolocationSuccess(position){
             // get all required data from position
 
-            var selectedActivityToSend = localStorage.getItem("SelectedActivity");
-            var selectedActivityIdToSend = localStorage.getItem("SelectedActivityId");
-            var keyToSend = localStorage.getItem("ActivitySelection");
+            var activityListFromLS = localStorage.getItem("ActivityList");
+            activityListFromLS = JSON.parse(activityListFromLS);
+
             var workerIDToSend = localStorage.getItem("WorkerID");
             var dateToSend = new Date().toString();
             dateToSend = formatDate(dateToSend);
 
-            // api call
             var SiteGUIDToSend = localStorage.getItem("SiteGUID");
             var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
             var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
-            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+dateToSend+'" EndTime=""&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+selectedActivityIdToSend+'" TaskDesc="'+selectedActivityToSend+'" StartDate="'+dateToSend+'" EndDate="" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
-            console.log(SoaMessage2);
+
+            // get Latest Task Details here taskCode, taskDesc, startTime, endTime
+            var currentTaskStartDate = localStorage.getItem("CurrentTaskStartDate");
+            var currentTaskEndDate = "";
+            if(localStorage.getItem("CurrentTaskEndDate")){
+                currentTaskEndDate = localStorage.getItem("CurrentTaskEndDate");
+            }
+            var currentTaskDesc = localStorage.getItem("CurrentTaskDesc");
+            var currentTaskId = localStorage.getItem("CurrentTaskId");
+
+            if(activityListFromLS.length == 2){
+                // there is a previous activity so there'll be start time and end time
+
+                // send the previous activity first with end time -- 0
+                var selectedActivityToSend =activityListFromLS[0]["name"];
+                var startTimeToSend = activityListFromLS[0]["startTime"];
+                var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+startTimeToSend+'" EndTime="'+dateToSend+'"&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+currentTaskId+'" TaskDesc="'+currentTaskDesc+'" StartDate="'+currentTaskStartDate+'" EndDate="'+currentTaskEndDate+'" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                     $('#LoderImage').show();
                     $.support.cors = true;
@@ -181,6 +195,120 @@
                             alert("Failed: " + msg.status + ": " + msg.statusText);
                         }
                     });
+
+                // after 5 seconds, send the latest activity --- 1 and remove 0th element.
+                setTimeout(function(){
+                    var dateToSend = new Date().toString();
+                    dateToSend = formatDate(dateToSend);
+
+                    var selectedActivityToSend =activityListFromLS[1]["name"];
+                    var startTimeToSend = activityListFromLS[1]["startTime"];
+                    var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+startTimeToSend+'" EndTime=""&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+currentTaskId+'" TaskDesc="'+currentTaskDesc+'" StartDate="'+currentTaskStartDate+'" EndDate="'+currentTaskEndDate+'" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var messageArray;
+                            if(localStorage.getItem('MessageArray')){
+                                messageArray = localStorage.getItem('MessageArray');
+                                messageArray = JSON.parse(messageArray);
+                            }
+                            else {
+                                messageArray =[];
+                            }
+                            var messageArrayLength = messageArray.length;
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                            console.log(xml2);
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                });
+                                if(messageArray.length!==messageArrayLength){
+                                    alert("New Message");
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+
+                                // remove the first element of the array.
+                                activityListFromLS.shift();
+                                localStorage.setItem("ActivityList",JSON.stringify(activityListFromLS));
+
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+
+                },5000);
+            }
+            else {
+                // there is no previous activity so there'll be only start time
+                var selectedActivityToSend =activityListFromLS[0]["name"];
+                var startTimeToSend = activityListFromLS[0]["startTime"];
+                var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+startTimeToSend+'" EndTime=""&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+currentTaskId+'" TaskDesc="'+currentTaskDesc+'" StartDate="'+currentTaskStartDate+'" EndDate="'+currentTaskEndDate+'" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var messageArray;
+                            if(localStorage.getItem('MessageArray')){
+                                messageArray = localStorage.getItem('MessageArray');
+                                messageArray = JSON.parse(messageArray);
+                            }
+                            else {
+                                messageArray =[];
+                            }
+                            var messageArrayLength = messageArray.length;
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                            console.log(xml2);
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                });
+                                if(messageArray.length!==messageArrayLength){
+                                    alert("New Message");
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+            }
         }
 
         function onGeolocationError(error){
@@ -246,13 +374,38 @@
             var selectedNode = $('#checkContainer').tree('getSelectedNode');
             if(selectedNode){
                 // send it to server with gps
-                localStorage.setItem("SelectedActivity",selectedNode.name);
-                localStorage.setItem("SelectedActivityId",selectedNode.id);
+                var activityListFromLS = localStorage.getItem("ActivityList");
+                if(activityListFromLS){
+                    activityListFromLS = JSON.parse(activityListFromLS);
+                    var previousActivityId = activityListFromLS[0]["activityId"];
+                    if(selectedNode.id === previousActivityId){
+                        // same as old id, no need to send new.
+                        alert("This activity is already in progress");
+                    }
+                    else {
+                        var startTimeToSave1 = new Date().toString();
+                        startTimeToSave1 = formatDate(dateToSend);
+                        var activityObj1 = {activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave1}
+                        activityListFromLS.push(activityObj1);
+                        localStorage.setItem("ActivityList",JSON.stringify(activityListFromLS));
+                        // navigator code
+                        navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
 
-                // navigator code
-                navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+                        window.location.href = "#/home";
+                    }
+                }
+                else {
+                    // first activity.
+                    var startTimeToSave = new Date().toString();
+                    startTimeToSave = formatDate(dateToSend);
+                    var activityObjList = [{activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave}];
+                    localStorage.setItem("ActivityList",JSON.stringify(activityObjList));
 
-                window.location.href = "#/home";
+                    // navigator code
+                    navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+
+                    window.location.href = "#/home";
+                }
             }
         });
     });

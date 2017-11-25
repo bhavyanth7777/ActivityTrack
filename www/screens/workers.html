@@ -88,6 +88,72 @@
                 return (value < 10) ? "0" + value : value;
             }
 
+            function onGeolocationSuccess(position){
+            // get all required data from position
+            var dateToSend = new Date().toString();
+            dateToSend = formatDate(dateToSend);
+            // api call
+            var SiteGUIDToSend = localStorage.getItem("SiteGUID");
+            var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
+            var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
+
+            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+            console.log(SoaMessage2);
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var messageArray;
+                            if(localStorage.getItem('MessageArray')){
+                                messageArray = localStorage.getItem('MessageArray');
+                                messageArray = JSON.parse(messageArray);
+                            }
+                            else {
+                                messageArray =[];
+                            }
+                            var messageArrayLength = messageArray.length;
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                            console.log(xml2);
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                });
+                                if(messageArray.length!==messageArrayLength){
+                                    alert("New Message");
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+        }
+        function onGeolocationError(error){
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
+        }
+
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
@@ -135,6 +201,12 @@
                                 localStorage.setItem("WorkerTypeName",WorkerTypeName);
                                 localStorage.removeItem("TaskDesc");
                                 localStorage.removeItem("ActivitySelection");
+
+                                // start sending location data
+
+                                setInterval(function(){
+                                navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+                                },30000);
                                 
                                 window.location.href = '#/home';
                                 // GetWorkerSiteAssignment API call

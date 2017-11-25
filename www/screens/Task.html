@@ -135,7 +135,7 @@
                    '<h6>Task </h6>' +
                    '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '<form style="display:flex;flex-direction:row">'+
-                            '<p><input id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                             '<p style="margin-left:10px;"><input id="mainTaskEnd'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="mainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                     '</form>'+
                    '</div>' +
@@ -235,6 +235,9 @@
                                             $('#mainTaskTimeId'+mainTaskStartTimeId[1]).text(mainTaskDateStart);
                                             checkedList.push({id:this.id, started:mainTaskDateStart});
                                             localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                            localStorage.setItem("CurrentTaskStartDate",mainTaskDateStart);
+                                            localStorage.setItem("CurrentTaskId",mainTaskStartTimeId[1]);
+                                            localStorage.setItem("CurrentTaskDesc",$(this.id).attr('data-TaskDesc'));
                                         }
 
                                         if((this.id).indexOf("mainTaskEnd") !== -1){
@@ -247,6 +250,7 @@
                                                 checkedList.push({id:this.id,completed:mainTaskDateComplete});
                                                 $('#task'+mainTaskCompleteTimeId[1]).css("color","orange");
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                                localStorage.setItem("CurrentTaskEndDate",mainTaskDateComplete);
                                             }
                                             else {
                                                 alert("Please start the task first");
