@@ -183,6 +183,8 @@
 
             var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics WorkerGUID= &quot;'+WorkerGUIDToSend+' &quot; SiteGUID=&quot;'+SiteGUIDToSend+'&quot; EquipmentGUID=&quot;'+EquipmentGUIDToSend+'&quot; SendTime=&quot;'+dateToSend+'&quot;&gt; &lt;Message Text=&quot;'+$('#messageText').val()+'&quot; TimeStamp=&quot;'+dateToSend+'&quot; Destination=&quot;'+DestEqGUID+'&quot;&gt; &lt;/Message&gt; &lt;/Metrics&gt; '+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    console.log("MESSAGE ");
+                    console.log(SoaMessage2);
                     $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({

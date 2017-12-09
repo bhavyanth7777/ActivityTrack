@@ -108,6 +108,29 @@
                 return (value < 10) ? "0" + value : value;
             }
 
+            function ajaxCall(soamessage){
+                var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                console.log(soamessage);
+                // $('#LoderImage').show();
+                // $.support.cors = true;
+                // $.ajax({
+                //             type: "POST",
+                //             url: url,
+                //             jsonpCallback: "MyCallbackDED",
+                //             dataType: "xml",
+                //             processData: false,
+                //             contentType: "text/xml; charset=\"utf-8\"",
+                //             data: soamessage,
+                //             success: function (msg) {
+                //                 $('#LoderImage').hide();
+                //             },
+                //             error: function (msg) {
+                //                 alert("Failed try again: " + msg.status + ": " + msg.statusText);
+                //                 $('#LoderImage').hide();
+                //             }
+                //         });
+            }
+
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
@@ -135,19 +158,18 @@
                    '<h6>Task </h6>' +
                    '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
                    '<form style="display:flex;flex-direction:row">'+
-                            '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
-                            '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  type="checkbox"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                     '</form>'+
                    '</div>' +
                    ' </div><div class="collapsible-body" style="margin-left:1em">';
-                                
                                 if ($(this).find('WorkerSubTask').length != 0) {
                                     $(this).find('WorkerSubTask').each(function () {
                                         Collapse = Collapse + '<p class="SubTaskButton">'+
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
                                                 '<form style="display:flex;flex-direction:row">'+
-                                                '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
-                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).find('TaskCode').text()+'" data-TaskDesc="'+$(this).find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '</form>'+
                                             '</p>'
                                     });
@@ -203,15 +225,58 @@
                             }
 
                             $(':checkbox').change(function(){
+                                WorkerGUID = localStorage.getItem("WorkerGUID");
+                                LocationID = localStorage.getItem("locationID");
+                                SiteGUID = localStorage.getItem("SiteGUID");
+                                EquipmentGUID = localStorage.getItem("EquipmentGUID");
+
                                 if(this.checked){
                                         if((this.id).indexOf("start") !== -1){
                                             console.log("Start "+this.id);
                                             var taskTimeId = (this.id).split("start");
                                             var dateStart = new Date().toString();
                                             dateStart = formatDate(dateStart);
-                                            $('#taskTimeId'+taskTimeId[1]).text(dateStart);
-                                            checkedList.push({id:this.id,started:dateStart});
-                                            localStorage.setItem("checkedList",JSON.stringify(checkedList));
+
+                                            var mainTaskCodeOfSubTask = $('#'+this.id).attr('data-TaskCode');
+                                            var mainTaskOfSubTaskDesc = $('#'+this.id).attr('data-TaskDesc');
+                                            var subtaskDesc = $('#'+this.id).attr('data-SubTaskDesc');
+                                            console.log('mainTaskCodeOfSubTask '+mainTaskCodeOfSubTask);
+                                            console.log('mainTaskOfSubTaskDesc '+mainTaskOfSubTaskDesc);
+                                            console.log('mainTaskCode From LS '+localStorage.getItem('CurrentTaskId'));
+                                            if(localStorage.getItem('CurrentTaskId')){
+                                                if(mainTaskCodeOfSubTask === localStorage.getItem('CurrentTaskId')){
+                                                    // start the task
+                                                    $('#taskTimeId'+taskTimeId[1]).text(dateStart);
+                                                    checkedList.push({id:this.id,started:dateStart,mainTaskId:mainTaskCodeOfSubTask,taskId:taskTimeId[1]});
+                                                    localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                                    var currentTaskStartDate = localStorage.getItem("CurrentTaskStartDate");
+                                                    var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
+            '<PackageXML>' +
+             '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + dateStart + ' &quot; &gt;' +
+                 '&lt;WorkerTask  EquipmentTypeID= &quot;' + EquipmentTypeID + ' &quot; Comments=""; EndDate="" StartDate= &quot;' + currentTaskStartDate + ' &quot; TaskDesc= &quot;' + mainTaskOfSubTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskCodeOfSubTask + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments=""; EndDate=""; StartDate= &quot;' + dateStart + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + taskTimeId[1] + ' &quot; &gt;' +
+                    '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage="" Severity="" IssueDesc="" TimeStamp="" /&gt;' +
+                   '&lt;/WorkerSubTask &gt;' +
+                 '&lt;/WorkerTask &gt;' +
+               '&lt;/Metrics &gt;' +
+             '</PackageXML>' +
+           '</SubmitTracking>' +
+          '</soap12:Body>' +
+        '</soap12:Envelope>';
+                                                    ajaxCall(soamessage1);
+                                                }
+                                                else {
+                                                    alert("Please complete the existing main task first");
+                                                    $('#start'+taskTimeId[1]).prop('checked',false);
+                                                }
+                                            }
+                                            else {
+                                                alert("Please start the main task first");
+                                                $('#start'+taskTimeId[1]).prop('checked',false);
+                                            }
+                                            
+                                            // subtask is started
+                                            
                                         }
                     
                                         if((this.id).indexOf("end") !== -1){
@@ -223,6 +288,7 @@
                                                 $('#taskCompleteTimeId'+taskCompleteTimeId[1]).text(dateComplete);
                                                 checkedList.push({id:this.id,completed:dateComplete});
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                                //subtask is ended
                                             }
                                             else {
                                                 alert("Please start the task first");
@@ -234,6 +300,8 @@
                                             var mainTaskStartTimeId = (this.id).split("mainTaskStart");
                                             var mainTaskDateStart = new Date().toString();
                                             mainTaskDateStart = formatDate(mainTaskDateStart);
+                                            var mainTaskEquipmentTypeID = $('#'+this.id).attr('data-TaskEquipmentTypeID');
+                                            var mainTaskDesc = $('#'+this.id).attr('data-TaskDesc');
                                             $('#mainTaskTimeId'+mainTaskStartTimeId[1]).text(mainTaskDateStart);
                                             checkedList.push({id:this.id, started:mainTaskDateStart});
                                             localStorage.setItem("checkedList",JSON.stringify(checkedList));
@@ -241,6 +309,19 @@
                                             localStorage.setItem("CurrentTaskId",mainTaskStartTimeId[1]);
                                             console.log("Data-TaskDesc "+$('#'+this.id).attr('data-TaskDesc'));
                                             localStorage.setItem("CurrentTaskDesc",$('#'+this.id).attr('data-TaskDesc'));
+
+                                            var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
+                                                '<PackageXML>' +
+                                                '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + mainTaskDateStart + ' &quot; &gt;' +
+                                                    '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments=""; EndDate=""; StartDate= &quot;' + mainTaskDateStart + ' &quot; TaskDesc= &quot;' + mainTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskStartTimeId[1] + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                                                    '&lt;/WorkerTask &gt;' +
+                                                '&lt;/Metrics &gt;' +
+                                                '</PackageXML>' +
+                                            '</SubmitTracking>' +
+                                            '</soap12:Body>' +
+                                            '</soap12:Envelope>';
+                                            //main task is started
+                                            ajaxCall(soamessage1);
                                         }
 
                                         if((this.id).indexOf("xmainTaskEnd") !== -1){
@@ -254,6 +335,23 @@
                                                 $('#task'+mainTaskCompleteTimeId[1]).css("color","orange");
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
                                                 localStorage.setItem("CurrentTaskEndDate",mainTaskDateComplete);
+                                                //main task is ended
+                                                var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
+                                                '<PackageXML>' +
+                                                '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + mainTaskDateStart + ' &quot; &gt;' +
+                                                    '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments=""; EndDate=""; StartDate= &quot;' + mainTaskDateStart + ' &quot; TaskDesc= &quot;' + mainTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskStartTimeId[1] + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                                                    '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments=""; EndDate=""; StartDate=""; SubTaskDesc=""; SubTaskCode=""; &gt;' +
+                                                        '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage= ""; Severity= ""; IssueDesc=""; TimeStamp="";/&gt;' +
+                                                    '&lt;/WorkerSubTask &gt;' +
+                                                    '&lt;/WorkerTask &gt;' +
+                                                '&lt;/Metrics &gt;' +
+                                                '</PackageXML>' +
+                                            '</SubmitTracking>' +
+                                            '</soap12:Body>' +
+                                            '</soap12:Envelope>';
+                                            //main task is started
+                                            ajaxCall(soamessage1);
+
                                             }
                                             else {
                                                 alert("Please start the task first");
