@@ -169,7 +169,7 @@
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
                                                 '<form style="display:flex;flex-direction:row">'+
                                                 '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
-                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '</form>'+
                                             '</p>'
                                     });
@@ -239,7 +239,8 @@
 
                                             var mainTaskCodeOfSubTask = $('#'+this.id).attr('data-TaskCode');
                                             var mainTaskOfSubTaskDesc = $('#'+this.id).attr('data-TaskDesc');
-                                            var subtaskDesc = $('#'+this.id).attr('data-SubTaskDesc');
+                                            var subTaskDesc = $('#'+this.id).attr('data-SubTaskDesc');
+                                            var mainTaskEquipmentTypeID = $('#mainTaskStart'+mainTaskCodeOfSubTask).attr('data-TaskEquipmentTypeID');
                                             console.log('mainTaskCodeOfSubTask '+mainTaskCodeOfSubTask);
                                             console.log('mainTaskOfSubTaskDesc '+mainTaskOfSubTaskDesc);
                                             console.log('mainTaskCode From LS '+localStorage.getItem('CurrentTaskId'));
@@ -253,8 +254,8 @@
                                                     var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
             '<PackageXML>' +
              '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + dateStart + ' &quot; &gt;' +
-                 '&lt;WorkerTask  EquipmentTypeID= &quot;' + EquipmentTypeID + ' &quot; Comments=""; EndDate="" StartDate= &quot;' + currentTaskStartDate + ' &quot; TaskDesc= &quot;' + mainTaskOfSubTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskCodeOfSubTask + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
-                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments=""; EndDate=""; StartDate= &quot;' + dateStart + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + taskTimeId[1] + ' &quot; &gt;' +
+                 '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments="" EndDate="" StartDate= &quot;' + currentTaskStartDate + ' &quot; TaskDesc= &quot;' + mainTaskOfSubTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskCodeOfSubTask + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments="" EndDate="" StartDate= &quot;' + dateStart + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + taskTimeId[1] + ' &quot; &gt;' +
                     '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage="" Severity="" IssueDesc="" TimeStamp="" /&gt;' +
                    '&lt;/WorkerSubTask &gt;' +
                  '&lt;/WorkerTask &gt;' +
@@ -285,10 +286,35 @@
                                             if($('#start'+taskCompleteTimeId[1]).is(":checked")){
                                                 var dateComplete = new Date().toString();
                                                 dateComplete = formatDate(dateComplete);
+                                                
+                                                var mainTaskCodeOfSubTask = $('#'+this.id).attr('data-TaskCode');
+                                                var mainTaskOfSubTaskDesc = $('#'+this.id).attr('data-TaskDesc');
+                                                var subTaskDesc = $('#'+this.id).attr('data-SubTaskDesc');
+                                                var currentTaskStartDate = localStorage.getItem("CurrentTaskStartDate");
+                                                var mainTaskEquipmentTypeID = $('#mainTaskStart'+mainTaskCodeOfSubTask).attr('data-TaskEquipmentTypeID');
                                                 $('#taskCompleteTimeId'+taskCompleteTimeId[1]).text(dateComplete);
+
+                                                // get start time from checklist
+                                                var checkIndex = checkedList.findIndex(i=> i.taskId === taskCompleteTimeId[1]);
+                                                var startTimeFromStorage = checkedList[checkIndex]["started"];
                                                 checkedList.push({id:this.id,completed:dateComplete});
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
+
+                                                var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
+            '<PackageXML>' +
+             '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + dateComplete + ' &quot; &gt;' +
+                 '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments="" EndDate="" StartDate= &quot;' + currentTaskStartDate + ' &quot; TaskDesc= &quot;' + mainTaskOfSubTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskCodeOfSubTask + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments="" EndDate="'+dateComplete+'" StartDate= &quot;' +startTimeFromStorage+ ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + taskCompleteTimeId[1] + ' &quot; &gt;' +
+                    '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage="" Severity="" IssueDesc="" TimeStamp="" /&gt;' +
+                   '&lt;/WorkerSubTask &gt;' +
+                 '&lt;/WorkerTask &gt;' +
+               '&lt;/Metrics &gt;' +
+             '</PackageXML>' +
+           '</SubmitTracking>' +
+          '</soap12:Body>' +
+        '</soap12:Envelope>';
                                                 //subtask is ended
+                                                ajaxCall(soamessage1);
                                             }
                                             else {
                                                 alert("Please start the task first");
@@ -313,7 +339,7 @@
                                             var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+' <soap12:Body>' +'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
                                                 '<PackageXML>' +
                                                 '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + mainTaskDateStart + ' &quot; &gt;' +
-                                                    '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments=""; EndDate=""; StartDate= &quot;' + mainTaskDateStart + ' &quot; TaskDesc= &quot;' + mainTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskStartTimeId[1] + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
+                                                    '&lt;WorkerTask  EquipmentTypeID= &quot;' + mainTaskEquipmentTypeID + ' &quot; Comments="" EndDate="" StartDate= &quot;' + mainTaskDateStart + ' &quot; TaskDesc= &quot;' + mainTaskDesc + ' &quot; TaskCode= &quot;' + mainTaskStartTimeId[1] + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
                                                     '&lt;/WorkerTask &gt;' +
                                                 '&lt;/Metrics &gt;' +
                                                 '</PackageXML>' +
@@ -325,6 +351,7 @@
                                         }
 
                                         if((this.id).indexOf("xmainTaskEnd") !== -1){
+                                            // start all subtasks, end all subtasks.
                                             console.log("mainTaskEnd"+ this.id);
                                             var mainTaskCompleteTimeId = (this.id).split("xmainTaskEnd");
                                             if($('#mainTaskStart'+mainTaskCompleteTimeId[1]).is(":checked")){
