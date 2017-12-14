@@ -329,6 +329,8 @@
                 // send it to server with gps
                 var activityListFromLS = localStorage.getItem("ActivityList");
                 if(activityListFromLS){
+                    console.log("activityListFromLS");
+                    console.log(activityListFromLS);
                     activityListFromLS = JSON.parse(activityListFromLS);
                     var previousActivityId = activityListFromLS[0]["activityId"];
                     if(selectedNode.id === previousActivityId){
@@ -350,6 +352,7 @@
                 }
                 else {
                     // first activity.
+                    console.log("In first acitivity else");
                     var startTimeToSave = new Date().toString();
                     startTimeToSave = formatDate(startTimeToSave);
                     var activityObjList = [{activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave}];
