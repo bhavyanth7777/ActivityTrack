@@ -189,9 +189,10 @@
                                     $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
                                     $('#unreadIcon').css("color","yellow");
                                 }
-
                                 activityListFromLS.shift();
-                                localStorage.setItem("ActivityList",activityListFromLS);
+                                console.log("AFTER SHIFT");
+                                console.log(activityListFromLS);
+                                localStorage.setItem("ActivityList",JSON.stringify(activityListFromLS));
 
                             }
                             else {
@@ -329,10 +330,8 @@
                 // send it to server with gps
                 var activityListFromLS = localStorage.getItem("ActivityList");
                 if(activityListFromLS){
-                    console.log("activityListFromLS");
+
                     activityListFromLS = JSON.parse(activityListFromLS);
-                    console.log(activityListFromLS);
-                    console.log(JSON.stringify(activityListFromLS));
                     var previousActivityId = activityListFromLS[0]["activityId"];
                     if(selectedNode.id === previousActivityId){
                         // same as old id, no need to send new.
@@ -341,10 +340,9 @@
                     else {
                         var startTimeToSave1 = new Date().toString();
                         startTimeToSave1 = formatDate(startTimeToSave1);
-                        var activityObj1 = {activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave1}
+                        var activityObj1 = {"activityName":selectedNode.name,"activityId":selectedNode.id,"startTime":startTimeToSave1};
+            
                         activityListFromLS.push(activityObj1);
-                        console.log("AFTER PUSH");
-                        console.log(activityListFromLS);
                         localStorage.setItem("ActivityList",JSON.stringify(activityListFromLS));
                         localStorage.setItem("SelectedActivity",selectedNode.name);
                         // navigator code
@@ -358,7 +356,9 @@
                     console.log("In first acitivity else");
                     var startTimeToSave = new Date().toString();
                     startTimeToSave = formatDate(startTimeToSave);
-                    var activityObjList = [{activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave}];
+                    var activityObjList = [{"activityName":selectedNode.name,"activityId":selectedNode.id,"startTime":startTimeToSave}];
+                    console.log("activityObjList after stringify")
+                    console.log(JSON.stringify(activityObjList));
                     localStorage.setItem("ActivityList",JSON.stringify(activityObjList));
                     localStorage.setItem("SelectedActivity",selectedNode.name);
 
