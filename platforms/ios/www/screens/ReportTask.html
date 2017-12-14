@@ -234,31 +234,17 @@
 
                     var date = new Date().toString();
                 date = formatDate(date);
-                IssueDesc = $('#IssueDescTextArea').val();
+                IssueDesc = $('#IssueDescTextArea').val().trim();
                 db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                 db.transaction(function (tx) {
                         WorkerGUID = localStorage.getItem("WorkerGUID");
                         LocationID = localStorage.getItem("locationID");
                     tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
-                        SiteGUID = res.rows.item(0).SiteGUID;
-                        EquipmentTypeID = res.rows.item(0).EquipmentTypeID; // get from registration
+                        SiteGUID = res.rows.item(0).SiteGUID.trim();
+                        EquipmentTypeID = res.rows.item(0).EquipmentTypeID.trim(); // get from registration
                         // EquipmentGUID = res.rows.item(0).EquipmentGUID;
-                        EquipmentGUID = $('#AssetIDText').val();
-                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">' +
-                        ' <soap12:Body>' +
-                 '<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">' +
-            '<PackageXML>' +
-             '&lt;Metrics WorkerGUID= &quot;' + WorkerGUID + ' &quot; SiteGUID= &quot;' + SiteGUID + ' &quot; EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; SendTime= &quot;' + date + ' &quot; &gt;' +
-                 '&lt;WorkerTask  EquipmentTypeID= &quot;' + EquipmentTypeID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + endTime + ' &quot; StartDate= &quot;' + startTime + ' &quot; TaskDesc= &quot;' + TaskDesc + ' &quot; TaskCode= &quot;' + TaskCode + ' &quot; WorkerGUID= &quot;' + WorkerGUID + ' &quot;  LocationID= &quot; '+LocationID+' &quot; &gt;' +
-                  '&lt;WorkerSubTask  EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; Comments= &quot;' + IssueDesc + ' &quot; EndDate= &quot;' + endTime + ' &quot; StartDate= &quot;' + startTime + ' &quot; SubTaskDesc= &quot;' + subTaskDesc + ' &quot; SubTaskCode= &quot;' + subTaskCode + ' &quot; &gt;' +
-                    '&lt;WorkerSubTaskIssue EquipmentGUID= &quot;' + EquipmentGUID + ' &quot; DoNotOperate= &quot;F &quot; IssueImage= &quot;' + camPIC + ' &quot; Severity= &quot;' + sevierity + ' &quot; IssueDesc= &quot;' + IssueDesc + ' &quot; TimeStamp= &quot;' + date + ' &quot;/&gt;' +
-                   '&lt;/WorkerSubTask &gt;' +
-                 '&lt;/WorkerTask &gt;' +
-               '&lt;/Metrics &gt;' +
-             '</PackageXML>' +
-           '</SubmitTracking>' +
-          '</soap12:Body>' +
-        '</soap12:Envelope>';
+                        EquipmentGUID = $('#AssetIDText').val().trim();
+                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID+'&quot; SiteGUID=&quot;'+SiteGUID+'&quot; EquipmentGUID=&quot;'+EquipmentGUID+'&quot; SendTime=&quot;'+date+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID= &quot;'+EquipmentTypeID+'&quot; Comments= &quot;'+IssueDesc+'&quot; EndDate=&quot;'+endTime+'&quot; StartDate=&quot;'+startTime+'&quot; TaskDesc= &quot;'+TaskDesc+'&quot; TaskCode=&quot;'+TaskCode+'&quot; WorkerGUID=&quot;'+WorkerGUID+'&quot;  LocationID=&quot;'+LocationID+'&quot; &gt;'+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID+' &quot;Comments= &quot;'+IssueDesc+'&quot; EndDate= &quot;'+endTime+'&quot; StartDate= &quot;'+startTime+'&quot; SubTaskDesc= &quot;'+subTaskDesc+'&quot; SubTaskCode=&quot;'+subTaskCode+'&quot;&gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+EquipmentGUID+'&quot; DoNotOperate=&quot;F&quot; IssueImage=&quot;'+camPIC+'&quot; Severity= &quot;'+sevierity+'&quot; IssueDesc= &quot;'+IssueDesc+'&quot; TimeStamp=&quot;'+date+'&quot;/&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
                         console.log("WORKER TASK - REPORT TASK");
                         console.log(SoaMessage);
                         var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";

@@ -594,7 +594,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.visionsoft.Activity;
 				PRODUCT_NAME = Activity;
-				PROVISIONING_PROFILE = "df9c077f-30c8-453f-8a41-4fe13c53186e";
+				PROVISIONING_PROFILE = "5eef7bd0-d9bd-4450-9a03-36acdc980e75";
 				PROVISIONING_PROFILE_SPECIFIER = devActivity;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
