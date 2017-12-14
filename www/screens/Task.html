@@ -410,7 +410,7 @@
                                         if((this.id).indexOf("start") !== -1){
                                             var taskTimeIdRemove = (this.id).split("start");
                                             // $('#taskTimeId'+taskTimeIdRemove[1]).text("");
-                                            $('#end'+taskTimeIdRemove[1]).prop('checked',true);
+                                            $('#start'+taskTimeIdRemove[1]).prop('checked',true);
                                             // $('#taskCompleteTimeId'+taskTimeIdRemove[1]).text("");
                                             alert("Can't uncheck Start");
                                         }
@@ -425,7 +425,7 @@
                                         if((this.id).indexOf("mainTaskStart") !== -1){
                                             var mainTaskTimeIdRemove = (this.id).split("mainTaskStart");
                                             // $('#mainTaskTimeId'+mainTaskTimeIdRemove[1]).text("");
-                                            $('#xmainTaskEnd'+mainTaskTimeIdRemove[1]).prop('checked',true);
+                                            $('#mainTaskStart'+mainTaskTimeIdRemove[1]).prop('checked',true);
                                             // $('#xmainTaskCompleteTimeId'+mainTaskTimeIdRemove[1]).text("");
                                             // $('#task'+mainTaskTimeIdRemove[1]).css("color","white");
                                             alert("Can't uncheck Start");

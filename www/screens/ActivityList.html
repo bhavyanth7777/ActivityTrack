@@ -330,8 +330,9 @@
                 var activityListFromLS = localStorage.getItem("ActivityList");
                 if(activityListFromLS){
                     console.log("activityListFromLS");
-                    console.log(activityListFromLS);
                     activityListFromLS = JSON.parse(activityListFromLS);
+                    console.log(activityListFromLS);
+                    console.log(JSON.stringify(activityListFromLS));
                     var previousActivityId = activityListFromLS[0]["activityId"];
                     if(selectedNode.id === previousActivityId){
                         // same as old id, no need to send new.
@@ -342,6 +343,8 @@
                         startTimeToSave1 = formatDate(startTimeToSave1);
                         var activityObj1 = {activityName:selectedNode.name,activityId:selectedNode.id,startTime:startTimeToSave1}
                         activityListFromLS.push(activityObj1);
+                        console.log("AFTER PUSH");
+                        console.log(activityListFromLS);
                         localStorage.setItem("ActivityList",JSON.stringify(activityListFromLS));
                         localStorage.setItem("SelectedActivity",selectedNode.name);
                         // navigator code
