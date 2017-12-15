@@ -364,27 +364,24 @@
                                                     var checkIndexStart = checkedList.findIndex(i=> i.id === 'start'+subTaskCodeFromList);
                                                     if(checkIndexStart>-1){
                                                         startedTime = checkedList[checkIndexStart]["started"];
+                                                        var checkIndexEnd = checkedList.findIndex(i=> i.id === 'end'+subTaskCodeFromList);
+                                                        if(checkIndexEnd>-1){
+                                                            endedTime = checkedList[checkIndexEnd]["completed"];
+                                                        }
+                                                        else {
+                                                            endedTime = mainTaskDateComplete;
+                                                        }
+                                                        var subTaskDesc = $('#start'+subTaskCodeFromList).attr('data-SubTaskDesc').trim();
+                                                        allSubTasksString = allSubTasksString+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; Comments=""; EndDate="'+endedTime+'"; StartDate="'+startedTime+'"; SubTaskDesc="'+subTaskDesc.trim()+'"; SubTaskCode="'+subTaskCodeFromList.trim()+'"; &gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; DoNotOperate=&quot;F&quot; IssueImage= ""; Severity= ""; IssueDesc=""; TimeStamp="";/&gt;'+'&lt;/WorkerSubTask &gt;'
+                                                        // check all the items
+                                                        $('#start'+subTaskCodeFromList).prop('checked',true);
+                                                        $('#end'+subTaskCodeFromList).prop('checked',true);
+                                                        $('#taskTimeId'+subTaskCodeFromList).text(startedTime);
+                                                        $('#taskCompleteTimeId'+subTaskCodeFromList).text(endedTime);
+                                                        // push to checked list
+                                                        checkedList.push({id:'end'+subTaskCodeFromList,completed:endedTime,mainTaskId:mainTaskCompleteTimeId[1],taskId:subTaskCodeFromList});
+                                                        checkedList.push({id:'start'+subTaskCodeFromList,started:startedTime,mainTaskId:mainTaskCompleteTimeId[1],taskId:subTaskCodeFromList});
                                                     }
-                                                    else {
-                                                        startedTime = mainTaskDateStart;
-                                                    }
-                                                    var checkIndexEnd = checkedList.findIndex(i=> i.id === 'end'+subTaskCodeFromList);
-                                                    if(checkIndexEnd>-1){
-                                                        endedTime = checkedList[checkIndexEnd]["completed"];
-                                                    }
-                                                    else {
-                                                        endedTime = mainTaskDateComplete;
-                                                    }
-                                                    var subTaskDesc = $('#start'+subTaskCodeFromList).attr('data-SubTaskDesc').trim();
-                                                    allSubTasksString = allSubTasksString+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; Comments=""; EndDate="'+endedTime+'"; StartDate="'+startedTime+'"; SubTaskDesc="'+subTaskDesc.trim()+'"; SubTaskCode="'+subTaskCodeFromList.trim()+'"; &gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; DoNotOperate=&quot;F&quot; IssueImage= ""; Severity= ""; IssueDesc=""; TimeStamp="";/&gt;'+'&lt;/WorkerSubTask &gt;'
-                                                    // check all the items
-                                                    $('#start'+subTaskCodeFromList).prop('checked',true);
-                                                    $('#end'+subTaskCodeFromList).prop('checked',true);
-                                                    $('#taskTimeId'+subTaskCodeFromList).text(startedTime);
-                                                    $('#taskCompleteTimeId'+subTaskCodeFromList).text(endedTime);
-                                                    // push to checked list
-                                                    checkedList.push({id:'end'+subTaskCodeFromList,completed:endedTime,mainTaskId:mainTaskCompleteTimeId[1],taskId:subTaskCodeFromList});
-                                                    checkedList.push({id:'start'+subTaskCodeFromList,started:startedTime,mainTaskId:mainTaskCompleteTimeId[1],taskId:subTaskCodeFromList});
                                                 }
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
 
