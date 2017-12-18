@@ -54,9 +54,10 @@
          background:rgba(197,158,195,1);
         }
 
-            .collapsible-body label,.white1  {
+        .collapsible-body label,.white1  {
                 color:white;
             }
+
        textarea
        {
             background: white;
@@ -65,6 +66,69 @@
             padding-left:3px;
             font-size:16px;
        }
+
+       .maxl{
+  margin-left:15px;
+}
+.inline{
+    display: inline-block;
+  }
+  .inline + .inline{
+    margin-left:20px;
+  }
+  .radio{
+    color:white;
+    font-size:30px;
+    position:relative;
+  }
+  .radio span{
+    position:relative;
+     padding-left:35px;
+  }
+  .radio span:after{
+    content:'';
+    width:30px;
+    height:30px;
+    border:5px solid;
+    position:absolute;
+    left:0;
+    top:1px;
+    border-radius:100%;
+    -ms-border-radius:100%;
+    -moz-border-radius:100%;
+    -webkit-border-radius:100%;
+    box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+  }
+  .radio input[type="radio"]{
+     cursor: pointer; 
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:1;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"
+  }
+  .radio input[type="radio"]:checked + span{
+    color:#0B8;  
+  }
+  .radio input[type="radio"]:checked + span:before{
+      content:'';
+    width:12px;
+    height:12px;
+    position:absolute;
+    background:#0B8;
+    left:9px;
+    top:10px;
+    border-radius:100%;
+    -ms-border-radius:100%;
+    -moz-border-radius:100%;
+    -webkit-border-radius:100%;
+  }
+
     </style>
 </head>
 <body>
@@ -84,7 +148,24 @@
             <a id="MildButton" class="btn col s3 sev" style="font-size:11px;background:rgba(195,222,211,1);color:black;border:1px solid rgba(76,125,104,1)">Mild</a>
                <a class="btn col s3 offset-s1 sev" style="font-size:11px;background:rgba(244,225,168,1);color:black;border:1px solid rgba(169,134,27,1);">Moderate</a>
                <a class="btn col s3 offset-s1 sev" style="font-size:11px;background:rgba(248,198,197,1);color:black;border:1px solid rgba(112,43,42,1);">Severe</a>
+         </div>
 
+         <div style="margin-top:10px;">
+             <div class="row">
+                 <div style="display:flex;flex-direction:row;">
+                        <h6 class="white1" style="margin-top:10px;">Do Not Operate</h6>
+                        <div class="maxl">
+                                <label class="radio inline"> 
+                                    <input type="radio" name="donotOperate" value="F" checked>
+                                    <span>F</span> 
+                                 </label>
+                                <label class="radio inline"> 
+                                    <input type="radio" name="donotOperate" value="T">
+                                    <span>T</span> 
+                                </label>
+                        </div>
+                 </div>
+             </div>
          </div>
 
          <div class="row">
@@ -245,7 +326,8 @@
                         // EquipmentGUID = res.rows.item(0).EquipmentGUID;
                         EquipmentGUID = localStorage.getItem("EquipmentGUID");
                         var subTaskIssueEquipmentGUID = $('#AssetIDText').val().trim();
-                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID+'&quot; SiteGUID=&quot;'+SiteGUID+'&quot; EquipmentGUID=&quot;'+EquipmentGUID+'&quot; SendTime=&quot;'+date+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID= &quot;'+EquipmentTypeID+'&quot; Comments= &quot;'+IssueDesc+'&quot; EndDate=&quot;'+endTime+'&quot; StartDate=&quot;'+startTime+'&quot; TaskDesc= &quot;'+TaskDesc+'&quot; TaskCode=&quot;'+TaskCode+'&quot; WorkerGUID=&quot;'+WorkerGUID+'&quot;  LocationID=&quot;'+LocationID+'&quot; &gt;'+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID+'&quot;Comments= &quot;'+IssueDesc+'&quot; EndDate= &quot;'+endTime+'&quot; StartDate= &quot;'+startTime+'&quot; SubTaskDesc= &quot;'+subTaskDesc+'&quot; SubTaskCode=&quot;'+subTaskCode+'&quot;&gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+subTaskIssueEquipmentGUID+'&quot; DoNotOperate=&quot;F&quot; IssueImage=&quot;'+camPIC+'&quot; Severity= &quot;'+sevierity+'&quot; IssueDesc= &quot;'+IssueDesc+'&quot; TimeStamp=&quot;'+date+'&quot;/&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                        var donotOperate = $("input[name='donotOperate']:checked").val();
+                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID+'&quot; SiteGUID=&quot;'+SiteGUID+'&quot; EquipmentGUID=&quot;'+EquipmentGUID+'&quot; SendTime=&quot;'+date+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID= &quot;'+EquipmentTypeID+'&quot; Comments=&quot;'+IssueDesc+'&quot; EndDate=&quot;'+endTime+'&quot; StartDate=&quot;'+startTime+'&quot; TaskDesc= &quot;'+TaskDesc+'&quot; TaskCode=&quot;'+TaskCode+'&quot; WorkerGUID=&quot;'+WorkerGUID+'&quot;  LocationID=&quot;'+LocationID+'&quot; &gt;'+'&lt;WorkerSubTask EquipmentGUID=&quot;'+EquipmentGUID+'&quot; Comments= &quot;'+IssueDesc+'&quot; EndDate= &quot;'+endTime+'&quot; StartDate= &quot;'+startTime+'&quot; SubTaskDesc= &quot;'+subTaskDesc+'&quot; SubTaskCode=&quot;'+subTaskCode+'&quot;&gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+subTaskIssueEquipmentGUID+'&quot; DoNotOperate=&quot;'+donotOperate+'&quot; IssueImage=&quot;'+camPIC+'&quot; Severity= &quot;'+sevierity+'&quot; IssueDesc= &quot;'+IssueDesc+'&quot; TimeStamp=&quot;'+date+'&quot;/&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
                         console.log("WORKER TASK - REPORT TASK");
                         console.log(SoaMessage);
                         var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
@@ -260,7 +342,13 @@
                             success: function (msg) {
                                 window.location.href = '#/Task';
                                 var xml = $.parseXML($(msg).text());
-                                console.log(xml);
+                                console.log("IN SUCCESS MESSAGE ");
+                                if($(xml).find('SUCCESS')){
+                                    console.log(xml);
+                                }
+                                else {
+                                    alert($(msg).text());
+                                }
                                 // var taskCompleted = localStorage.getItem('SubTaskCode');
                                 // console.log("taskCompleted "+taskCompleted);
                                 // var taskCompletedList = localStorage.getItem('TaskCompletedList');

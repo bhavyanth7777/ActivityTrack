@@ -197,6 +197,14 @@
                         data: SoaMessage2,
                         success: function (msg) {
                             var xml2 = $.parseXML($(msg).text());
+                            console.log("MESSAGE XML ");
+                            console.log(xml2);
+                            if($(xml2).find('SUCCESS')){
+                                    console.log(xml);
+                                }
+                                else {
+                                    alert($(msg).text());
+                                }
                         },
                         complete:function(){
                             $('#LoderImage').hide();
