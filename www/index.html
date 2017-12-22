@@ -132,7 +132,9 @@
          
             $('#LogoutMenu').click(function () {
                 window.clearInterval(localStorage.getItem("Interval"));
+                var secretkey = localStorage.getItem("SecretKey");
                 localStorage.clear();
+                localStorage.setItem("SecretKey",secretkey);
                 db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                 db.transaction(function (tx) {
                     tx.executeSql("delete from  Registration ", [], function (tx, res) {

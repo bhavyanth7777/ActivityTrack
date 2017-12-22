@@ -130,6 +130,9 @@
 
        
         $(document).ready(function () {
+            if(localStorage.getItem("EquipmentGUID")){
+                $('#RegistrationTextField').val(localStorage.getItem("EquipmentGUID"));
+            }
           
                 $('#RegisterButtton').click(function () {
                     console.log('Clicked');
