@@ -195,23 +195,22 @@
 
         $(document).ready(function () {
             // $('#AssetIDText').val(localStorage.getItem("EquipmentGUID"));
-            if (sevierity == '') {
-                sevierity = 'Mild';
-                $('#MildButton').css('border', '5px solid green');
-            }
+            console.log("SEVERITY");
+            sevierity = 'Mild';
+            console.log(sevierity);
+            $('#MildButton').css('border', '5px solid green');
 
             $('.collapsible').collapsible();
 
 
             $('#TaskListButton').click(function () {
-
                 window.location.href = "#/TaskList";
             });
             $('.sev').click(function () { 
                 $('.sev').css('border', '2px solid transparent');
                 $(this).css('border', '2px solid green');
                 sevierity = $(this).text();
-
+                console.log(sevierity);
             });
            
             

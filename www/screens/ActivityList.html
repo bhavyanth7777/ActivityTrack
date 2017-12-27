@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="col s12" style="background-color:rgba(83,132,154,1);padding:5px" id="checkContainer">
+    <div class="col s12" style="background-color:rgba(83,132,154,1);padding:5px;margin-left:27px" id="checkContainer">
     </div>
    
 </body>
@@ -322,11 +322,12 @@
         $('#checkContainer').tree({
             data: dataTree,
             saveState: true,
-            buttonLeft: false
+            buttonLeft: false,
+            autoOpen: true
         });
         $('#checkContainer').click(function(){
             var selectedNode = $('#checkContainer').tree('getSelectedNode');
-            if(selectedNode){
+            if(selectedNode&&selectedNode.children.length===0){
                 // send it to server with gps
                 var activityListFromLS = localStorage.getItem("ActivityList");
                 if(activityListFromLS){
@@ -367,6 +368,9 @@
 
                     window.location.href = "#/home";
                 }
+            }
+            else {
+                alert("This activity has sub activities, please select one of them");
             }
         });
     });

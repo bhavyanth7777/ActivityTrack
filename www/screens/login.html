@@ -132,6 +132,7 @@
         $(document).ready(function () {
             if(localStorage.getItem("SecretKey")){
                 $('#RegistrationTextField').val(localStorage.getItem("SecretKey"));
+                $('#RegistrationTextField').focus();
             }
           
                 $('#RegisterButtton').click(function () {
@@ -186,17 +187,17 @@
                     });
                 });
            
-                $('#RegisterButtton').hide();
-                $('nav,div,footer').click(function () {
-                    $('#RegistrationTextField').focus();
-                });
-                $('#RegistrationTextField').keyup(function () {
-                    if ($(this).val().length == 0) {
-                        $('#RegisterButtton').hide();                }
-                    else {
-                        $('#RegisterButtton').show();
-                    }
-                });
+                // $('#RegisterButtton').hide();
+                // $('nav,div,footer').click(function () {
+                //     $('#RegistrationTextField').focus();
+                // });
+                // $('#RegistrationTextField').keyup(function () {
+                //     if ($(this).val().length == 0) {
+                //         $('#RegisterButtton').hide();                }
+                //     else {
+                //         $('#RegisterButtton').show();
+                //     }
+                // });
 
            
             });
