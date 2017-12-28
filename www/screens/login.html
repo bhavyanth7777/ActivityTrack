@@ -132,8 +132,12 @@
         $(document).ready(function () {
             if(localStorage.getItem("SecretKey")){
                 $('#RegistrationTextField').val(localStorage.getItem("SecretKey"));
-                $('#RegistrationTextField').focus();
+                $('#RegistrationTextField').attr('type', 'password'); 
             }
+            $('#RegistrationTextField').focus(function(){
+                $('#RegistrationTextField').val('');
+                $('#RegistrationTextField').attr('type', 'text'); 
+            });
           
                 $('#RegisterButtton').click(function () {
                     console.log('Clicked');
