@@ -60,6 +60,15 @@
     </style>
 </head>
 <body>
+    <div id="modal1" class="modal">
+                <div class="modal-content">
+                  <h5>Enter your comments here</h5>
+                  <textarea rows="4" cols="50" id="commentSection"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <a class="modal-action modal-close waves-effect waves-green btn-flat">Done</a>
+                </div>
+    </div>
     <div class="col s12 m12">
         <div style="background: rgba(117,117,117,1)" id="LocationButton">
             <div class="white-text" style="width: 100%">
@@ -75,8 +84,10 @@
 </body>
 
     <script>
-
-
+        $(document).ready(function(){
+    // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+            $('.modal').modal();
+        });
         var db = null;
         function formatDate(dateVal) {
                 var newDate = new Date(dateVal);
@@ -164,7 +175,10 @@
                                 Collapse = Collapse + '<li>';
                                 Collapse = Collapse + '<div class="collapsible-header">' +
                   '<div id="TaskListButton" style="margin-left:2.5em;">' +
+                  '<div style="display:flex;flex-direction:row">'+
                    '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<i class="material-icons modal-trigger" id="taskModal'+$(this).find('TaskCode').text()+'" style="margin-left:10px;margin-top:5px;font-size:2rem;">event_note</i>'+
+                   '</div>'+
                    '<form style="display:flex;flex-direction:row">'+
                             '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                             '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  data-TaskDesc="'+$(this).find('TaskDesc').text()+'" type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
@@ -182,7 +196,10 @@
                                             taskPackage[$(this).parent().find('TaskCode').text()] = [$(this).find('SubTaskCode').text()]
                                         }
                                         Collapse = Collapse + '<p class="SubTaskButton">'+
+                                                '<div style="display:flex;flex-direction:row">'+
                                                 '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
+                                                '<i class="material-icons modal-trigger" id="subTaskModal'+$(this).find('SubTaskCode').text()+'" style="margin-left:10px;margin-top:3px;font-size:2rem;">event_note</i>'+
+                                                '</div>'+
                                                 '<form style="display:flex;flex-direction:row">'+
                                                 '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
@@ -241,6 +258,125 @@
                             else {
                                 checkedList = [];
                             }
+                            // MODAL CODE
+                            var openModalId;
+                            $('.modal-trigger').click(function(){
+                                // get the required data
+                                openModalId = this.id;
+                                if((openModalId).indexOf("taskModal") !== -1){
+                                    // for task modal
+                                    var splitOpenModalId = openModalId.split("taskModal");
+                                    var actualId = splitOpenModalId[1];
+                                    console.log(openModalId);
+                                    console.log(actualId);
+                                    
+                                    if($('#mainTaskStart'+actualId).is(":checked") && ! $('#xmainTaskEnd'+actualId).is(":checked")){
+                                        // allow to send notes
+                                        $('#modal1').modal('open');
+                                        $('#commentSection').val("");
+                                    }
+                                    else {
+                                        if($('#xmainTaskEnd'+actualId).is(":checked")){
+                                            alert("Task is completed, please uncheck the complete checkbox and try again");
+                                        }
+                                        else{
+                                            alert("Please start the task first");
+                                        }
+                                    }
+                                }
+                                if((openModalId).indexOf("subTaskModal") !== -1){
+                                    // for sub task modal
+                                    var splitOpenModalId = openModalId.split("subTaskModal");
+                                    var actualId = splitOpenModalId[1];
+                                    if($('#start'+actualId).is(":checked") && !$('#end'+actualId).is(":checked")){
+                                        // allow to send note
+                                        $('#modal1').modal('open');
+                                        $('#commentSection').val("");
+
+                                    }
+                                    else {
+                                        if($('#end'+actualId).is(":checked")){
+                                            alert("Please uncheck the complete checkbox of the sub task and try again");
+                                        }
+                                        else {
+                                            alert("Please start the subtask first");
+                                        }
+                                        
+                                    }
+
+                                }
+                            });
+                            $('.modal-close').click(function(){
+                                $('#modal1').modal('close');
+                                var commentSectionText = $('#commentSection').val();
+                                // send the request.
+                                WorkerGUID = localStorage.getItem("WorkerGUID");
+                                LocationID = localStorage.getItem("locationID");
+                                SiteGUID = localStorage.getItem("SiteGUID");
+                                EquipmentGUID = localStorage.getItem("EquipmentGUID");
+
+                                var commentSendTime = new Date().toString();
+                                commentSendTime = formatDate(commentSendTime);
+
+                                if((openModalId).indexOf("taskModal") !== -1){
+                                    // for task modal
+                                    var splitOpenModalId = openModalId.split("taskModal");
+                                    var actualId = splitOpenModalId[1];
+                                    console.log(openModalId);
+                                    console.log(actualId);
+                                    if($('#mainTaskStart'+actualId).is(":checked") && !$('#xmainTaskEnd'+actualId).is(":checked")){
+                                        // allow to send notes
+                                        var mainTaskDesc = $('#mainTaskStart'+actualId).attr('data-TaskDesc').trim();
+                                        var mainTaskEquipmentTypeID = $('#mainTaskStart'+actualId).attr('data-TaskEquipmentTypeID').trim();
+                                        var checkIndex = checkedList.findIndex(i=> i.id === 'mainTaskStart'+actualId);
+                                        var startedTimeFromList = checkedList[checkIndex]["started"];
+                                        var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID="'+WorkerGUID.trim()+'" SiteGUID="'+SiteGUID.trim()+'" EquipmentGUID="'+EquipmentGUID.trim()+'" SendTime="'+commentSendTime+'" &gt;'+'&lt;WorkerTask  EquipmentTypeID="'+mainTaskEquipmentTypeID.trim()+'" Comments="'+commentSectionText.trim()+'" EndDate="" StartDate="'+startedTimeFromList.trim()+'" TaskDesc="'+mainTaskDesc+'" TaskCode="'+actualId.trim()+'" WorkerGUID="'+WorkerGUID.trim()+'"  LocationID="'+LocationID.trim()+'" &gt;' +'&lt;/WorkerTask &gt;' +'&lt;/Metrics &gt;' +'</PackageXML>' +'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                                        console.log("MAIN TASK COMMENT");
+                                        ajaxCall(soamessage1);
+                                    }
+                                    else {
+                                        if($('#xmainTaskEnd'+actualId).is(":checked")){
+                                            alert("Task is completed, please uncheck the complete checkbox and try again");
+                                        }
+                                        else{
+                                            alert("Please start the task first");
+                                        }
+                                    }
+                                }
+                                if((openModalId).indexOf("subTaskModal") !== -1){
+                                    // for sub task modal
+                                    var splitOpenModalId = openModalId.split("subTaskModal");
+                                    var actualId = splitOpenModalId[1];
+                                    if($('#start'+actualId).is(":checked") && !$('#end'+actualId).is(":checked")){
+                                        // allow to send note
+                                        var mainTaskCodeOfSubTask = $('#start'+actualId).attr('data-TaskCode').trim();
+                                        var mainTaskOfSubTaskDesc = $('#start'+actualId).attr('data-TaskDesc').trim();
+                                        var subTaskDesc = $('#start'+actualId).attr('data-SubTaskDesc').trim();
+                                        console.log(mainTaskCodeOfSubTask);
+                                        var mainTaskEquipmentTypeID = $('#mainTaskStart'+mainTaskCodeOfSubTask).attr('data-TaskEquipmentTypeID').trim();
+                                        var checkIndex = checkedList.findIndex(i=> i.id === 'start'+actualId);
+                                        var startedTimeFromList = checkedList[checkIndex]["started"];
+                                        // mainTaskStartTime
+                                        var mainTaskStartTime = localStorage.getItem("CurrentTaskStartDate");
+                                        var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID.trim()+'&quot; SiteGUID=&quot;'+SiteGUID.trim()+'&quot; EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; SendTime=&quot;'+commentSendTime+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID=&quot;'+mainTaskEquipmentTypeID.trim()+'&quot; Comments="" EndDate="" StartDate=&quot;'+mainTaskStartTime.trim()+'&quot; TaskDesc=&quot;'+mainTaskOfSubTaskDesc.trim()+'&quot; TaskCode=&quot;'+mainTaskCodeOfSubTask.trim()+'&quot; WorkerGUID= &quot;'+WorkerGUID.trim()+'&quot;  LocationID= &quot;'+LocationID.trim()+'&quot; &gt;'+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; Comments="'+commentSectionText.trim()+'" EndDate="" StartDate=&quot;'+startedTimeFromList+'&quot; SubTaskDesc=&quot;'+subTaskDesc.trim()+'&quot; SubTaskCode=&quot;'+actualId.trim()+'&quot;&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                                        console.log("SUB TASK COMMENT");
+                                        ajaxCall(soamessage1);
+
+                                    }
+                                    else {
+                                        if($('#end'+actualId).is(":checked")){
+                                            alert("Please uncheck the complete checkbox of the sub task and try again");
+                                        }
+                                        else {
+                                            alert("Please start the subtask first");
+                                        }
+                                        
+                                    }
+
+                                }
+
+
+                            });
 
                             $(':checkbox').change(function(){
                                 WorkerGUID = localStorage.getItem("WorkerGUID");
@@ -259,9 +395,7 @@
                                             var mainTaskOfSubTaskDesc = $('#'+this.id).attr('data-TaskDesc').trim();
                                             var subTaskDesc = $('#'+this.id).attr('data-SubTaskDesc').trim();
                                             var mainTaskEquipmentTypeID = $('#mainTaskStart'+mainTaskCodeOfSubTask).attr('data-TaskEquipmentTypeID').trim();
-                                            console.log('mainTaskCodeOfSubTask '+mainTaskCodeOfSubTask);
-                                            console.log('mainTaskOfSubTaskDesc '+mainTaskOfSubTaskDesc);
-                                            console.log('mainTaskCode From LS '+localStorage.getItem('CurrentTaskId'));
+                                            
                                             if(localStorage.getItem('CurrentTaskId')){
                                                 if(mainTaskCodeOfSubTask === localStorage.getItem('CurrentTaskId')){
                                                     if($('#xmainTaskEnd'+mainTaskCodeOfSubTask).is(":checked")){
