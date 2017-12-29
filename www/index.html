@@ -165,7 +165,9 @@
                 currentDateTime = formatDate(currentDateTime);
                 $('#dateTime').html(currentDateTime);
             },1000);
-            
+
+
+
             $('#LogoutMenu').click(function () {
                 window.clearInterval(localStorage.getItem("Interval"));
                 var secretkey = localStorage.getItem("SecretKey");
