@@ -63,7 +63,7 @@
         <div class="nav-wrapper  #009688 teal ">
             <div class="" style="display:flex;flex-direction:row;justify-content:space-between;">
                 <a id="bars" href="#" data-activates="slide-out" class="button-collapse  pulse col s2"><i class="material-icons">menu</i></a>
-                <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker</a>
+                <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker<span style="margin-left:10px;" id="dateTime"></span></a>
                 <div style="display:flex;flex-direction:row;">
                     <a href="#/receivedMessages"><i class="material-icons medium" id="unreadIcon">markunread</i></a>
                     <span id="unreadMessageCount" style="font-size:18px;margin-left:2px;color:white;margin-right:10px"></span>
@@ -127,9 +127,45 @@
         $(".button-collapse").sideNav({ closeOnClick: true, draggable: true });
         // Initialize collapsible (uncomment the line below if you use the dropdown variation)
         $('.collapsible').collapsible();
+
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
        
         $(document).ready(function () {
-         
+
+            var dateTimeInterval = setInterval(function(){
+                var currentDateTime = new Date().toString();
+                currentDateTime = formatDate(currentDateTime);
+                $('#dateTime').html(currentDateTime);
+            },1000);
+            
             $('#LogoutMenu').click(function () {
                 window.clearInterval(localStorage.getItem("Interval"));
                 var secretkey = localStorage.getItem("SecretKey");
