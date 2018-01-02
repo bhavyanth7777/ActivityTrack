@@ -61,11 +61,23 @@
                         </label>
                       </div>
             </div>
+            <div id="gpsIntervalContainer" class="white-text" style="display:flex;flex-direction:row;width: 100%;justify-content:space-between;">
+                <h6 style="font-size:20px;margin-top:30px;margin-left:2px;">GPS Interval</h6>
+                <div class="switch" style="margin-top:20px;margin-right:30px;">
+                        <label style="font-size:20px;color:white">
+                          60
+                          <input type="checkbox" id="gpsIntervalSwitch">
+                          <span class="lever"></span>
+                          30
+                        </label>
+                      </div>
+            </div>
     </div>
 
     <script>
         $(document).ready(function() {
             var navigationSwitchLS = localStorage.getItem('NavigationSwitch');
+            var gpsIntervalSwitchLS = localStorage.getItem('GPSIntervalSwitch');
             if(navigationSwitchLS == "ON"){
                 $('#navigationSwitch').prop('checked',true);
             }
@@ -78,6 +90,139 @@
                 }
                 else {
                     localStorage.setItem('NavigationSwitch',"OFF");
+                }
+            });
+
+            if(gpsIntervalSwitchLS == "30"){
+                $('#gpsIntervalSwitch').prop('checked',true);
+            }
+            else {
+                $('#gpsIntervalSwitch').prop('checked',false);
+            }
+
+            function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
+            function onGeolocationSuccess(position){
+            // get all required data from position
+            var dateToSend = new Date().toString();
+            dateToSend = formatDate(dateToSend);
+            // api call
+            var SiteGUIDToSend = localStorage.getItem("SiteGUID");
+            var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
+            var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
+
+            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend.trim()+'" SiteGUID="'+SiteGUIDToSend.trim()+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+            console.log("WORKER LOCATION");
+            console.log(SoaMessage2);
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var messageArray;
+                            if(localStorage.getItem('MessageArray')){
+                                messageArray = localStorage.getItem('MessageArray');
+                                messageArray = JSON.parse(messageArray);
+                            }
+                            else {
+                                messageArray =[];
+                            }
+                            var messageArrayLength = messageArray.length;
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                            console.log(xml2);
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                });
+                                if(messageArray.length!==messageArrayLength){
+                                    alert("New Message");
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+        }
+        function onGeolocationError(error){
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
+        }
+
+            $('#gpsIntervalSwitch').change(function(){
+                if(this.checked){
+                    localStorage.setItem('GPSIntervalSwitch',"30");
+                    var intervalFromLS = localStorage.getItem("Interval");
+                    console.log(intervalFromLS);
+                    clearInterval(intervalFromLS);
+                    var interval = setInterval(function(){
+                                navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+                            },30000);
+
+                            localStorage.setItem("Interval",interval);
+                                
+                            window.location.href = '#/home';
+                }
+                else {
+                    localStorage.setItem('GPSIntervalSwitch',"60");
+                    var intervalFromLS = localStorage.getItem("Interval");
+                    console.log(intervalFromLS);
+                    clearInterval(intervalFromLS);
+                    var interval = setInterval(function(){
+                                navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+                            },60000);
+
+                            localStorage.setItem("Interval",interval);
+                                
+                            window.location.href = '#/home';
                 }
             });
         });

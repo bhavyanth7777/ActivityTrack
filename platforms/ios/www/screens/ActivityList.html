@@ -152,11 +152,16 @@
                 var selectedActivityToSend2 = activityListFromLS[1]["activityName"];
                 var startTimeToSend2 = activityListFromLS[1]["startTime"];
                 var selectedActivityIDToSend2 = activityListFromLS[1]["activityId"];
+                
                 //var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+startTimeToSend+'" EndTime="'+dateToSend+'"&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+currentTaskId+'" TaskDesc="'+currentTaskDesc+'" StartDate="'+currentTaskStartDate+'" EndDate="'+currentTaskEndDate+'" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+                var networkState = navigator.connection.type;
+
                 var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend.trim()+'" EquipmentGUID="'+EquipmentGUIDToSend.trim()+'" SiteGUID="'+SiteGUIDToSend.trim()+'"&gt;&lt;Activity Key="'+selectedActivityIDToSend.trim()+'" WorkerID="'+workerIDToSend.trim()+'" StartTime="'+startTimeToSend+'" EndTime="'+startTimeToSend2+'"/&gt;&lt;Activity Key="'+selectedActivityIDToSend2.trim()+'" WorkerID="'+workerIDToSend.trim()+'" StartTime="'+startTimeToSend2+'" EndTime=""/&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
                 var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                 console.log("WORKER ACTIVITY");
                 console.log(SoaMessage2);
+
+                if (networkState !== Connection.NONE) {
                     $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
@@ -206,6 +211,26 @@
                             alert("Failed: " + msg.status + ": " + msg.statusText);
                         }
                     });
+                }
+                else {
+                    // no network push to localStorage
+                    console.log("Offline activities");
+                    var offlineActivities = localStorage.getItem("OfflineActivities");
+                    if(offlineActivities){
+                        offlineActivities = JSON.parse(offlineActivities);
+                        if(offlineActivities.length>0){
+                            // push the activity
+                            offlineActivities.push(SoaMessage2);
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
+                        }
+                        else {
+                            //new array
+                            var offlineActivityArray = [SoaMessage2];
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
+                        }
+                    }
+
+                }
             }
             else {
                 // there is no previous activity so there'll be only start time
@@ -217,6 +242,8 @@
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                     console.log("WORKER ACTIVITY INITIAL");
                     console.log(SoaMessage2);
+                    var networkState = navigator.connection.type;
+                    if (networkState !== Connection.NONE) {
                     $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
@@ -262,6 +289,24 @@
                             alert("Failed: " + msg.status + ": " + msg.statusText);
                         }
                     });
+                }
+                else {
+                    console.log("Offline activities");
+                    var offlineActivities = localStorage.getItem("OfflineActivities");
+                    if(offlineActivities){
+                        offlineActivities = JSON.parse(offlineActivities);
+                        if(offlineActivities.length>0){
+                            // push the activity
+                            offlineActivities.push(SoaMessage2);
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
+                        }
+                        else {
+                            //new array
+                            var offlineActivityArray = [SoaMessage2];
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
+                        }
+                    }
+                }
             }
         }
 
@@ -273,7 +318,91 @@
                 alert("Error"+JSON.stringify(error));
             }
         }
+        
+        function checkConnection() {
+                console.log("Connection log called");
+                var networkState = navigator.connection.type;
+            
+                var states = {};
+                states[Connection.UNKNOWN]  = 'Unknown connection';
+                states[Connection.ETHERNET] = 'Ethernet connection';
+                states[Connection.WIFI]     = 'WiFi connection';
+                states[Connection.CELL_2G]  = 'Cell 2G connection';
+                states[Connection.CELL_3G]  = 'Cell 3G connection';
+                states[Connection.CELL_4G]  = 'Cell 4G connection';
+                states[Connection.CELL]     = 'Cell generic connection';
+                states[Connection.NONE]     = 'No network connection';
+            
+            }
 
+            checkConnection();
+            
+            function onOffline() {
+                alert("Network lost, continue in offline mode");
+            }
+            function onOnline() {
+                alert("Online");
+                var offlineActivitiesFromLS = localStorage.getItem("OfflineActivities");
+                offlineActivitiesFromLS = JSON.parse(offlineActivitiesFromLS);
+                console.log(offlineActivitiesFromLS);
+                if(offlineActivitiesFromLS.length>0){
+                    for(var i=0;i<offlineActivitiesFromLS.length;i++){
+                        console.log(offlineActivitiesFromLS[i]);
+                        var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                        var SoaMessage2 = offlineActivitiesFromLS[i];
+                        $('#LoderImage').show();
+                        $.support.cors = true;
+                        $.ajax({
+                            type: "POST",
+                            url: url2,
+                            jsonpCallback: "MyCallbackDED",
+                            dataType: "xml",
+                            processData: false,
+                            contentType: "text/xml; charset=\"utf-8\"",
+                            data: SoaMessage2,
+                            success: function (msg) {
+                                var messageArray;
+                                if(localStorage.getItem('MessageArray')){
+                                    messageArray = localStorage.getItem('MessageArray');
+                                    messageArray = JSON.parse(messageArray);
+                                }
+                                else {
+                                    messageArray =[];
+                                }
+                                var messageArrayLength = messageArray.length;
+                                var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                                console.log(xml2);
+                                if($(xml2).find('Container SUCCESS')){
+                                    $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                            messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                    });
+                                    if(messageArray.length!==messageArrayLength){
+                                        alert("New Message");
+                                        localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                        $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                        $('#unreadIcon').css("color","yellow");
+                                    }
+
+                                }
+                                else {
+                                    alert($(msg).text());
+                                }
+                            },
+                            complete:function(){
+                                $('#LoderImage').hide();
+                            },
+                            error: function (msg) {
+                                alert("Failed: " + msg.status + ": " + msg.statusText);
+                            }
+                        });
+                    }
+                }
+            }
+            
+            document.addEventListener("offline", onOffline, false);
+
+            document.addEventListener("online", onOnline, false);
+            
         var dataTree = [];
         var categoryIDArray = Object.keys(CategoryIDDict);
         for(var k=0;k<categoryIDArray.length;k++){

@@ -206,12 +206,19 @@
                                 localStorage.removeItem("ActivitySelection");
                                 localStorage.removeItem("checkedList");
                                 localStorage.removeItem("CurrentTaskDesc");
+                                localStorage.removeItem("locationName");
 
                                 // start sending location data
+                                var gpsTimeIntervalLS = localStorage.getItem("GPSIntervalSwitch");
+                                var gpsTimeIntervalInSeconds = 60000;
+                                if(gpsTimeIntervalLS == "30"){
+                                    gpsTimeIntervalInSeconds = 30000;
+                                }
+                                console.log("GPS Time Interval In seconds"+gpsTimeIntervalInSeconds);
 
                                 var interval = setInterval(function(){
                                 navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
-                                },30000);
+                                },gpsTimeIntervalInSeconds);
 
                                 localStorage.setItem("Interval",interval);
                                 

@@ -108,10 +108,14 @@
                     else {
                         $('#ActivityLabel').html("Select Activity");
                     }  
-            if (LocationName !== '')
-            {
-            $('#LocationLabel').text(LocationName);
-        }
+                if (localStorage.getItem('locationName'))
+                    {
+                        $('#LocationLabel').html(localStorage.getItem('locationName'));
+                    }
+                    else{
+                        $('#LocationLabel').html('Select Location');
+                    }
+
         }, 500);
 
         function checkConnection() {
@@ -128,21 +132,20 @@
                 states[Connection.CELL]     = 'Cell generic connection';
                 states[Connection.NONE]     = 'No network connection';
             
-                alert('Connection type: ' + states[networkState]);
             }
 
             checkConnection();
             
-            function onOffline() {
-                alert("Offline");
-            }
-            function onOnline() {
-                alert("Online");
-            }
+            // function onOffline() {
+            //     alert("Offline");
+            // }
+            // function onOnline() {
+            //     alert("Online");
+            // }
             
-            document.addEventListener("offline", onOffline, false);
+            // document.addEventListener("offline", onOffline, false);
 
-            document.addEventListener("online", onOnline, false);
+            // document.addEventListener("online", onOnline, false);
 
 
         $(document).ready(function () {
