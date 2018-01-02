@@ -202,7 +202,7 @@
                     localStorage.setItem('GPSIntervalSwitch',"30");
                     var intervalFromLS = localStorage.getItem("Interval");
                     console.log(intervalFromLS);
-                    clearInterval(intervalFromLS);
+                    window.clearInterval(intervalFromLS);
                     var interval = setInterval(function(){
                                 navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
                             },30000);
@@ -215,7 +215,7 @@
                     localStorage.setItem('GPSIntervalSwitch',"60");
                     var intervalFromLS = localStorage.getItem("Interval");
                     console.log(intervalFromLS);
-                    clearInterval(intervalFromLS);
+                    window.clearInterval(intervalFromLS);
                     var interval = setInterval(function(){
                                 navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
                             },60000);
