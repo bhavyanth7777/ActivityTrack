@@ -259,15 +259,35 @@
                             $('.modal-trigger').click(function(){
                                 // get the required data
                                 openModalId = this.id;
+                                // get from local storage
+                                if(localStorage.getItem("ModalComments")){
+                                            var modalCommentsFromLS = localStorage.getItem("ModalComments");
+                                            modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
+                                            console.log("modalCommentsFromLS");
+                                            console.log(modalCommentsFromLS);
+
+                                            var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === openModalId);
+                                            if(checkIndex > -1){
+                                                $('#commentSection').val(modalCommentsFromLS[checkIndex]["comments"]);
+                                            }
+                                            else{
+                                                $('#commentSection').val("");
+                                            }
+                                        }
+                                        else {
+                                            $('#commentSection').val("");
+                                        }
                                 if((openModalId).indexOf("taskModal") !== -1){
                                     // for task modal
+                                    console.log("MODAL ID"+openModalId);
                                     var splitOpenModalId = openModalId.split("taskModal");
                                     var actualId = splitOpenModalId[1];
                                     
                                     if($('#mainTaskStart'+actualId).is(":checked") && ! $('#xmainTaskEnd'+actualId).is(":checked")){
                                         // allow to send notes
                                         $('#modal1').modal('open');
-                                        $('#commentSection').val("");
+                                        // set data to modal close
+                                        $('#modal1').data('modalId',openModalId);
                                     }
                                     else {
                                         if($('#xmainTaskEnd'+actualId).is(":checked")){
@@ -285,8 +305,8 @@
                                     if($('#start'+actualId).is(":checked") && !$('#end'+actualId).is(":checked")){
                                         // allow to send note
                                         $('#modal1').modal('open');
-                                        $('#commentSection').val("");
-
+                                        // get from local storage
+                                        $('#modal1').data('modalId',openModalId);
                                     }
                                     else {
                                         if($('#end'+actualId).is(":checked")){
@@ -302,7 +322,29 @@
                             });
                             $('.modal-close').click(function(){
                                 $('#modal1').modal('close');
+                                var modalId = $('#modal1').data('modalId');
+                                console.log("Modal ID "+modalId);
                                 var commentSectionText = $('#commentSection').val();
+                                console.log("commentSectionText"+commentSectionText);
+                                if(localStorage.getItem("ModalComments")){
+                                    var modalCommentsFromLS = localStorage.getItem("ModalComments");
+                                    modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
+                                    // find index
+                                    var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === modalId);
+                                    if(checkIndex > -1){
+                                        modalCommentsFromLS[checkIndex]["comments"] = commentSectionText;
+                                    }
+                                    else {
+                                        var modalCommentToPush = {id:modalId,comments:commentSectionText};
+                                        modalCommentsFromLS.push(modalCommentToPush);
+                                    }
+                                    localStorage.setItem("ModalComments",JSON.stringify(modalCommentsFromLS));
+                                }
+                                else {
+                                    var modalComments = [{id:modalId,comments:commentSectionText}];
+                                    localStorage.setItem("ModalComments",JSON.stringify(modalComments));
+                                }
+
                                 // send the request.
                                 WorkerGUID = localStorage.getItem("WorkerGUID");
                                 LocationID = localStorage.getItem("locationID");
