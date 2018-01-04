@@ -171,6 +171,7 @@
             $('#LogoutMenu').click(function () {
                 if(localStorage.getItem("CurrentTaskStartDate") && !localStorage.getItem("CurrentTaskEndDate")){
                     alert("Tasks are incomplete, please complete the tasks first");
+                    window.location.href="#/Task";
                 }
                 else {
                     window.clearInterval(localStorage.getItem("Interval"));
