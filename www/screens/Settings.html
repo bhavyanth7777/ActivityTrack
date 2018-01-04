@@ -72,12 +72,17 @@
                         </label>
                       </div>
             </div>
+            <div id="secretKeyContainer" class="white-text" style="display:flex;flex-direction:row;width: 100%;justify-content:space-between;">
+                <h6 style="font-size:20px;margin-top:30px;margin-left:2px;">UIF link key</h6>
+                <p style="font-size:20px;margin-top:30px;margin-left:2px;" id="secretKeyParagraph"></p>
+            </div>
     </div>
 
     <script>
         $(document).ready(function() {
             var navigationSwitchLS = localStorage.getItem('NavigationSwitch');
             var gpsIntervalSwitchLS = localStorage.getItem('GPSIntervalSwitch');
+            $('#secretKeyParagraph').html(localStorage.getItem("SecretKey"));
             if(navigationSwitchLS == "ON"){
                 $('#navigationSwitch').prop('checked',true);
             }
