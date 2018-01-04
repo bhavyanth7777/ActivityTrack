@@ -305,6 +305,32 @@
                 if(checkIndex > -1){
                     startTime = checkedListFromLS[checkIndex]["started"];
                     var mainTaskId = checkedListFromLS[checkIndex]["mainTaskId"];
+                    //
+                    var mainTaskComment, subTaskComment;
+                    if(localStorage.getItem("ModalComments")){
+                                        var modalCommentsFromLS = localStorage.getItem("ModalComments");
+                                        modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
+                                        var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'mainTaskStart'+mainTaskId);
+                                        var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'start'+subTaskCode);
+                                        if(checkIndex > -1){
+                                            mainTaskComment = modalCommentsFromLS[checkIndex]["comments"];
+                                        }
+                                        else {
+                                            mainTaskComment = "";
+                                        }
+                                        if(checkIndexSubTask > -1){
+                                            subTaskComment = modalCommentsFromLS[checkIndexSubTask]["comments"];
+                                        }
+                                        else {
+                                            subTaskComment = "";
+                                        }
+
+                                    }
+                    else {
+                            mainTaskComment = "";
+                            subTaskComment = "";
+                        }
+
                     var mainTaskCheckIndex = checkedListFromLS.findIndex(i=> i.id === "mainTaskStart"+mainTaskId);
                     mainTaskStartTime = checkedListFromLS[mainTaskCheckIndex]["started"];
                     var mainTaskCheckEndIndex = checkedListFromLS.findIndex(i=> i.id === "xmainTaskEnd"+mainTaskId);
@@ -336,7 +362,7 @@
                         EquipmentGUID = localStorage.getItem("EquipmentGUID");
                         var subTaskIssueEquipmentGUID = $('#AssetIDText').val().trim();
                         var donotOperate = $("input[name='donotOperate']:checked").val();
-                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID+'&quot; SiteGUID=&quot;'+SiteGUID+'&quot; EquipmentGUID=&quot;'+EquipmentGUID+'&quot; SendTime=&quot;'+date+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID= &quot;'+EquipmentTypeID+'&quot; Comments="" EndDate=&quot;'+mainTaskEndTime+'&quot; StartDate=&quot;'+mainTaskStartTime+'&quot; TaskDesc= &quot;'+TaskDesc+'&quot; TaskCode=&quot;'+TaskCode+'&quot; WorkerGUID=&quot;'+WorkerGUID+'&quot;  LocationID=&quot;'+LocationID+'&quot; &gt;'+'&lt;WorkerSubTask EquipmentGUID=&quot;'+EquipmentGUID+'&quot; Comments="" EndDate= &quot;'+endTime+'&quot; StartDate= &quot;'+startTime+'&quot; SubTaskDesc= &quot;'+subTaskDesc+'&quot; SubTaskCode=&quot;'+subTaskCode+'&quot;&gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+subTaskIssueEquipmentGUID+'&quot; DoNotOperate=&quot;'+donotOperate+'&quot; IssueImage=&quot;'+camPIC+'&quot; Severity= &quot;'+sevierity+'&quot; IssueDesc= &quot;'+IssueDesc+'&quot; TimeStamp=&quot;'+date+'&quot;/&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                        var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID+'&quot; SiteGUID=&quot;'+SiteGUID+'&quot; EquipmentGUID=&quot;'+EquipmentGUID+'&quot; SendTime=&quot;'+date+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID= &quot;'+EquipmentTypeID+'&quot; Comments="'+mainTaskComment+'" EndDate=&quot;'+mainTaskEndTime+'&quot; StartDate=&quot;'+mainTaskStartTime+'&quot; TaskDesc= &quot;'+TaskDesc+'&quot; TaskCode=&quot;'+TaskCode+'&quot; WorkerGUID=&quot;'+WorkerGUID+'&quot;  LocationID=&quot;'+LocationID+'&quot; &gt;'+'&lt;WorkerSubTask EquipmentGUID=&quot;'+EquipmentGUID+'&quot; Comments="'+subTaskComment+'" EndDate= &quot;'+endTime+'&quot; StartDate= &quot;'+startTime+'&quot; SubTaskDesc= &quot;'+subTaskDesc+'&quot; SubTaskCode=&quot;'+subTaskCode+'&quot;&gt;'+'&lt;WorkerSubTaskIssue EquipmentGUID=&quot;'+subTaskIssueEquipmentGUID+'&quot; DoNotOperate=&quot;'+donotOperate+'&quot; IssueImage=&quot;'+camPIC+'&quot; Severity= &quot;'+sevierity+'&quot; IssueDesc= &quot;'+IssueDesc+'&quot; TimeStamp=&quot;'+date+'&quot;/&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
                         console.log("WORKER TASK - REPORT TASK");
                         console.log(SoaMessage);
                         var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
