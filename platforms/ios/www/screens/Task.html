@@ -176,10 +176,10 @@
                                 Collapse = Collapse + '<div class="collapsible-header">' +
                   '<div id="TaskListButton" style="margin-left:2.5em;">' +
                    '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
-                   '<i class="material-icons modal-trigger" id="taskModal'+$(this).find('TaskCode').text()+'" style="margin-left:10px;margin-top:5px;font-size:2rem;">event_note</i>'+
                    '<form style="display:flex;flex-direction:row">'+
                             '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
                             '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  data-TaskDesc="'+$(this).find('TaskDesc').text()+'" type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<i class="material-icons modal-trigger" id="taskModal'+$(this).find('TaskCode').text()+'" style="margin-left:10px;margin-top:5px;font-size:2rem;">event_note</i>'+
                     '</form>'+
                    '</div>' +
                    ' </div><div class="collapsible-body" style="margin-left:1em">';
@@ -198,8 +198,8 @@
                                                 '<form style="display:flex;flex-direction:row">'+
                                                 '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
                                                 '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
-                                                '</form>'+
                                                 '<i class="material-icons modal-trigger" id="subTaskModal'+$(this).find('SubTaskCode').text()+'" style="margin-left:10px;margin-top:3px;font-size:2rem;">event_note</i>'+
+                                                '</form>'+
                                             '</p>'
                                     });
 
