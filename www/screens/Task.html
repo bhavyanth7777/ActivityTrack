@@ -389,12 +389,30 @@
                                         var mainTaskOfSubTaskDesc = $('#start'+actualId).attr('data-TaskDesc').trim();
                                         var subTaskDesc = $('#start'+actualId).attr('data-SubTaskDesc').trim();
                                         console.log(mainTaskCodeOfSubTask);
+                                        /////////////////////////
+                                        var mainTaskComment;
+                                        if(localStorage.getItem("ModalComments")){
+                                                var modalCommentsFromLS = localStorage.getItem("ModalComments");
+                                                modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
+                                                var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'taskModal'+mainTaskCodeOfSubTask);
+                                                if(checkIndex > -1){
+                                                    mainTaskComment = modalCommentsFromLS[checkIndex]["comments"];
+                                                }
+                                                else {
+                                                    mainTaskComment = "";
+                                                }
+
+                                            }
+                                            else {
+                                                mainTaskComment = "";
+                                            }
+
                                         var mainTaskEquipmentTypeID = $('#mainTaskStart'+mainTaskCodeOfSubTask).attr('data-TaskEquipmentTypeID').trim();
                                         var checkIndex = checkedList.findIndex(i=> i.id === 'start'+actualId);
                                         var startedTimeFromList = checkedList[checkIndex]["started"];
                                         // mainTaskStartTime
                                         var mainTaskStartTime = localStorage.getItem("CurrentTaskStartDate");
-                                        var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID.trim()+'&quot; SiteGUID=&quot;'+SiteGUID.trim()+'&quot; EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; SendTime=&quot;'+commentSendTime+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID=&quot;'+mainTaskEquipmentTypeID.trim()+'&quot; Comments="" EndDate="" StartDate=&quot;'+mainTaskStartTime.trim()+'&quot; TaskDesc=&quot;'+mainTaskOfSubTaskDesc.trim()+'&quot; TaskCode=&quot;'+mainTaskCodeOfSubTask.trim()+'&quot; WorkerGUID= &quot;'+WorkerGUID.trim()+'&quot;  LocationID= &quot;'+LocationID.trim()+'&quot; &gt;'+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; Comments="'+commentSectionText.trim()+'" EndDate="" StartDate=&quot;'+startedTimeFromList+'&quot; SubTaskDesc=&quot;'+subTaskDesc.trim()+'&quot; SubTaskCode=&quot;'+actualId.trim()+'&quot;&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                                        var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID=&quot;'+WorkerGUID.trim()+'&quot; SiteGUID=&quot;'+SiteGUID.trim()+'&quot; EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; SendTime=&quot;'+commentSendTime+'&quot; &gt;'+'&lt;WorkerTask  EquipmentTypeID=&quot;'+mainTaskEquipmentTypeID.trim()+'&quot; Comments="'+mainTaskComment+'" EndDate="" StartDate=&quot;'+mainTaskStartTime.trim()+'&quot; TaskDesc=&quot;'+mainTaskOfSubTaskDesc.trim()+'&quot; TaskCode=&quot;'+mainTaskCodeOfSubTask.trim()+'&quot; WorkerGUID= &quot;'+WorkerGUID.trim()+'&quot;  LocationID= &quot;'+LocationID.trim()+'&quot; &gt;'+'&lt;WorkerSubTask  EquipmentGUID=&quot;'+EquipmentGUID.trim()+'&quot; Comments="'+commentSectionText.trim()+'" EndDate="" StartDate=&quot;'+startedTimeFromList+'&quot; SubTaskDesc=&quot;'+subTaskDesc.trim()+'&quot; SubTaskCode=&quot;'+actualId.trim()+'&quot;&gt;'+'&lt;/WorkerSubTask &gt;'+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;'+'</PackageXML>'+'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
                                         console.log("SUB TASK COMMENT");
                                         ajaxCall(soamessage1);
 
@@ -435,7 +453,7 @@
                                             if(localStorage.getItem("ModalComments")){
                                                 var modalCommentsFromLS = localStorage.getItem("ModalComments");
                                                 modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
-                                                var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'mainTaskStart'+mainTaskCodeOfSubTask);
+                                                var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'taskModal'+mainTaskCodeOfSubTask);
                                                 if(checkIndex > -1){
                                                     mainTaskComment = modalCommentsFromLS[checkIndex]["comments"];
                                                 }
@@ -447,6 +465,8 @@
                                             else {
                                                 mainTaskComment = "";
                                             }
+
+                                            console.log("Main task comment "+mainTaskComment);
                                             
                                             if(localStorage.getItem('CurrentTaskId')){
                                                 if(mainTaskCodeOfSubTask === localStorage.getItem('CurrentTaskId')){
@@ -497,8 +517,8 @@
                                                 if(localStorage.getItem("ModalComments")){
                                                     var modalCommentsFromLS = localStorage.getItem("ModalComments");
                                                     modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
-                                                    var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'mainTaskStart'+mainTaskCodeOfSubTask);
-                                                    var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'start'+taskCompleteTimeId[1]);
+                                                    var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'taskModal'+mainTaskCodeOfSubTask);
+                                                    var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'subTaskModal'+taskCompleteTimeId[1]);
                                                     if(checkIndex > -1){
                                                         mainTaskComment = modalCommentsFromLS[checkIndex]["comments"];
                                                     }
@@ -518,6 +538,9 @@
                                                     mainTaskComment = "";
                                                     subTaskComment = "";
                                                 }
+
+                                                console.log("Main task comment "+mainTaskComment);
+                                                console.log("Sub task comment "+subTaskComment);
 
 
                                                 // get start time from checklist
@@ -568,7 +591,7 @@
                                             if(localStorage.getItem("ModalComments")){
                                                 var modalCommentsFromLS = localStorage.getItem("ModalComments");
                                                 modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
-                                                var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'mainTaskStart'+mainTaskCompleteTimeId[1]);
+                                                var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'taskModal'+mainTaskCompleteTimeId[1]);
                                                 if(checkIndex > -1){
                                                     mainCommentsToSend = modalCommentsFromLS[checkIndex]["comments"];
                                                 }
@@ -580,6 +603,7 @@
                                             else {
                                                 mainCommentsToSend = "";
                                             }
+                                            console.log("Main task comment "+mainCommentsToSend);
                                             if($('#mainTaskStart'+mainTaskCompleteTimeId[1]).is(":checked")){
                                                 var mainTaskDateStart = new Date().toString();
                                                 mainTaskDateStart = formatDate(mainTaskDateStart).trim();
@@ -621,7 +645,7 @@
                                                         if(localStorage.getItem("ModalComments")){
                                                             var modalCommentsFromLS = localStorage.getItem("ModalComments");
                                                             modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
-                                                            var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'start'+subTaskCodeFromList);
+                                                            var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'subTaskModal'+subTaskCodeFromList);
                                                             if(checkIndexSubTask > -1){
                                                                 subTaskCommentsToSend = modalCommentsFromLS[checkIndexSubTask]["comments"].trim();
                                                             }
@@ -633,6 +657,7 @@
                                                         else {
                                                             subTaskCommentsToSend = "";
                                                         }
+                                                        console.log("Sub task comment "+subTaskCommentsToSend);
                                                         var subTaskDesc = $('#start'+subTaskCodeFromList).attr('data-SubTaskDesc').trim();
                                                         allSubTasksString = allSubTasksString+'&lt;WorkerSubTask  EquipmentGUID="'+EquipmentGUID.trim()+'" Comments="'+subTaskCommentsToSend+'" EndDate="'+endedTime+'" StartDate="'+startedTime+'" SubTaskDesc="'+subTaskDesc.trim()+'" SubTaskCode="'+subTaskCodeFromList.trim()+'" &gt;'+'&lt;/WorkerSubTask &gt;'
                                                         // check all the items

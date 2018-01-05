@@ -310,8 +310,8 @@
                     if(localStorage.getItem("ModalComments")){
                                         var modalCommentsFromLS = localStorage.getItem("ModalComments");
                                         modalCommentsFromLS = JSON.parse(modalCommentsFromLS);
-                                        var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'mainTaskStart'+mainTaskId);
-                                        var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'start'+subTaskCode);
+                                        var checkIndex = modalCommentsFromLS.findIndex(i=> i.id === 'taskModal'+mainTaskId);
+                                        var checkIndexSubTask = modalCommentsFromLS.findIndex(i=> i.id === 'subTaskModal'+subTaskCode);
                                         if(checkIndex > -1){
                                             mainTaskComment = modalCommentsFromLS[checkIndex]["comments"];
                                         }
@@ -331,6 +331,8 @@
                             subTaskComment = "";
                         }
 
+                    console.log("Main task comment "+mainTaskComment);
+                    console.log("Sub task comment "+subTaskComment);
                     var mainTaskCheckIndex = checkedListFromLS.findIndex(i=> i.id === "mainTaskStart"+mainTaskId);
                     mainTaskStartTime = checkedListFromLS[mainTaskCheckIndex]["started"];
                     var mainTaskCheckEndIndex = checkedListFromLS.findIndex(i=> i.id === "xmainTaskEnd"+mainTaskId);
