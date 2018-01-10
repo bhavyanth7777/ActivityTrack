@@ -560,27 +560,35 @@
                                             }
                                         }
                                         if((this.id).indexOf("mainTaskStart") !== -1){
-                                            if(localStorage.getItem("CurrentTaskEndDate")){
+                                            // check if the previous task has been ended or not.
+                                            if(localStorage.getItem("CurrentTaskId") === localStorage.getItem("CurrentTaskEndedId")){
+                                                // current task ended
+                                                if(localStorage.getItem("CurrentTaskEndDate")){
                                                 localStorage.removeItem("CurrentTaskEndDate");
-                                            }
-                                            console.log("mainTaskStart "+this.id);
-                                            var mainTaskStartTimeId = (this.id).split("mainTaskStart");
-                                            var mainTaskDateStart = new Date().toString();
-                                            mainTaskDateStart = formatDate(mainTaskDateStart).trim();
-                                            var mainTaskEquipmentTypeID = $('#'+this.id).attr('data-TaskEquipmentTypeID').trim();
-                                            var mainTaskDesc = $('#'+this.id).attr('data-TaskDesc').trim();
-                                            $('#mainTaskTimeId'+mainTaskStartTimeId[1]).text(mainTaskDateStart);
-                                            checkedList.push({id:this.id, started:mainTaskDateStart});
-                                            localStorage.setItem("checkedList",JSON.stringify(checkedList));
-                                            localStorage.setItem("CurrentTaskStartDate",mainTaskDateStart);
-                                            localStorage.setItem("CurrentTaskId",mainTaskStartTimeId[1]);
-                                            console.log("Data-TaskDesc "+$('#'+this.id).attr('data-TaskDesc'));
-                                            localStorage.setItem("CurrentTaskDesc",$('#'+this.id).attr('data-TaskDesc'));
+                                                }
+                                                console.log("mainTaskStart "+this.id);
+                                                var mainTaskStartTimeId = (this.id).split("mainTaskStart");
+                                                var mainTaskDateStart = new Date().toString();
+                                                mainTaskDateStart = formatDate(mainTaskDateStart).trim();
+                                                var mainTaskEquipmentTypeID = $('#'+this.id).attr('data-TaskEquipmentTypeID').trim();
+                                                var mainTaskDesc = $('#'+this.id).attr('data-TaskDesc').trim();
+                                                $('#mainTaskTimeId'+mainTaskStartTimeId[1]).text(mainTaskDateStart);
+                                                checkedList.push({id:this.id, started:mainTaskDateStart});
+                                                localStorage.setItem("checkedList",JSON.stringify(checkedList));
+                                                localStorage.setItem("CurrentTaskStartDate",mainTaskDateStart);
+                                                localStorage.setItem("CurrentTaskId",mainTaskStartTimeId[1]);
+                                                console.log("Data-TaskDesc "+$('#'+this.id).attr('data-TaskDesc'));
+                                                localStorage.setItem("CurrentTaskDesc",$('#'+this.id).attr('data-TaskDesc'));
 
-                                            var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID="'+WorkerGUID.trim()+'" SiteGUID="'+SiteGUID.trim()+'" EquipmentGUID="'+EquipmentGUID.trim()+'" SendTime="'+mainTaskDateStart.trim()+'" &gt;'+'&lt;WorkerTask  EquipmentTypeID="'+mainTaskEquipmentTypeID.trim()+'" Comments="" EndDate="" StartDate="'+mainTaskDateStart.trim()+'" TaskDesc="'+mainTaskDesc.trim()+'" TaskCode="'+mainTaskStartTimeId[1].trim()+'" WorkerGUID="'+WorkerGUID.trim()+'"  LocationID="'+LocationID.trim()+'" &gt;' +'&lt;/WorkerTask &gt;' +'&lt;/Metrics &gt;' +'</PackageXML>' +'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
-                                            //main task is started
-                                            console.log("MAIN TASK STARTED");
-                                            ajaxCall(soamessage1);
+                                                var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID="'+WorkerGUID.trim()+'" SiteGUID="'+SiteGUID.trim()+'" EquipmentGUID="'+EquipmentGUID.trim()+'" SendTime="'+mainTaskDateStart.trim()+'" &gt;'+'&lt;WorkerTask  EquipmentTypeID="'+mainTaskEquipmentTypeID.trim()+'" Comments="" EndDate="" StartDate="'+mainTaskDateStart.trim()+'" TaskDesc="'+mainTaskDesc.trim()+'" TaskCode="'+mainTaskStartTimeId[1].trim()+'" WorkerGUID="'+WorkerGUID.trim()+'"  LocationID="'+LocationID.trim()+'" &gt;' +'&lt;/WorkerTask &gt;' +'&lt;/Metrics &gt;' +'</PackageXML>' +'</SubmitTracking>'+'</soap12:Body>'+'</soap12:Envelope>';
+                                                //main task is started
+                                                console.log("MAIN TASK STARTED");
+                                                ajaxCall(soamessage1);
+                                                }
+                                            else {
+                                                alert("A task is in progress, please complete it first");
+                                            }
+                                            
                                         }
 
                                         if((this.id).indexOf("xmainTaskEnd") !== -1){
@@ -624,6 +632,7 @@
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
                                                 var currentTaskStartDate = localStorage.getItem('CurrentTaskStartDate');
                                                 localStorage.setItem("CurrentTaskEndDate",mainTaskDateComplete);
+                                                localStorage.setItem("CurrentTaskEndedId",mainTaskCompleteTimeId[1]);
                                                 //main task is ended
                                                 var allSubTasksString = '';
                                                 var subTasksOfTaskList = taskPackage[mainTaskCompleteTimeId[1]];
