@@ -169,6 +169,7 @@
                             localStorage.setItem("SiteGUID",SiteGUID);
                             var EquipmentName = $(xml).find('NewGUID EquipmentName').text();
                             var EquipmentTypeID = $(xml).find('NewGUID EquipmentTypeID').text();
+                            $('#equipmentName').html(EquipmentName);
                     
                             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
                             db.transaction(function (tx) {
