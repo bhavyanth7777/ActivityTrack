@@ -186,7 +186,8 @@
                 $('#dateTime').html(currentDateTime);
             },1000);
 
-
+            var equipmentName = localStorage.getItem("EquipmentName");
+            $('#equipmentName').html(equipmentName);
 
             $('#LogoutMenu').click(function () {
                 if(localStorage.getItem("CurrentTaskStartDate") && !localStorage.getItem("CurrentTaskEndDate")){
