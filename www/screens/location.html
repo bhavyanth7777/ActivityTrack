@@ -57,6 +57,26 @@
 
     <script>
         var db = null;
+        var networkState = navigator.connection.type;
+
+            function checkConnection() {
+                    console.log("Connection log called");
+                    var networkState = navigator.connection.type;
+                
+                    var states = {};
+                    states[Connection.UNKNOWN]  = 'Unknown connection';
+                    states[Connection.ETHERNET] = 'Ethernet connection';
+                    states[Connection.WIFI]     = 'WiFi connection';
+                    states[Connection.CELL_2G]  = 'Cell 2G connection';
+                    states[Connection.CELL_3G]  = 'Cell 3G connection';
+                    states[Connection.CELL_4G]  = 'Cell 4G connection';
+                    states[Connection.CELL]     = 'Cell generic connection';
+                    states[Connection.NONE]     = 'No network connection';
+                
+                }
+
+                checkConnection();
+
         setTimeout(function () {
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
@@ -65,7 +85,26 @@
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
                     $('#LoderImage').show();
                     $.support.cors = true;
-                    $.ajax({
+                    if (networkState == Connection.NONE) {
+                        LocationString = localStorage.getItem("LocationString");
+                        $('#LocationContainer').html(LocationString);
+                            var alreadySelectedLocationID = localStorage.getItem("locationID");
+                            if(alreadySelectedLocationID){
+                                $('#location'+alreadySelectedLocationID).css("color","yellow");
+                                $('#location'+alreadySelectedLocationID).css("font-weight","bold");
+                            }
+                            $('#LocationContainer').find('h6').click(function () {
+                                LocationID =  $(this).attr('data-LocationID');
+                                LocationName = $(this).text();
+                                window.location.href = '#/home';
+                                localStorage.setItem("locationID",LocationID);
+                                localStorage.setItem("locationName",LocationName);
+                            });
+                    }
+
+                    else{
+
+                        $.ajax({
                         type: "POST",
                         url: url,
                         jsonpCallback: "MyCallbackDED",
@@ -104,6 +143,8 @@
                         }
 
                     });
+                    }
+                    
 
                 });
             });

@@ -118,6 +118,8 @@
 
         }, 500);
 
+        var networkState = navigator.connection.type;
+
         function checkConnection() {
                 console.log("Connection log called");
                 var networkState = navigator.connection.type;
@@ -135,6 +137,27 @@
             }
 
             checkConnection();
+
+            if (networkState !== Connection.NONE) {
+                //online
+                $('#connectivityIndicator').html("ONLINE");
+                $('#connectivityIndicator').css("color","blue");
+            }
+
+            
+            function onOffline() {
+                $('#connectivityIndicator').html("OFFLINE");
+                $('#connectivityIndicator').css("color","red");
+                
+            }
+            function onOnline() {
+                $('#connectivityIndicator').html("ONLINE");
+                $('#connectivityIndicator').css("color","blue");
+            }
+
+            document.addEventListener("offline", onOffline, false);
+
+            document.addEventListener("online", onOnline, false);
             
             // function onOffline() {
             //     alert("Offline");

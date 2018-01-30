@@ -110,6 +110,26 @@
             db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
             db.transaction(function (tx) {
                 WorkerType = localStorage.getItem("WorkerType");
+                var networkState = navigator.connection.type;
+
+            function checkConnection() {
+                    console.log("Connection log called");
+                    var networkState = navigator.connection.type;
+                
+                    var states = {};
+                    states[Connection.UNKNOWN]  = 'Unknown connection';
+                    states[Connection.ETHERNET] = 'Ethernet connection';
+                    states[Connection.WIFI]     = 'WiFi connection';
+                    states[Connection.CELL_2G]  = 'Cell 2G connection';
+                    states[Connection.CELL_3G]  = 'Cell 3G connection';
+                    states[Connection.CELL_4G]  = 'Cell 4G connection';
+                    states[Connection.CELL]     = 'Cell generic connection';
+                    states[Connection.NONE]     = 'No network connection';
+                
+                }
+
+                checkConnection();
+
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
 
                  
@@ -121,6 +141,17 @@
 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
 $('#LoderImage').show();
                     $.support.cors = true;
+                    if (networkState == Connection.NONE) {
+                        mainArray = localStorage.getItem("MainArray");
+                        mainArray = JSON.parse(mainArray);
+                    $('.ActivityListButton div h6').click(function () {
+                        ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
+                                $('#ActivityTypeHiddenTextBox').val($(this).text());
+                                localStorage.setItem('ActivitySelection',$(this).text());
+                                window.location.href = "#/ActivityList";
+                            });
+                }
+                else {
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -136,7 +167,6 @@ $('#LoderImage').show();
                                 if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
                                     main.push($(this).find('BaseCategoryID').text());
                                 }                              
-                                
                             });
                           
                             var mainArray = [];
@@ -159,6 +189,7 @@ $('#LoderImage').show();
                                     }
                                 });
                                 mainArray.push(array);
+                                localStorage.setItem("MainArray",JSON.stringify(mainArray));
                             })
                             $('.ActivityListButton div h6').click(function () {
                                 ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
@@ -172,11 +203,12 @@ $('#LoderImage').show();
                             $('#LoderImage').hide();
                         },
                         error: function (msg) {
-                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                            alert("Failed in activity or delay: " + msg.status + ": " + msg.statusText);
                         }
 
                     });
-
+                }
+                    
                 });
             });
         }, 500);
