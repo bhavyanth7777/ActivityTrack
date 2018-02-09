@@ -140,19 +140,16 @@
 
             if (networkState !== Connection.NONE) {
                 //online
-                $('#connectivityIndicator').html("ONLINE");
-                $('#connectivityIndicator').css("color","blue");
+                $('#connectivityIndicator').css("background","green");
             }
 
             
             function onOffline() {
-                $('#connectivityIndicator').html("OFFLINE");
-                $('#connectivityIndicator').css("color","red");
+                $('#connectivityIndicator').css("background","red");
                 
             }
             function onOnline() {
-                $('#connectivityIndicator').html("ONLINE");
-                $('#connectivityIndicator').css("color","blue");
+                $('#connectivityIndicator').css("background","green");
             }
 
             document.addEventListener("offline", onOffline, false);
