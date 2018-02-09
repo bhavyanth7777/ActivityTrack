@@ -86,7 +86,7 @@
                 <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker<span style="margin-left:10px;" id="dateTime"></span><span style="margin-left:10px;" id="equipmentName"></span></a>
                 <div style="display:flex;flex-direction:row;">
                     <div style="display:flex;align-items:center;justify-content:center;margin-right:20px;margin-top:18px;width:30px;height:30px;border-radius:50%;" id="connectivityIndicator"><span style="color:white;font-size:15px;">S</span></div>
-                    <div style="display:flex;align-items:center;justify-content:center;margin-right:65px;margin-top:18px;width:30px;height:30px;border-radius:50%;background:yellow" id="gpsIndicator"><span style="color:white;font-size:15px;">G</span></div>
+                    <div style="display:flex;align-items:center;justify-content:center;margin-right:65px;margin-top:18px;width:30px;height:30px;border-radius:50%;" id="gpsIndicator"><span style="color:white;font-size:15px;">G</span></div>
                     <a href="#/receivedMessages"><i class="material-icons medium" id="unreadIcon">markunread</i></a>
                     <span id="unreadMessageCount" style="font-size:18px;margin-left:2px;color:white;margin-right:10px"></span>
                 </div>
@@ -178,8 +178,35 @@
             function padValue(value) {
                 return (value < 10) ? "0" + value : value;
             }
+
+        function onGeolocationSuccess(position){
+            // get all required data from position
+                console.log("position.coords.accuracy");
+                console.log(position.coords.accuracy);
+                if(position.coords.accuracy <=50){
+                    $('#gpsIndicator').css("background","green");
+                }
+                else if (position.coords.accuracy>50 && position.coords.accuracy <= 100){
+                    $('#gpsIndicator').css("background","orange");
+                }
+                else {
+                    $('#gpsIndicator').css("background","red");
+                }
+
+            }
+        function onGeolocationError(error){
+            $('#gpsIndicator').css("background","red");
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
+        }
        
         $(document).ready(function () {
+
+            navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
 
             // connectivity Indicator
 
