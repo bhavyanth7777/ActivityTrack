@@ -682,6 +682,11 @@
                                                 }
                                                 localStorage.setItem("checkedList",JSON.stringify(checkedList));
 
+                                                
+                                                var currentMainTaskTimeStartedTime = localStorage.getItem("currentMainTaskTimeStartedTime");
+                                                if(localStorage.getItem("CurrentTaskId") !== 'mainTaskStart'+mainTaskCompleteTimeId[1]){
+                                                    currentTaskStartDate = currentMainTaskTimeStartedTime;
+                                                }
                                                 var soamessage1 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+'<soap12:Body>'+'<SubmitTracking xmlns="https://www.SmarterASP.NET/UIF">'+'<PackageXML>'+'&lt;Metrics WorkerGUID="'+WorkerGUID.trim()+'" SiteGUID="'+SiteGUID.trim()+'" EquipmentGUID="'+EquipmentGUID.trim()+'" SendTime="'+mainTaskDateComplete.trim()+'" &gt;'+'&lt;WorkerTask  EquipmentTypeID="'+mainTaskEquipmentTypeID.trim()+'" Comments="'+mainCommentsToSend+'" EndDate="'+mainTaskDateComplete.trim()+'" StartDate="'+currentTaskStartDate.trim()+'" TaskDesc="'+mainTaskDesc.trim()+'" TaskCode="'+mainTaskCompleteTimeId[1].trim()+'" WorkerGUID="'+WorkerGUID.trim()+'"  LocationID="'+LocationID.trim()+'" &gt;'+allSubTasksString+'&lt;/WorkerTask &gt;'+'&lt;/Metrics &gt;' +'</PackageXML>' +'</SubmitTracking>' +'</soap12:Body>'+'</soap12:Envelope>';
                                             //main task is started
                                             console.log("MAIN TASK ENDED");
@@ -730,6 +735,11 @@
                                             checkedList.splice(checkIndex,1);
                                             var mainTaskCompleteTimeIdRemove = (this.id).split("mainTaskEnd");
                                             $('#xmainTaskEnd'+mainTaskCompleteTimeIdRemove[1]).prop('checked',false);
+                                            var checkIndex = checkedList.findIndex(i=> i.id === 'mainTaskStart'+mainTaskCompleteTimeIdRemove[1]);
+                                            if(checkIndex > -1){
+                                                var currentMainTaskTimeStartedTime = checkedList[checkIndex]["started"];
+                                                localStorage.setItem("currentMainTaskTimeStartedTime",currentMainTaskTimeStartedTime);
+                                            }
                                             $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeIdRemove[1]).text("");
                                             $('#task'+mainTaskCompleteTimeIdRemove[1]).css("color","white");
                                         }
