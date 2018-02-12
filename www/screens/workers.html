@@ -60,6 +60,8 @@
 
         function makeLocationCall(ClientGUID, SiteGUID){
             console.log("makeLocationCall");
+            var offlineCalls = [];
+            localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                     var SoaMessageLocation = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocations xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID></GetLocations></soap12:Body></soap12:Envelope>';
                     var urlLocation = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
                     $('#LoderImage').show();
@@ -200,9 +202,6 @@
                                 });
                                 mainArray.push(array);
                             })
-                            console.log("MAIN ARRAY INITIAL");
-                            console.log(mainArray);
-                            localStorage.setItem("MainArray",JSON.stringify(mainArray));
                         },
                         complete: function () {
                             console.log("Complete");
@@ -244,7 +243,25 @@
                 return (value < 10) ? "0" + value : value;
             }
 
-            function onGeolocationSuccess(position){
+            function checkConnection() {
+                console.log("Connection log called");
+                var networkState = navigator.connection.type;
+            
+                var states = {};
+                states[Connection.UNKNOWN]  = 'Unknown connection';
+                states[Connection.ETHERNET] = 'Ethernet connection';
+                states[Connection.WIFI]     = 'WiFi connection';
+                states[Connection.CELL_2G]  = 'Cell 2G connection';
+                states[Connection.CELL_3G]  = 'Cell 3G connection';
+                states[Connection.CELL_4G]  = 'Cell 4G connection';
+                states[Connection.CELL]     = 'Cell generic connection';
+                states[Connection.NONE]     = 'No network connection';
+            
+            }
+
+            checkConnection();
+
+            function onGeolocationSuccess(position) {
             // get all required data from position
             var dateToSend = new Date().toString();
             dateToSend = formatDate(dateToSend);
@@ -259,48 +276,57 @@
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                     $('#LoderImage').show();
                     $.support.cors = true;
-                    $.ajax({
-                        type: "POST",
-                        url: url2,
-                        jsonpCallback: "MyCallbackDED",
-                        dataType: "xml",
-                        processData: false,
-                        contentType: "text/xml; charset=\"utf-8\"",
-                        data: SoaMessage2,
-                        success: function (msg) {
-                            var messageArray;
-                            if(localStorage.getItem('MessageArray')){
-                                messageArray = localStorage.getItem('MessageArray');
-                                messageArray = JSON.parse(messageArray);
-                            }
-                            else {
-                                messageArray =[];
-                            }
-                            var messageArrayLength = messageArray.length;
-                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
-                            console.log(xml2);
-                            if($(xml2).find('Container SUCCESS')){
-                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
-                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
-                                });
-                                if(messageArray.length!==messageArrayLength){
-                                    alert("New Message");
-                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
-                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
-                                    $('#unreadIcon').css("color","yellow");
+                    var networkState = navigator.connection.type;
+                    if (networkState !== Connection.NONE) {
+                        $.ajax({
+                            type: "POST",
+                            url: url2,
+                            jsonpCallback: "MyCallbackDED",
+                            dataType: "xml",
+                            processData: false,
+                            contentType: "text/xml; charset=\"utf-8\"",
+                            data: SoaMessage2,
+                            success: function (msg) {
+                                var messageArray;
+                                if(localStorage.getItem('MessageArray')){
+                                    messageArray = localStorage.getItem('MessageArray');
+                                    messageArray = JSON.parse(messageArray);
                                 }
+                                else {
+                                    messageArray =[];
+                                }
+                                var messageArrayLength = messageArray.length;
+                                var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                                console.log(xml2);
+                                if($(xml2).find('Container SUCCESS')){
+                                    $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                            messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                    });
+                                    if(messageArray.length!==messageArrayLength){
+                                        alert("New Message");
+                                        localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                        $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                        $('#unreadIcon').css("color","yellow");
+                                    }
+                                }
+                                else {
+                                    alert($(msg).text());
+                                }
+                            },
+                            complete:function(){
+                                $('#LoderImage').hide();
+                            },
+                            error: function (msg) {
+                                alert("Failed: " + msg.status + ": " + msg.statusText);
                             }
-                            else {
-                                alert($(msg).text());
-                            }
-                        },
-                        complete:function(){
-                            $('#LoderImage').hide();
-                        },
-                        error: function (msg) {
-                            alert("Failed: " + msg.status + ": " + msg.statusText);
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        var offlineCalls = localStorage.getItem("OfflineCalls");
+                        offlineCalls = JSON.parse(offlineCalls);
+                        offlineCalls.push(SoaMessage2);
+                        localStorage.setItem("OfflineCalls", JSON.stringify(offlineCalls));
+                    }
         }
         function onGeolocationError(error){
             if(error.code == 1){

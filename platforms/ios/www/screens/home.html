@@ -150,6 +150,39 @@
             }
             function onOnline() {
                 $('#connectivityIndicator').css("background","green");
+                var offlineCalls = localStorage.getItem("OfflineCalls");
+                offlineCalls = JSON.parse(offlineCalls);
+                var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                if(offlineCalls.length > 0){
+                    for (var i=0; i<offlineCalls.length; i++){
+                        var soamessage = offlineCalls[i];
+                        $.ajax({
+                                type: "POST",
+                                url: url,
+                                jsonpCallback: "MyCallbackDED",
+                                dataType: "xml",
+                                processData: false,
+                                contentType: "text/xml; charset=\"utf-8\"",
+                                data: soamessage,
+                                success: function (msg) {
+                                    var xml = $.parseXML($(msg).text());
+                                    console.log("IN SUCCESS MESSAGE ");
+                                    if($(xml).find('SUCCESS')){
+                                        // remove that particular item from the array.
+                                        offlineCalls.splice(i, 1);
+                                        localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
+                                    }
+                                    else {
+                                        alert($(msg).text());
+                                    }
+                                },
+                                error: function (msg) {
+                                    alert("Failed try again: " + msg.status + ": " + msg.statusText);
+                                }
+                        });
+                    }
+                }
+                
             }
 
             document.addEventListener("offline", onOffline, false);

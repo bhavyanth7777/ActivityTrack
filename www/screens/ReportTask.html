@@ -294,6 +294,26 @@
             function padValue(value) {
                 return (value < 10) ? "0" + value : value;
             }
+
+
+            function checkConnection() {
+                console.log("Connection log called");
+                var networkState = navigator.connection.type;
+            
+                var states = {};
+                states[Connection.UNKNOWN]  = 'Unknown connection';
+                states[Connection.ETHERNET] = 'Ethernet connection';
+                states[Connection.WIFI]     = 'WiFi connection';
+                states[Connection.CELL_2G]  = 'Cell 2G connection';
+                states[Connection.CELL_3G]  = 'Cell 3G connection';
+                states[Connection.CELL_4G]  = 'Cell 4G connection';
+                states[Connection.CELL]     = 'Cell generic connection';
+                states[Connection.NONE]     = 'No network connection';
+            
+            }
+
+            checkConnection();
+
             $('#DoneButton').click(function () {
                 var checkedListFromLS = localStorage.getItem("checkedList");
                 var startTime, endTime, mainTaskStartTime, mainTaskEndTime;
@@ -368,46 +388,55 @@
                         console.log("WORKER TASK - REPORT TASK");
                         console.log(SoaMessage);
                         var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            jsonpCallback: "MyCallbackDED",
-                            dataType: "xml",
-                            processData: false,
-                            contentType: "text/xml; charset=\"utf-8\"",
-                            data: SoaMessage,
-                            success: function (msg) {
-                                window.location.href = '#/Task';
-                                var xml = $.parseXML($(msg).text());
-                                console.log("IN SUCCESS MESSAGE ");
-                                if($(xml).find('SUCCESS')){
-                                    console.log(xml);
+                        var networkState = navigator.connection.type;
+                        if (networkState !== Connection.NONE) {
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                jsonpCallback: "MyCallbackDED",
+                                dataType: "xml",
+                                processData: false,
+                                contentType: "text/xml; charset=\"utf-8\"",
+                                data: SoaMessage,
+                                success: function (msg) {
+                                    window.location.href = '#/Task';
+                                    var xml = $.parseXML($(msg).text());
+                                    console.log("IN SUCCESS MESSAGE ");
+                                    if($(xml).find('SUCCESS')){
+                                        console.log(xml);
+                                    }
+                                    else {
+                                        alert($(msg).text());
+                                    }
+                                    // var taskCompleted = localStorage.getItem('SubTaskCode');
+                                    // console.log("taskCompleted "+taskCompleted);
+                                    // var taskCompletedList = localStorage.getItem('TaskCompletedList');
+                                    // console.log("taskCompletedList NOT parsed");
+                                    // console.log(taskCompletedList);
+                                    // if(taskCompletedList){
+                                    //     console.log("In if");
+                                    //     taskCompletedList = JSON.parse(taskCompletedList);
+                                    //     console.log("taskCompletedList parsed");
+                                    //     console.log(taskCompletedList);
+                                    //     taskCompletedList.push(taskCompleted);
+                                    //     localStorage.setItem("TaskCompletedList",JSON.stringify(taskCompletedList));
+                                    // }
+                                    // else {
+                                    //     console.log("In else");
+                                    //     localStorage.setItem("TaskCompletedList",JSON.stringify([taskCompleted]));
+                                    // }
+                                },
+                                error: function (msg) {
+                                    alert("Failed try again: " + msg.status + ": " + msg.statusText);
                                 }
-                                else {
-                                    alert($(msg).text());
-                                }
-                                // var taskCompleted = localStorage.getItem('SubTaskCode');
-                                // console.log("taskCompleted "+taskCompleted);
-                                // var taskCompletedList = localStorage.getItem('TaskCompletedList');
-                                // console.log("taskCompletedList NOT parsed");
-                                // console.log(taskCompletedList);
-                                // if(taskCompletedList){
-                                //     console.log("In if");
-                                //     taskCompletedList = JSON.parse(taskCompletedList);
-                                //     console.log("taskCompletedList parsed");
-                                //     console.log(taskCompletedList);
-                                //     taskCompletedList.push(taskCompleted);
-                                //     localStorage.setItem("TaskCompletedList",JSON.stringify(taskCompletedList));
-                                // }
-                                // else {
-                                //     console.log("In else");
-                                //     localStorage.setItem("TaskCompletedList",JSON.stringify([taskCompleted]));
-                                // }
-                            },
-                            error: function (msg) {
-                                alert("Failed try again: " + msg.status + ": " + msg.statusText);
-                            }
-                        });
+                            });
+                        }
+                        else {
+                            var offlineCalls = localStorage.getItem("OfflineCalls");
+                            offlineCalls = JSON.parse(offlineCalls);
+                            offlineCalls.push(SoaMessage);
+                            localStorage.setItem("OfflineCalls", JSON.stringify(offlineCalls));
+                        }
 
                     });
                 });
