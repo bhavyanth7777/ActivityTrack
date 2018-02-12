@@ -717,7 +717,6 @@
                                             if(checkIndex > -1){
                                                 var currentMainTaskTimeStartedTime = checkedList[checkIndex]["started"];
                                                 localStorage.setItem("currentMainTaskTimeStartedTime",currentMainTaskTimeStartedTime);
-                                                localStorage.setItem("CurrentTaskId",mainTaskCompleteTimeIdRemove[1]);
                                                 localStorage.setItem("CurrentTaskEndedId", mainTaskCompleteTimeIdRemove[1]);
                                             }
                                             $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeIdRemove[1]).text("");
@@ -1275,6 +1274,12 @@
 
                                                 
                                                 var currentMainTaskTimeStartedTime = localStorage.getItem("currentMainTaskTimeStartedTime");
+                                                console.log("currentMainTaskTimeStartedTime");
+                                                console.log(currentMainTaskTimeStartedTime);
+                                                console.log("CurrentTaskId");
+                                                console.log(localStorage.getItem("CurrentTaskId"));
+                                                console.log("mainTaskCompleteTimeId");
+                                                console.log(mainTaskCompleteTimeId[1]);
                                                 if(localStorage.getItem("CurrentTaskId") !== mainTaskCompleteTimeId[1]){
                                                     currentTaskStartDate = currentMainTaskTimeStartedTime;
                                                 }
@@ -1329,8 +1334,9 @@
                                             var checkIndex = checkedList.findIndex(i=> i.id === 'mainTaskStart'+mainTaskCompleteTimeIdRemove[1]);
                                             if(checkIndex > -1){
                                                 var currentMainTaskTimeStartedTime = checkedList[checkIndex]["started"];
+                                                console.log("currentMainTaskTimeStartedTime");
+                                                console.log(currentMainTaskTimeStartedTime);
                                                 localStorage.setItem("currentMainTaskTimeStartedTime",currentMainTaskTimeStartedTime);
-                                                localStorage.setItem("CurrentTaskId",mainTaskCompleteTimeIdRemove[1]);
                                                 localStorage.setItem("CurrentTaskEndedId", mainTaskCompleteTimeIdRemove[1]);
                                             }
                                             $('#xmainTaskCompleteTimeId'+mainTaskCompleteTimeIdRemove[1]).text("");
