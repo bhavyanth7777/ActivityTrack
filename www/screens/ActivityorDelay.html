@@ -137,19 +137,50 @@
                     var delay = {};
                     console.log("CLIENT GUID "+res.rows.item(0).ClientGUID);
                     console.log("WORKERTYPE "+ WorkerType);
-;                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><equipmentOrWorkerTypeID>' + WorkerType + '</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
-var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
-$('#LoderImage').show();
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><equipmentOrWorkerTypeID>' + WorkerType + '</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
                     $.support.cors = true;
                     if (networkState == Connection.NONE) {
-                        mainArray = localStorage.getItem("MainArray");
-                        mainArray = JSON.parse(mainArray);
-                    $('.ActivityListButton div h6').click(function () {
-                        ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
+                        var ActivitiesText = localStorage.getItem("ActivitiesText");
+                        var xml = $.parseXML(ActivitiesText);
+                        $(xml).find('ActivityPackage Activity').each(function () {
+                               
+                                if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
+                                    main.push($(this).find('BaseCategoryID').text());
+                                }                              
+                            });
+
+                            var mainArray = [];
+                            var array = []
+                            $.each(main, function (index, item) {
+                                 array  = [];
+                                $(xml).find('ActivityPackage Activity').each(function () {
+                                    var obj = {};
+                                    if ($(this).find('BaseCategoryID').text() == item) {
+                                       // main.push($(this).find('BaseCategoryID').text());
+                                       if($(this).find('EquipmentOrWorkerTypeID').text() == WorkerType){
+                                        obj.CategoryID = $(this).find('CategoryID').text();
+                                        obj.CategoryName = $(this).find('CategoryName').text();
+                                        obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                        obj.ParentID = $(this).find('ParentID').text();
+                                       }
+                                    }
+                                    if (!$.isEmptyObject(obj)) {
+                                        array.push(obj)
+                                    }
+                                });
+                                mainArray.push(array);
+                                localStorage.setItem("MainArray",JSON.stringify(mainArray));
+                            })
+                            $('.ActivityListButton div h6').click(function () {
+                                console.log(mainArray);
+                                ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
                                 $('#ActivityTypeHiddenTextBox').val($(this).text());
                                 localStorage.setItem('ActivitySelection',$(this).text());
                                 window.location.href = "#/ActivityList";
                             });
+
+
                 }
                 else {
                     $.ajax({
@@ -192,6 +223,7 @@ $('#LoderImage').show();
                                 localStorage.setItem("MainArray",JSON.stringify(mainArray));
                             })
                             $('.ActivityListButton div h6').click(function () {
+                                console.log(mainArray);
                                 ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
                                 $('#ActivityTypeHiddenTextBox').val($(this).text());
                                 localStorage.setItem('ActivitySelection',$(this).text());
@@ -200,7 +232,7 @@ $('#LoderImage').show();
 
                         },
                         complete: function () {
-                            $('#LoderImage').hide();
+                            console.log("Complete");
                         },
                         error: function (msg) {
                             alert("Failed in activity or delay: " + msg.status + ": " + msg.statusText);

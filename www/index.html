@@ -251,7 +251,7 @@
             var currentTaskDesc = localStorage.getItem("CurrentTaskDesc");
             var currentTaskId = localStorage.getItem("CurrentTaskId");
                 // there is no previous activity so there'll be only start time
-                if(activityListFromLS[0]){
+            if(activityListFromLS){
                 var selectedActivityToSend =activityListFromLS[0]["activityName"];
                 var startTimeToSend = activityListFromLS[0]["startTime"];
                 var selectedActivityIDToSend = activityListFromLS[0]["activityId"];

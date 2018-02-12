@@ -59,6 +59,7 @@
         var db = null;
 
         function makeLocationCall(ClientGUID, SiteGUID){
+            console.log("makeLocationCall");
                     var SoaMessageLocation = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocations xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID></GetLocations></soap12:Body></soap12:Envelope>';
                     var urlLocation = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
                     $('#LoderImage').show();
@@ -76,8 +77,8 @@
                             var LocationString = '';
                             $(xml).find('LocationPackage Location').each(function () {
                                 LocationString = LocationString + '<h6 style="font-size:25px; margin-top:5%" class="card-title" id="location'+$(this).find('LocationID').text()+'" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
-                                localStorage.setItem("LocationString", LocationString);
                             });
+                            localStorage.setItem("LocationString", LocationString);
 
                         },
                         complete:function(){
@@ -91,6 +92,7 @@
         }
 
         function makeTasksCall(ClientGUID, SiteGUID, WorkerType){
+            console.log("makeTasksCall");
             var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetWorkerTasksWithSubtasks xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID><workerTypeID>'+WorkerType+'</workerTypeID><equipmentTypeID>ALL</equipmentTypeID></GetWorkerTasksWithSubtasks></soap12:Body></soap12:Envelope>';
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
                     $('#LoderImage').show();
@@ -141,8 +143,8 @@
 
                                 }
                                 Collapse = Collapse + '</div></li>'
-                                localStorage.setItem("Collapse", Collapse);
                             });
+                            localStorage.setItem("Collapse", Collapse);
                         },
                         complete: function () {
                             $('#LoderImage').hide();
@@ -154,9 +156,11 @@
         }
 
         function makeActivitiesCall(ClientGUID, WorkerType){
+            console.log("makeActivitiesCall");
             var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><equipmentOrWorkerTypeID>'+WorkerType+'</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
             var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
             $.support.cors = true;
+            var main = [];
             $.ajax({
                         type: "POST",
                         url: url,
@@ -166,6 +170,7 @@
                         contentType: "text/xml; charset=\"utf-8\"",
                         data: SoaMessage,
                         success: function (msg) {
+                            localStorage.setItem("ActivitiesText",$(msg).text());
                             var xml = $.parseXML($(msg).text());
                             $(xml).find('ActivityPackage Activity').each(function () {
                                
@@ -194,11 +199,13 @@
                                     }
                                 });
                                 mainArray.push(array);
-                                localStorage.setItem("MainArray",JSON.stringify(mainArray));
                             })
+                            console.log("MAIN ARRAY INITIAL");
+                            console.log(mainArray);
+                            localStorage.setItem("MainArray",JSON.stringify(mainArray));
                         },
                         complete: function () {
-                            $('#LoderImage').hide();
+                            console.log("Complete");
                         },
                         error: function (msg) {
                             alert("Failed in activity or delay: " + msg.status + ": " + msg.statusText);
