@@ -149,12 +149,14 @@
                 
             }
             function onOnline() {
+                console.log("on online called");
                 $('#connectivityIndicator').css("background","green");
                 var offlineCalls = localStorage.getItem("OfflineCalls");
                 offlineCalls = JSON.parse(offlineCalls);
                 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                 if(offlineCalls.length > 0){
                     for (var i=0; i<offlineCalls.length; i++){
+                        console.log(i);
                         var soamessage = offlineCalls[i];
                         $.ajax({
                                 type: "POST",
@@ -169,8 +171,11 @@
                                     console.log("IN SUCCESS MESSAGE ");
                                     if($(xml).find('SUCCESS')){
                                         // remove that particular item from the array.
-                                        offlineCalls.splice(i, 1);
-                                        localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
+                                        var splicedVal = offlineCalls.shift();
+                                        console.log("OFFLINE INSIDE");
+                                        console.log(offlineCalls);
+                                        console.log("SPLICED VAL");
+                                        console.log(splicedVal);
                                     }
                                     else {
                                         alert($(msg).text());
@@ -181,6 +186,9 @@
                                 }
                         });
                     }
+                    console.log("OFFLINE CALLS OUTSIDE");
+                    console.log(offlineCalls);
+                    localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                 }
                 
             }

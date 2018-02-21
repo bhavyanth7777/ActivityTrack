@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin:0px !important;
+            padding:0px !important;
+        }
+        .card-title {
+          color:white;
+          margin:0 auto;
+        }
+        .card .card-content {
+    padding: 3%!important;
+    border-radius: 0 0 2px 2px!important;
+}
+        .btn, .btn-large {
+    text-decoration: none;
+    color: red;
+    background-color: transparent !important; 
+    text-align: center;
+    letter-spacing: .5px;
+    transition: .2s ease-out;
+    cursor: pointer;
+    border: 1px solid red;
+}
+        body {
+            background:black;
+        }
+
+    </style>
+</head>
+<body>
+   
+    
+        <div class="col s12 m12">
+          <div class="card" style="background:#96B6C3">
+            <div class="card-content white-text">
+               
+              <span class="card-title">Who</span>       
+                     
+            </div>           
+          </div>
+        </div>
+      
+     
+        <div class="col s12 m12">
+          <div class="card"  style="background:rgba(83,132,154,1)">
+            <div class="card-content white-text" style="width:100%">
+               
+              <span class="card-title">Where</span>             
+                    
+            </div>           
+          </div>
+        </div>
+    
+     
+        <div class="col s12 m12">
+          <div class="card"  style="background:rgba(63,98,117,1)">
+            <div class="card-content white-text">
+               
+              <span class="card-title">What</span>      
+                   
+            </div>           
+          </div>
+        </div> 
+        
+        <div class="col s12 m12">
+            <div class="card"  style="background:rgba(43,65,80,1)">
+              <div class="card-content white-text">
+                <span class="card-title">How</span>      
+              </div>           
+            </div>
+          </div> 
+      
+        <div class="col s12 m12">
+          <div class="card" style="background:black">
+            <div class="card-content">
+                <div class="row">
+     <div class="input-field col s10 offset-s1">
+          <input id="RegistrationTextField" type="text"  class="validate" style="color:white;border-color:red" />
+          <label for="RegistrationTextField" class="active">Enter UIF link code</label>
+        </div>
+      </div>
+            </div>           
+          </div>
+        </div>
+     
+    
+   
+     
+
+    <div class="row">
+      <center>
+            <a id="RegisterButtton" style="color:rgba(235,195,195,1)"  class="waves-effect waves-light btn pulse offset-s4"><i class="material-icons right" id="">input</i>Register</a>
+      </center>
+             <!--<a href="geo:38.897096,-77.036545">open map</a>-->
+            <!--  <a href="#" onclick='abc();'>open map</a>-->
+    </div>
+   <div class="row" style="width:10%;margin-top:1em">
+        <img id="img" class="circle responsive-img" src="img/UIF.png" />
+    </div>
+
+    <div class="row" style="margin-top:1em">       
+       <center>
+          <h4 style="color:white;text-transform:initial">Utility In Field</h4>        
+           </center>
+    </div>
+   
+   <!-- <a >login</a>-->
+</body>   
+
+    <script>
+       
+        var db = null;
+
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT count(*) as count from Registration ", [], function (tx, res) {
+                   
+                    if (res.rows.item(0).count > 0) {
+                        window.location.href = '#/home';
+                    }
+
+                });
+            });
+        }, 500); 
+
+       
+        $(document).ready(function () {
+            if(localStorage.getItem("SecretKey")){
+                $('#RegistrationTextField').val(localStorage.getItem("SecretKey"));
+                $('#RegistrationTextField').attr('type', 'password'); 
+            }
+            $('#RegistrationTextField').focus(function(){
+                $('#RegistrationTextField').val('');
+                $('#RegistrationTextField').attr('type', 'text'); 
+            });
+          
+                $('#RegisterButtton').click(function () {
+                    console.log('Clicked');
+                    localStorage.setItem("SecretKey",$('#RegistrationTextField').val());
+                    var networkState = navigator.connection.type;
+
+                if (networkState !== Connection.NONE) {
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><ActivateLinkKey xmlns="https://www.SmarterASP.NET/UIF"><linkKey>'+$('#RegistrationTextField').val()+'</linkKey><objectType>Equipment</objectType></ActivateLinkKey></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=ActivateLinkKey";
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            console.log("In success");
+                            var xml = $.parseXML($(msg).text());
+                            console.log(xml);
+                            var ClientGUID = $(xml).find('NewGUID ClientGUID').text();
+                            var ClientName = $(xml).find('NewGUID ClientName').text();
+                            var SiteGUID = $(xml).find('NewGUID SiteGUID').text();
+                            var SiteName = $(xml).find('NewGUID SiteName').text();
+                            var EquipmentGUID = $(xml).find('NewGUID EquipmentGUID').text();
+                            localStorage.setItem("EquipmentGUID",EquipmentGUID);
+                            localStorage.setItem("SiteGUID",SiteGUID);
+                            var EquipmentName = $(xml).find('NewGUID EquipmentName').text();
+                            var EquipmentTypeID = $(xml).find('NewGUID EquipmentTypeID').text();
+                            $('#equipmentName').html(EquipmentName);
+                            localStorage.setItem("EquipmentName", EquipmentName);
+                    
+                            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                            db.transaction(function (tx) {
+                                // tx.executeSql('DROP TABLE Registration');
+                                tx.executeSql('CREATE TABLE IF NOT EXISTS Registration (id integer primary key, ClientGUID text, ClientName text,SiteGUID text,SiteName text,EquipmentGUID text,EquipmentName text,EquipmentTypeID text,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+                                tx.executeSql('DELETE FROM Registration');
+                                tx.executeSql("INSERT INTO Registration (ClientGUID, ClientName,SiteGUID,SiteName,EquipmentGUID,EquipmentName,EquipmentTypeID) VALUES (?,?,?,?,?,?,?)", [ClientGUID, ClientName, SiteGUID, SiteName, EquipmentGUID, EquipmentName, EquipmentTypeID], function (tx, res) {
+                                window.location.href = '#/workers';
+                                });
+                            }, function (e) {
+                                alert("Failed to Register Asset");
+                                alert("ERROR: " + e.message);
+                            });
+
+
+                        },
+                        error: function (msg) {
+
+                            alert("Failed to Register Asset");
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+                }
+                else {
+                    alert("No network, please connect to a network and try again");
+                }
+
+                });
+           
+                // $('#RegisterButtton').hide();
+                // $('nav,div,footer').click(function () {
+                //     $('#RegistrationTextField').focus();
+                // });
+                // $('#RegistrationTextField').keyup(function () {
+                //     if ($(this).val().length == 0) {
+                //         $('#RegisterButtton').hide();                }
+                //     else {
+                //         $('#RegisterButtton').show();
+                //     }
+                // });
+
+           
+            });
+
+
+            //function abc() {
+          
+            //    launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function (isAvailable) {
+            //        var app;
+                
+              
+            //        if (isAvailable) {
+            //            app = launchnavigator.APP.GOOGLE_MAPS;
+            //        } else {
+            //            console.warn("Google Maps not available - falling back to user selection");
+            //            app = launchnavigator.APP.USER_SELECT;
+            //        }
+            //    //    launchnavigator.getTransportModes(app, platform, 'turn-by-turn')
+            //        launchnavigator.navigate("Ameerpet, Hyderabad", {
+            //            app: app,
+            //            transportMode: 'transit',
+            //            launchModeGoogleMaps: 'turn-by-turn'
+            //        });
+            //    });
+
+
+            //}
+        
+    </script>
+
+</html>

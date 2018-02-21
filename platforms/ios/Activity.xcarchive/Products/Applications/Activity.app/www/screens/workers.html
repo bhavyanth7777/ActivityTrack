@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 0px 0px!important;
+        }
+
+        body {
+            background:rgba(84,132,154,1);
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="workerButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Workers</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12" style="background: rgba(84,132,154,1);margin-left:3.4em">
+            <div id="workerContainer" class="white-text" style="width: 100%">
+            </div>
+    </div>
+
+
+    <script>
+        var db = null;
+
+        function makeLocationCall(ClientGUID, SiteGUID){
+            console.log("makeLocationCall");
+            var offlineCalls = [];
+            localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
+                    var SoaMessageLocation = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocations xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID></GetLocations></soap12:Body></soap12:Envelope>';
+                    var urlLocation = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: urlLocation,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessageLocation,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var LocationString = '';
+                            $(xml).find('LocationPackage Location').each(function () {
+                                LocationString = LocationString + '<h6 style="font-size:25px; margin-top:5%" class="card-title" id="location'+$(this).find('LocationID').text()+'" data-LocationID="'+$(this).find('LocationID').text()+'">' + $(this).find('LocationName').text() + '</h6>';
+                            });
+                            localStorage.setItem("LocationString", LocationString);
+
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+        }
+
+        function makeTasksCall(ClientGUID, SiteGUID, WorkerType){
+            console.log("makeTasksCall");
+            var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetWorkerTasksWithSubtasks xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID><workerTypeID>'+WorkerType+'</workerTypeID><equipmentTypeID>ALL</equipmentTypeID></GetWorkerTasksWithSubtasks></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkerTasksWithSubtasks";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var Collapse = ''
+                            var taskPackage = {};
+                            $(xml).find('WorkerTaskPackage WorkerTask').each(function () {
+                                Collapse = Collapse + '<li>';
+                                Collapse = Collapse + '<div class="collapsible-header">' +
+                  '<div id="TaskListButton" style="margin-left:2.5em;">' +
+                   '<h5 style="font-size:15px" id="task' + $(this).find('TaskCode').text() + '"  data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '" data-TaskCode="' + $(this).find('TaskCode').text() + '">' + $(this).find('TaskDesc').text() + '</h5>' +
+                   '<form style="display:flex;flex-direction:row">'+
+                            '<p><input data-TaskDesc="'+$(this).find('TaskDesc').text()+'" id="mainTaskStart'+ $(this).find('TaskCode').text() + '"  type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="mainTaskStart'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="mainTaskTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<p style="margin-left:10px;"><input id="xmainTaskEnd'+ $(this).find('TaskCode').text() + '"  data-TaskDesc="'+$(this).find('TaskDesc').text()+'" type="checkbox" data-TaskEquipmentTypeID="' + $(this).find('EquipmentTypeID').text() + '"/><label for="xmainTaskEnd'+$(this).find('TaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="xmainTaskCompleteTimeId'+$(this).find('TaskCode').text()+'"></span></p>'+
+                            '<i class="material-icons modal-trigger" id="taskModal'+$(this).find('TaskCode').text()+'" style="margin-left:10px;margin-top:10px;font-size:2rem;">event_note</i>'+
+                    '</form>'+
+                   '</div>' +
+                   ' </div><div class="collapsible-body" style="margin-left:1em">';
+                                if ($(this).find('WorkerSubTask').length != 0) {
+                                    $(this).find('WorkerSubTask').each(function () {
+                                        if(taskPackage[$(this).parent().find('TaskCode').text()]){
+                                            var subTasksList = taskPackage[$(this).parent().find('TaskCode').text()];
+                                            subTasksList.push($(this).find('SubTaskCode').text());
+                                            taskPackage[$(this).parent().find('TaskCode').text()] = subTasksList;
+                                        }
+                                        else {
+                                            taskPackage[$(this).parent().find('TaskCode').text()] = [$(this).find('SubTaskCode').text()]
+                                        }
+                                        Collapse = Collapse + '<p class="SubTaskButton">'+
+                                                '<label style="font-size:20px;" data-SubTaskCode="' + $(this).find('SubTaskCode').text() + '">' + $(this).find('SubTaskDesc').text() + '</label>'+
+                                                '<form style="display:flex;flex-direction:row">'+
+                                                '<p><input id="start'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="start'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:yellow;">Start</label><span style="margin-left:5px;color:white;" id="taskTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<p style="margin-left:10px;"><input id="end'+ $(this).find('SubTaskCode').text() + '"  type="checkbox" data-TaskCode="'+$(this).parent().find('TaskCode').text()+'" data-SubTaskDesc="'+$(this).find('SubTaskDesc').text()+'" data-TaskDesc="'+$(this).parent().find('TaskDesc').text()+'"/><label for="end'+$(this).find('SubTaskCode').text()+'" style="font-size:15px;color:orange;">Complete</label><span style="margin-left:5px;color:white;" id="taskCompleteTimeId'+$(this).find('SubTaskCode').text()+'"></span></p>'+
+                                                '<i class="material-icons modal-trigger" id="subTaskModal'+$(this).find('SubTaskCode').text()+'" style="margin-left:10px;margin-top:10px;font-size:2rem;">event_note</i>'+
+                                                '</form>'+
+                                            '</p>'
+                                    });
+
+                                }
+                                Collapse = Collapse + '</div></li>'
+                            });
+                            localStorage.setItem("Collapse", Collapse);
+                        },
+                        complete: function () {
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+        }
+
+        function makeActivitiesCall(ClientGUID, WorkerType){
+            console.log("makeActivitiesCall");
+            var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><equipmentOrWorkerTypeID>'+WorkerType+'</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
+            var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
+            $.support.cors = true;
+            var main = [];
+            $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            localStorage.setItem("ActivitiesText",$(msg).text());
+                            var xml = $.parseXML($(msg).text());
+                            $(xml).find('ActivityPackage Activity').each(function () {
+                               
+                                if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
+                                    main.push($(this).find('BaseCategoryID').text());
+                                }                              
+                            });
+                          
+                            var mainArray = [];
+                            var array = []
+                            $.each(main, function (index, item) {
+                                 array  = [];
+                                $(xml).find('ActivityPackage Activity').each(function () {
+                                    var obj = {};
+                                    if ($(this).find('BaseCategoryID').text() == item) {
+                                       // main.push($(this).find('BaseCategoryID').text());
+                                       if($(this).find('EquipmentOrWorkerTypeID').text() == WorkerType){
+                                        obj.CategoryID = $(this).find('CategoryID').text();
+                                        obj.CategoryName = $(this).find('CategoryName').text();
+                                        obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                        obj.ParentID = $(this).find('ParentID').text();
+                                       }
+                                    }
+                                    if (!$.isEmptyObject(obj)) {
+                                        array.push(obj)
+                                    }
+                                });
+                                mainArray.push(array);
+                            })
+                        },
+                        complete: function () {
+                            console.log("Complete");
+                        },
+                        error: function (msg) {
+                            alert("Failed in activity or delay: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+        }
+
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
+            function checkConnection() {
+                console.log("Connection log called");
+                var networkState = navigator.connection.type;
+            
+                var states = {};
+                states[Connection.UNKNOWN]  = 'Unknown connection';
+                states[Connection.ETHERNET] = 'Ethernet connection';
+                states[Connection.WIFI]     = 'WiFi connection';
+                states[Connection.CELL_2G]  = 'Cell 2G connection';
+                states[Connection.CELL_3G]  = 'Cell 3G connection';
+                states[Connection.CELL_4G]  = 'Cell 4G connection';
+                states[Connection.CELL]     = 'Cell generic connection';
+                states[Connection.NONE]     = 'No network connection';
+            
+            }
+
+            checkConnection();
+
+            function onGeolocationSuccess(position) {
+            // get all required data from position
+            var dateToSend = new Date().toString();
+            dateToSend = formatDate(dateToSend);
+            // api call
+            var SiteGUIDToSend = localStorage.getItem("SiteGUID");
+            var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
+            var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
+
+            var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend.trim()+'" SiteGUID="'+SiteGUIDToSend.trim()+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+            console.log("WORKER LOCATION");
+            console.log(SoaMessage2);
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    var networkState = navigator.connection.type;
+                    if (networkState !== Connection.NONE) {
+                        $.ajax({
+                            type: "POST",
+                            url: url2,
+                            jsonpCallback: "MyCallbackDED",
+                            dataType: "xml",
+                            processData: false,
+                            contentType: "text/xml; charset=\"utf-8\"",
+                            data: SoaMessage2,
+                            success: function (msg) {
+                                var messageArray;
+                                if(localStorage.getItem('MessageArray')){
+                                    messageArray = localStorage.getItem('MessageArray');
+                                    messageArray = JSON.parse(messageArray);
+                                }
+                                else {
+                                    messageArray =[];
+                                }
+                                var messageArrayLength = messageArray.length;
+                                var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                                console.log(xml2);
+                                if($(xml2).find('Container SUCCESS')){
+                                    $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                            messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                    });
+                                    if(messageArray.length!==messageArrayLength){
+                                        alert("New Message");
+                                        localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                        $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                        $('#unreadIcon').css("color","yellow");
+                                    }
+                                }
+                                else {
+                                    alert($(msg).text());
+                                }
+                            },
+                            complete:function(){
+                                $('#LoderImage').hide();
+                            },
+                            error: function (msg) {
+                                alert("Failed: " + msg.status + ": " + msg.statusText);
+                            }
+                        });
+                    }
+                    else {
+                        var offlineCalls = localStorage.getItem("OfflineCalls");
+                        offlineCalls = JSON.parse(offlineCalls);
+                        offlineCalls.push(SoaMessage2);
+                        localStorage.setItem("OfflineCalls", JSON.stringify(offlineCalls));
+                    }
+        }
+        function onGeolocationError(error){
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
+        }
+
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetWorkers xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+res.rows.item(0).ClientGUID+'</clientGUID><siteGUID>'+res.rows.item(0).SiteGUID+'</siteGUID></GetWorkers></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkers";
+                    console.log("GET WORKERS");
+                    console.log(SoaMessage);
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    var ClientGUID = res.rows.item(0).ClientGUID;
+                    var SiteGUID = res.rows.item(0).SiteGUID;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var workerString = '';
+                            $(xml).find('WorkerPackage Worker').each(function () {
+                                if($(this).find('TaskAssignable').text() === "TRUE"){
+                                    workerString = workerString + '<h6 id="worker'+$(this).find('WorkerID').text()+'" style="font-size:25px; margin-top:5%" class="card-title" data-WorkerTypeName="'+$(this).find('WorkerTypeName').text()+'" data-WorkerType="'+$(this).find('WorkerType').text()+'" data-WorkerGUID="'+$(this).find('WorkerGUID').text()+'" data-WorkerID="'+$(this).find('WorkerID').text()+'">' + $(this).find('WorkerName').text() + '</h6>';
+                                }
+                                
+                            });
+                          
+                            $('#workerContainer').html(workerString);
+                            var alreadySelectedWorkerID = localStorage.getItem("WorkerID");
+                            if(alreadySelectedWorkerID){
+                                $('#worker'+alreadySelectedWorkerID).css("color","yellow");
+                                $('#worker'+alreadySelectedWorkerID).css("font-weight","bold");
+                            }
+                            $('#workerContainer').find('h6').click(function () {
+                                WorkerID =  $(this).attr('data-WorkerID');
+                                WorkerGUID =  $(this).attr('data-WorkerGUID');
+                                WorkerName = $(this).text();
+                                WorkerType = $(this).attr('data-WorkerType');
+                                WorkerTypeName = $(this).attr('data-WorkerTypeName');
+                                var dateToSend = new Date().toString();
+                                dateToSend = formatDate(dateToSend);
+                                localStorage.setItem("WorkerID",WorkerID);
+                                localStorage.setItem("WorkerGUID",WorkerGUID);
+                                localStorage.setItem("WorkerName",WorkerName);
+                                localStorage.setItem("WorkerType",WorkerType);
+                                localStorage.setItem("WorkerTypeName",WorkerTypeName);
+                                localStorage.removeItem("TaskDesc");
+                                localStorage.removeItem("ActivitySelection");
+                                localStorage.removeItem("checkedList");
+                                localStorage.removeItem("CurrentTaskDesc");
+                                localStorage.removeItem("locationName");
+
+                                // start sending location data
+                                var gpsTimeIntervalLS = localStorage.getItem("GPSIntervalSwitch");
+                                var gpsTimeIntervalInSeconds = 60000;
+                                if(gpsTimeIntervalLS == "30"){
+                                    gpsTimeIntervalInSeconds = 30000;
+                                }
+                                console.log("GPS Time Interval In seconds"+gpsTimeIntervalInSeconds);
+                                var alreadyExistingInterval = localStorage.getItem("Interval");
+                                if(alreadyExistingInterval){
+                                    clearInterval(alreadyExistingInterval);
+                                }
+                                var interval = setInterval(function(){
+                                navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+                                },gpsTimeIntervalInSeconds);
+
+                                localStorage.setItem("Interval",interval);
+                                
+                                window.location.href = '#/home';
+
+                                // make all ajax calls here for offline storage
+                                makeLocationCall(ClientGUID, SiteGUID);
+                                makeTasksCall(ClientGUID, SiteGUID, WorkerType);
+                                makeActivitiesCall(ClientGUID, WorkerType);
+
+                            });
+
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+        }, 500);
+
+    </script>
+</body>
+</html>

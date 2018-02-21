@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            padding: 8%!important;
+            border-radius: 0 0 2px 2px!important;
+        }
+
+        body {
+            background: black;
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+                <div class="card" style="background:#96B6C3" id="workerButton">
+                    <div class="card-content white-text" style="width: 100%">
+                        <h6 class="card-title"><span id="WorkerLabel">Select Worker</span></h6>
+                    </div>
+                </div>
+    </div>
+
+    <div class="col s12 m12">
+        <div class="card" style="background:rgba(83,132,154,1)" id="LocationButton">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Location</span>
+                <h6 class="card-title"><span id="LocationLabel">Select Location</span><i id="NavigateButton" class="material-icons">navigation</i></h6>
+
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card" id="TaskButton" style="background:rgba(63,98,117,1)">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Task</span>
+                <h6 class="card-title" id="TaskLabel">Select task</h6> 
+
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12">
+        <div class="card" id="ActivityButton" style="background:rgba(43,65,80,1)">
+            <div class="card-content white-text" style="width: 100%">
+
+                <span>Activity</span>
+                <h6 class="card-title" id="ActivityLabel">Select Activity</h6>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 10px;">
+        <div class="col offset-s6">
+            <i id="MessageIconButton" class="material-icons col s6 medium Icons">message</i>
+            <i id="SettingsIconButton—a" class="material-icons col s6 medium Icons">settings</i>
+        </div>
+    </div>
+
+
+    <script>
+
+        var db = null;
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                    //assign WorkerLabel
+                    //assign LocationLabel
+                    //assign TaskLabel
+                    //assignActivityLabel
+                    if(localStorage.getItem("WorkerName")){
+                        $('#UserLabel').html(localStorage.getItem("WorkerName"));
+                        $('#WorkerLabel').html(localStorage.getItem("WorkerName"));
+                    }
+                    else {
+                        $('#UserLabel').html("Select Worker");
+                        $('#WorkerLabel').html("Select Worker");
+                    }                             
+                    var TaskDesc = localStorage.getItem("CurrentTaskDesc");
+                    if(TaskDesc){
+                        $('#TaskLabel').html(TaskDesc);
+                    }
+                    else {
+                        $('#TaskLabel').html("Select Task");
+                    }
+                    if(localStorage.getItem('ActivitySelection')){
+                        if(localStorage.getItem('SelectedActivity')){
+                            $('#ActivityLabel').html(localStorage.getItem('ActivitySelection')+' -- '+localStorage.getItem('SelectedActivity'));
+                        }
+                        else {
+                            $('#ActivityLabel').html(localStorage.getItem('ActivitySelection'));
+                        }
+                    }
+                    else {
+                        $('#ActivityLabel').html("Select Activity");
+                    }  
+                if (localStorage.getItem('locationName'))
+                    {
+                        $('#LocationLabel').html(localStorage.getItem('locationName'));
+                    }
+                    else{
+                        $('#LocationLabel').html('Select Location');
+                    }
+
+        }, 500);
+
+        var networkState = navigator.connection.type;
+
+        function checkConnection() {
+                console.log("Connection log called");
+                var networkState = navigator.connection.type;
+            
+                var states = {};
+                states[Connection.UNKNOWN]  = 'Unknown connection';
+                states[Connection.ETHERNET] = 'Ethernet connection';
+                states[Connection.WIFI]     = 'WiFi connection';
+                states[Connection.CELL_2G]  = 'Cell 2G connection';
+                states[Connection.CELL_3G]  = 'Cell 3G connection';
+                states[Connection.CELL_4G]  = 'Cell 4G connection';
+                states[Connection.CELL]     = 'Cell generic connection';
+                states[Connection.NONE]     = 'No network connection';
+            
+            }
+
+            checkConnection();
+
+            if (networkState !== Connection.NONE) {
+                //online
+                $('#connectivityIndicator').css("background","green");
+            }
+
+            
+            function onOffline() {
+                $('#connectivityIndicator').css("background","red");
+                
+            }
+            function onOnline() {
+                $('#connectivityIndicator').css("background","green");
+                var offlineCalls = localStorage.getItem("OfflineCalls");
+                offlineCalls = JSON.parse(offlineCalls);
+                var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                if(offlineCalls.length > 0){
+                    for (var i=0; i<offlineCalls.length; i++){
+                        var soamessage = offlineCalls[i];
+                        $.ajax({
+                                type: "POST",
+                                url: url,
+                                jsonpCallback: "MyCallbackDED",
+                                dataType: "xml",
+                                processData: false,
+                                contentType: "text/xml; charset=\"utf-8\"",
+                                data: soamessage,
+                                success: function (msg) {
+                                    var xml = $.parseXML($(msg).text());
+                                    console.log("IN SUCCESS MESSAGE ");
+                                    if($(xml).find('SUCCESS')){
+                                        // remove that particular item from the array.
+                                        var splicedVal = offlineCalls.splice(i, 1);
+                                        console.log("OFFLINE INSIDE");
+                                        console.log(offlineCalls);
+                                        console.log("SPLICED VAL");
+                                        console.log(splicedVal);
+                                    }
+                                    else {
+                                        alert($(msg).text());
+                                    }
+                                },
+                                error: function (msg) {
+                                    alert("Failed try again: " + msg.status + ": " + msg.statusText);
+                                }
+                        });
+                    }
+                    console.log("OFFLINE CALLS OUTSIDE");
+                    console.log(offlineCalls);
+                    localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
+                }
+                
+            }
+
+            document.addEventListener("offline", onOffline, false);
+
+            document.addEventListener("online", onOnline, false);
+            
+            // function onOffline() {
+            //     alert("Offline");
+            // }
+            // function onOnline() {
+            //     alert("Online");
+            // }
+            
+            // document.addEventListener("offline", onOffline, false);
+
+            // document.addEventListener("online", onOnline, false);
+
+
+        $(document).ready(function () {
+
+            $('#NavigateButton').click(function () {
+                var LocationToNavigate = $(this).parent().find('span').text();
+                var locFromLS = localStorage.getItem("locationID");
+
+                // --------- API ---------------
+
+                db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                db.transaction(function (tx) {
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocationData xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID><locationID>' + locFromLS + '</locationID></GetLocationData></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetLocationData";
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            var minLatitude = $(xml).find("MinLatitude").text();
+                            var minLongitude = $(xml).find("MinLongitude").text();
+                            var destCoords = minLatitude+","+minLongitude;
+                            if(localStorage.getItem('NavigationSwitch')== "ON"){
+                                window.location.href = "http://maps.apple.com/?daddr="+destCoords+"&dirflg=d";
+                            }
+                            else {
+                                window.location.href = "http://maps.apple.com/?ll="+destCoords;
+                            }
+                        
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+
+                });
+            });
+                // -----------------
+            });
+
+            $('#workerButton').click(function (){
+                window.location.href = '#/workers';
+            });
+
+            $('#LocationButton').click(function () {
+                 window.location.href = '#/loations';
+            });
+
+            $('#ActivityButton').click(function () {
+                window.location.href = "#/ActivityorDelay";
+            });
+
+            $('#TaskButton').click(function () {
+                window.location.href = "#/Task";
+            });
+
+            $('#MessageIconButton').click(function () {
+                window.location.href = "#/messages";
+            });
+
+            $('#SettingsIconButton—a').click(function(){
+                window.location.href = "#/settings";
+            });
+
+        });
+    </script>
+</body>
+</html>

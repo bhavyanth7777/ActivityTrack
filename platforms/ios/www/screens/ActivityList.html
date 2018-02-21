@@ -337,10 +337,9 @@
             checkConnection();
             
             function onOffline() {
-                alert("Network lost, continue in offline mode");
+                console.log("Offline");
             }
             function onOnline() {
-                alert("Online");
                 var offlineActivitiesFromLS = localStorage.getItem("OfflineActivities");
                 offlineActivitiesFromLS = JSON.parse(offlineActivitiesFromLS);
                 console.log(offlineActivitiesFromLS);

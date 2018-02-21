@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            width: 180px!important;
+            height:180px!important;
+            border-radius: 50%;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0;
+            margin-top:2em!important;
+        }
+/* 
+        .card .card-content {
+            border-radius: 0 0 2px 2px;
+             padding: 15%;
+        } */
+
+        body {
+            background: rgba(83,132,154,1);
+
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="LocationButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Activity / Delay</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12 bigDiv">
+        <div class="card ActivityListButton center" style="background: green">
+            <div class="card-content white-text">
+                <h6 class="card-title" data-actual="Ready">Active</h6>               
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m12 bigDiv">
+        <div class="card ActivityListButton center" style="background: rgba(230,183,41,1)">
+            <div class="card-content white-text">
+                <h6 class="card-title" data-actual="Delay">Delay</h6>               
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m12 bigDiv">
+        <div class="card ActivityListButton center" style="background: rgba(176,21,19,1)" >
+            <div class="card-content white-text">
+                <h6 class="card-title" data-actual="Stop">Inactive</h6>               
+            </div>
+        </div>
+    </div>
+
+</body>
+
+    <script>
+        function doOnOrientationChange() {
+            switch(window.orientation) {  
+            case -90 || 90:
+                //landscape
+                var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+                $('.card').css("height",physicalScreenHeight/10);
+                $('.card-title').css("margin-top","-50px");
+                $('.bigDiv').css("margin-left","40%");
+                $('.bigDiv').css("margin-top","5px");
+                break; 
+            default:
+                //potrait
+                $('.card').css("height","auto");
+                $('.card-title').css("margin-top","auto");
+                $('.bigDiv').css("margin-left","37%");
+                $('.bigDiv').css("margin-top","15px");
+                break; 
+            }
+        }
+    
+        window.addEventListener('orientationchange', doOnOrientationChange);
+  
+// Initial execution if needed
+        doOnOrientationChange();
+
+        var db = null;
+        setTimeout(function () {
+            db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+            db.transaction(function (tx) {
+                WorkerType = localStorage.getItem("WorkerType");
+                var networkState = navigator.connection.type;
+
+            function checkConnection() {
+                    console.log("Connection log called");
+                    var networkState = navigator.connection.type;
+                
+                    var states = {};
+                    states[Connection.UNKNOWN]  = 'Unknown connection';
+                    states[Connection.ETHERNET] = 'Ethernet connection';
+                    states[Connection.WIFI]     = 'WiFi connection';
+                    states[Connection.CELL_2G]  = 'Cell 2G connection';
+                    states[Connection.CELL_3G]  = 'Cell 3G connection';
+                    states[Connection.CELL_4G]  = 'Cell 4G connection';
+                    states[Connection.CELL]     = 'Cell generic connection';
+                    states[Connection.NONE]     = 'No network connection';
+                
+                }
+
+                checkConnection();
+
+                tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
+
+                 
+                    var main = [];
+                    var delay = {};
+                    console.log("CLIENT GUID "+res.rows.item(0).ClientGUID);
+                    console.log("WORKERTYPE "+ WorkerType);
+                    var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetActivitiesRecursive xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><equipmentOrWorkerTypeID>' + WorkerType + '</equipmentOrWorkerTypeID></GetActivitiesRecursive></soap12:Body></soap12:Envelope>';
+                    var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetActivitiesRecursive";
+                    $.support.cors = true;
+                    if (networkState == Connection.NONE) {
+                        var ActivitiesText = localStorage.getItem("ActivitiesText");
+                        var xml = $.parseXML(ActivitiesText);
+                        $(xml).find('ActivityPackage Activity').each(function () {
+                               
+                                if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
+                                    main.push($(this).find('BaseCategoryID').text());
+                                }                              
+                            });
+
+                            var mainArray = [];
+                            var array = []
+                            $.each(main, function (index, item) {
+                                 array  = [];
+                                $(xml).find('ActivityPackage Activity').each(function () {
+                                    var obj = {};
+                                    if ($(this).find('BaseCategoryID').text() == item) {
+                                       // main.push($(this).find('BaseCategoryID').text());
+                                       if($(this).find('EquipmentOrWorkerTypeID').text() == WorkerType){
+                                        obj.CategoryID = $(this).find('CategoryID').text();
+                                        obj.CategoryName = $(this).find('CategoryName').text();
+                                        obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                        obj.ParentID = $(this).find('ParentID').text();
+                                       }
+                                    }
+                                    if (!$.isEmptyObject(obj)) {
+                                        array.push(obj)
+                                    }
+                                });
+                                mainArray.push(array);
+                                localStorage.setItem("MainArray",JSON.stringify(mainArray));
+                            })
+                            $('.ActivityListButton div h6').click(function () {
+                                console.log(mainArray);
+                                ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
+                                $('#ActivityTypeHiddenTextBox').val($(this).text());
+                                localStorage.setItem('ActivitySelection',$(this).text());
+                                window.location.href = "#/ActivityList";
+                            });
+
+
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage,
+                        success: function (msg) {
+                            var xml = $.parseXML($(msg).text());
+                            $(xml).find('ActivityPackage Activity').each(function () {
+                               
+                                if (main.indexOf($(this).find('BaseCategoryID').text()) == -1) {
+                                    main.push($(this).find('BaseCategoryID').text());
+                                }                              
+                            });
+                          
+                            var mainArray = [];
+                            var array = []
+                            $.each(main, function (index, item) {
+                                 array  = [];
+                                $(xml).find('ActivityPackage Activity').each(function () {
+                                    var obj = {};
+                                    if ($(this).find('BaseCategoryID').text() == item) {
+                                       // main.push($(this).find('BaseCategoryID').text());
+                                       if($(this).find('EquipmentOrWorkerTypeID').text() == WorkerType){
+                                        obj.CategoryID = $(this).find('CategoryID').text();
+                                        obj.CategoryName = $(this).find('CategoryName').text();
+                                        obj.EquipmentOrWorkerTypeID = $(this).find('EquipmentOrWorkerTypeID').text();
+                                        obj.ParentID = $(this).find('ParentID').text();
+                                       }
+                                    }
+                                    if (!$.isEmptyObject(obj)) {
+                                        array.push(obj)
+                                    }
+                                });
+                                mainArray.push(array);
+                                localStorage.setItem("MainArray",JSON.stringify(mainArray));
+                            })
+                            $('.ActivityListButton div h6').click(function () {
+                                console.log(mainArray);
+                                ActData = mainArray[main.indexOf($(this).attr('data-actual'))];
+                                $('#ActivityTypeHiddenTextBox').val($(this).text());
+                                localStorage.setItem('ActivitySelection',$(this).text());
+                                window.location.href = "#/ActivityList";
+                            });
+
+                        },
+                        complete: function () {
+                            console.log("Complete");
+                        },
+                        error: function (msg) {
+                            alert("Failed in activity or delay: " + msg.status + ": " + msg.statusText);
+                        }
+
+                    });
+                }
+                    
+                });
+            });
+        }, 500);
+
+
+        //$(document).ready(function () {
+          
+        //});
+      
+    </script>
+</html>

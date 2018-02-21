@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        .card {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0 auto;
+        }
+
+        .card .card-content {
+            border-radius: 0 0 0px 0px!important;
+        }
+
+        body {
+            background:rgba(84,132,154,1);
+        }
+
+        .Icons {
+            color: rgba(65,191,250,1);
+        }
+
+        #BackButton {
+            font-size: 24px;
+            line-height: 1;
+            padding: 12px;
+            margin: 0;
+        }
+
+            #BackButton a {
+                color: white;
+            }
+
+        .card-title {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <div class="col s12 m12">
+        <div style="background: rgba(117,117,117,1)" id="workerButton">
+            <div class="white-text" style="width: 100%">
+                <h6 id="BackButton"><a href="#/home"><b><</b>&nbsp;&nbsp</a>Received Messages</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12 receivedMessagesContainer">
+
+        </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#unreadMessageCount').text('0');
+            $('#unreadIcon').css("color","white");
+            var msgArray = localStorage.getItem("MessageArray");
+            msgArray = JSON.parse(msgArray);
+            console.log("MsgArray");
+            console.log(msgArray);
+            var messageStringToShow = '';
+            if(msgArray){
+                msgArray.reverse();
+                for(var c=0;c<msgArray.length;c++){
+                messageStringToShow = messageStringToShow+'<div class="card" style="background: rgba(63,98,117,1)"><div class="card-content white-text" style="width: 100%"><h6 class="card-title">'+msgArray[c]+'</h6></div></div>';
+                }
+                console.log(messageStringToShow);
+                $('.receivedMessagesContainer').prepend(messageStringToShow);
+            }
+        });
+
+    </script>
+</body>
+</html>

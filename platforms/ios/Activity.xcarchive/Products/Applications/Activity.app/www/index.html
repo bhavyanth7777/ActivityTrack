@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8 ;">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--<meta http-equiv="Content-Security-Policy" content="script-src 'self' http://onlineerp.solution.quebec 'unsafe-inline' 'unsafe-eval'; style-src 'self' maxcdn.bootstrapcdn.com">-->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="css/jqtree.css">
+
+    <!-- Compiled and minified CSS -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">-->
+    <link href="css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Activity Tracker</title>
+
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        #stage {
+            flex: 1 0 auto;
+        }
+
+        nav .brand-logo {
+            font-size:1rem;
+        }
+    </style>
+
+</head>
+<body>
+
+    <nav>
+        <ul id="slide-out" class="side-nav">
+           <li><div class="user-view">
+            <div class="background">
+              <img src="img/office.jpg">
+            </div>
+          </div></li>
+            
+             <li><a class="waves-effect" href="#/home"><i class="material-icons">home</i>Home</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+             <li><a class="waves-effect" href="#/messages"><i class="material-icons">message</i>Message</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/workers"><i class="material-icons">people</i>Workers</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/loations"><i class="material-icons">location_on</i>Locations</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/Task"><i class="material-icons">check_circle</i>Tasks</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/ActivityorDelay"><i class="material-icons">local_activity</i>Activities</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" href="#/settings"><i class="material-icons">settings</i>Settings</a></li>
+            <li>
+                <div class="divider"></div>
+            </li> 
+            <li><a class="waves-effect" id="LogoutMenu"><i class="material-icons">power_settings_new</i>Logout</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>  
+        </ul>
+
+
+        <div class="nav-wrapper  #009688 teal ">
+            <div class="" style="display:flex;flex-direction:row;justify-content:space-between;">
+                <a id="bars" href="#" data-activates="slide-out" class="button-collapse  pulse col s2"><i class="material-icons">menu</i></a>
+                <a href="#" class="brand-logo center col s8 offset-s2" >Activity Tracker<span style="margin-left:10px;" id="dateTime"></span><span style="margin-left:10px;" id="equipmentName"></span></a>
+                <div style="display:flex;flex-direction:row;">
+                    <div style="display:flex;align-items:center;justify-content:center;margin-right:20px;margin-top:18px;width:30px;height:30px;border-radius:50%;" id="connectivityIndicator"><span style="color:white;font-size:15px;">S</span></div>
+                    <div style="display:flex;align-items:center;justify-content:center;margin-right:65px;margin-top:18px;width:30px;height:30px;border-radius:50%;" id="gpsIndicator"><span style="color:white;font-size:15px;">G</span></div>
+                    <a href="#/receivedMessages"><i class="material-icons medium" id="unreadIcon">markunread</i></a>
+                    <span id="unreadMessageCount" style="font-size:18px;margin-left:2px;color:white;margin-right:10px"></span>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+
+
+    <div style="overflow-y: auto;" id="stage">
+
+
+
+    </div>
+
+
+     <div id="LoderImage" class="preloader-wrapper small active" style=" position: absolute;margin-top: 45%; margin-left: 50%;display:none">
+    <div class="spinner-layer spinner-blue-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+
+    <footer class="page-footer  #009688 teal">
+        <div class="center" style="color: white;">
+            © All rights reseved, Visionsoft Solutions
+            <div id="xml"> </div>
+        </div>
+    </footer>
+    
+    <input type="hidden"  id="ActivityTypeHiddenTextBox" value="" />
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+          <script src="js/path.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/tree.jquery.js"></script>
+    <!--<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>-->
+    <!-- Compiled and minified JavaScript -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>-->
+    <script src="js/materialize.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/path.js/0.8.4/path.min.js"></script>-->
+    <script src="js/routs.js" type="text/javascript"></script>
+    <script src="js/jquery.soap.js"></script>
+    <script type="text/javascript">
+
+        var db = null;
+
+       // app.initialize();
+        document.addEventListener('deviceready', function () { alert('1111'); }, true);
+       
+        // Initialize collapse button
+        $(".button-collapse").sideNav({ closeOnClick: true, draggable: true });
+        // Initialize collapsible (uncomment the line below if you use the dropdown variation)
+        $('.collapsible').collapsible();
+
+        function formatDate(dateVal) {
+                var newDate = new Date(dateVal);
+
+                var sMonth = padValue(newDate.getMonth() + 1);
+                var sDay = padValue(newDate.getDate());
+                var sYear = newDate.getFullYear();
+                var sHour = newDate.getHours();
+                var sMinute = padValue(newDate.getMinutes());
+                var sSeconds = padValue(newDate.getSeconds());
+                var sAMPM = "AM";
+
+                var iHourCheck = parseInt(sHour);
+
+                if (iHourCheck > 12) {
+                    sAMPM = "PM";
+                    sHour = iHourCheck;
+                }
+                else if (iHourCheck === 0) {
+                    sHour = "12";
+                }
+
+                sHour = padValue(sHour);
+
+                return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMinute + ":" + sSeconds ;
+            }
+
+            function padValue(value) {
+                return (value < 10) ? "0" + value : value;
+            }
+
+        function onGeolocationSuccess(position){
+            // get all required data from position
+                console.log("position.coords.accuracy");
+                console.log(position.coords.accuracy);
+                if(position.coords.accuracy <=50){
+                    $('#gpsIndicator').css("background","green");
+                }
+                else if (position.coords.accuracy>50 && position.coords.accuracy <= 100){
+                    $('#gpsIndicator').css("background","orange");
+                }
+                else {
+                    $('#gpsIndicator').css("background","red");
+                }
+
+            }
+        function onGeolocationError(error){
+            $('#gpsIndicator').css("background","red");
+            if(error.code == 1){
+                alert("You didn't allow the app to use location, please give access to location in the settings");
+            }
+            else {
+                alert("Error"+JSON.stringify(error));
+            }
+        }
+       
+        $(document).ready(function () {
+
+            navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError);
+
+            // connectivity Indicator
+
+            var dateTimeInterval = setInterval(function(){
+                var currentDateTime = new Date().toString();
+                currentDateTime = formatDate(currentDateTime);
+                $('#dateTime').html(currentDateTime);
+            },1000);
+
+            var equipmentName = localStorage.getItem("EquipmentName");
+            $('#equipmentName').html(equipmentName);
+
+            $('#LogoutMenu').click(function () {
+                if(localStorage.getItem("CurrentTaskStartDate") && !localStorage.getItem("CurrentTaskEndDate")){
+                    alert("Tasks are incomplete, please complete the tasks first");
+                    window.location.href="#/Task";
+                }
+                else {
+                    window.clearInterval(localStorage.getItem("Interval"));
+                    var secretkey = localStorage.getItem("SecretKey");
+
+                    var activityListFromLS = localStorage.getItem("ActivityList");
+            activityListFromLS = JSON.parse(activityListFromLS);
+
+            var currentDateTime = new Date().toString();
+                currentDateTime = formatDate(currentDateTime);
+
+            var workerIDToSend = localStorage.getItem("WorkerID");
+            var dateToSend = new Date().toString();
+            dateToSend = formatDate(dateToSend);
+
+            var SiteGUIDToSend = localStorage.getItem("SiteGUID");
+            var EquipmentGUIDToSend = localStorage.getItem("EquipmentGUID");
+            var WorkerGUIDToSend = localStorage.getItem("WorkerGUID");
+
+            // get Latest Task Details here taskCode, taskDesc, startTime, endTime
+            var currentTaskStartDate = localStorage.getItem("CurrentTaskStartDate");
+            var currentTaskEndDate = "";
+            if(localStorage.getItem("CurrentTaskEndDate")){
+                currentTaskEndDate = localStorage.getItem("CurrentTaskEndDate");
+            }
+            var currentTaskDesc = localStorage.getItem("CurrentTaskDesc");
+            var currentTaskId = localStorage.getItem("CurrentTaskId");
+                // there is no previous activity so there'll be only start time
+            if(activityListFromLS){
+                var selectedActivityToSend =activityListFromLS[0]["activityName"];
+                var startTimeToSend = activityListFromLS[0]["startTime"];
+                var selectedActivityIDToSend = activityListFromLS[0]["activityId"];
+                // var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend+'" EquipmentGUID="'+EquipmentGUIDToSend+'" SiteGUID="'+SiteGUIDToSend+'"&gt;&lt;Location TimeStamp="'+dateToSend+'" Speed="'+position.coords.speed+'" Accuracy="'+position.coords.accuracy+'" Direction="'+position.coords.heading+'" Elevation="'+position.coords.altitude+'" Latitude="'+position.coords.latitude+'" Longitude="'+position.coords.longitude+'" /&gt;&lt;Activity Key="'+selectedActivityToSend+'"  WorkerID="'+workerIDToSend+'"  StartTime="'+startTimeToSend+'" EndTime=""&gt;&lt;/Activity&gt;&lt;Task TaskCode="'+currentTaskId+'" TaskDesc="'+currentTaskDesc+'" StartDate="'+currentTaskStartDate+'" EndDate="'+currentTaskEndDate+'" Comments="" /&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+                var SoaMessage2 = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><SubmitTracking xmlns="https://www.SmarterASP.NET/UIF"><PackageXML>'+'&lt;Metrics SendTime="'+dateToSend+'" WorkerGUID="'+WorkerGUIDToSend.trim()+'" EquipmentGUID="'+EquipmentGUIDToSend.trim()+'" SiteGUID="'+SiteGUIDToSend.trim()+'"&gt;&lt;Activity Key="'+selectedActivityIDToSend.trim()+'" WorkerID="'+workerIDToSend.trim()+'" StartTime="'+startTimeToSend.trim()+'" EndTime="'+currentDateTime.trim()+'"/&gt;&lt;/Metrics&gt;'+'</PackageXML></SubmitTracking></soap12:Body></soap12:Envelope>';
+                    var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+                    console.log("WORKER ACTIVITY INITIAL");
+                    console.log(SoaMessage2);
+                    var networkState = navigator.connection.type;
+                    if (networkState !== Connection.NONE) {
+                    $('#LoderImage').show();
+                    $.support.cors = true;
+                    $.ajax({
+                        type: "POST",
+                        url: url2,
+                        jsonpCallback: "MyCallbackDED",
+                        dataType: "xml",
+                        processData: false,
+                        contentType: "text/xml; charset=\"utf-8\"",
+                        data: SoaMessage2,
+                        success: function (msg) {
+                            var messageArray;
+                            if(localStorage.getItem('MessageArray')){
+                                messageArray = localStorage.getItem('MessageArray');
+                                messageArray = JSON.parse(messageArray);
+                            }
+                            else {
+                                messageArray =[];
+                            }
+                            var messageArrayLength = messageArray.length;
+                            var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+                            console.log(xml2);
+                            if($(xml2).find('Container SUCCESS')){
+                                $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+                                        messageArray.push('<h6>'+$(this).text()+'</h6>');
+                                });
+                                if(messageArray.length!==messageArrayLength){
+                                    alert("New Message");
+                                    localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+                                    $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+                                    $('#unreadIcon').css("color","yellow");
+                                }
+
+                            }
+                            else {
+                                alert($(msg).text());
+                            }
+                        },
+                        complete:function(){
+                            $('#LoderImage').hide();
+                        },
+                        error: function (msg) {
+                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                        }
+                    });
+                }
+                else {
+                    console.log("Offline activities");
+                    var offlineActivities = localStorage.getItem("OfflineActivities");
+                    if(offlineActivities){
+                        offlineActivities = JSON.parse(offlineActivities);
+                        if(offlineActivities.length>0){
+                            // push the activity
+                            offlineActivities.push(SoaMessage2);
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
+                        }
+                        else {
+                            //new array
+                            var offlineActivityArray = [SoaMessage2];
+                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
+                        }
+                    }
+            }
+                }
+
+                    //------------------//------------------//------------------//------------------//------------------
+                    localStorage.clear();
+                    localStorage.setItem("SecretKey",secretkey);
+                    db = window.sqlitePlugin.openDatabase({ name: 'demo.db', location: 'default' });
+                    db.transaction(function (tx) {
+                    tx.executeSql("delete from  Registration ", [], function (tx, res) {
+                        window.location.href =  "#/login"
+                    });
+                });
+                }
+            });
+            
+        });
+
+    </script>
+</body>
+</html>
