@@ -215,20 +215,24 @@
                     // no network push to localStorage
                     console.log("Offline activities");
                     console.log(SoaMessage2);
-                    var offlineActivities = localStorage.getItem("OfflineActivities");
-                    if(offlineActivities){
-                        offlineActivities = JSON.parse(offlineActivities);
-                        if(offlineActivities.length>0){
-                            // push the activity
-                            offlineActivities.push(SoaMessage2);
-                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
-                        }
-                        else {
-                            //new array
-                            var offlineActivityArray = [SoaMessage2];
-                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
-                        }
-                    }
+                    var offlineCalls = localStorage.getItem("OfflineCalls");
+                    offlineCalls = JSON.parse(offlineCalls);
+                    offlineCalls.push(SoaMessage2);
+                    localStorage.setItem("OfflineCalls", JSON.stringify(offlineCalls));
+                    // var offlineActivities = localStorage.getItem("OfflineActivities");
+                    // if(offlineActivities){
+                    //     offlineActivities = JSON.parse(offlineActivities);
+                    //     if(offlineActivities.length>0){
+                    //         // push the activity
+                    //         offlineActivities.push(SoaMessage2);
+                    //         localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
+                    //     }
+                    //     else {
+                    //         //new array
+                    //         var offlineActivityArray = [SoaMessage2];
+                    //         localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
+                    //     }
+                    // }
 
                 }
             }
@@ -293,20 +297,24 @@
                 else {
                     console.log("Offline activities");
                     console.log(SoaMessage2);
-                    var offlineActivities = localStorage.getItem("OfflineActivities");
-                    if(offlineActivities){
-                        offlineActivities = JSON.parse(offlineActivities);
-                        if(offlineActivities.length>0){
-                            // push the activity
-                            offlineActivities.push(SoaMessage2);
-                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
-                        }
-                        else {
-                            //new array
-                            var offlineActivityArray = [SoaMessage2];
-                            localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
-                        }
-                    }
+                    var offlineCalls = localStorage.getItem("OfflineCalls");
+                    offlineCalls = JSON.parse(offlineCalls);
+                    offlineCalls.push(SoaMessage2);
+                    localStorage.setItem("OfflineCalls", JSON.stringify(offlineCalls));
+                    // var offlineActivities = localStorage.getItem("OfflineActivities");
+                    // if(offlineActivities){
+                    //     offlineActivities = JSON.parse(offlineActivities);
+                    //     if(offlineActivities.length>0){
+                    //         // push the activity
+                    //         offlineActivities.push(SoaMessage2);
+                    //         localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivities));
+                    //     }
+                    //     else {
+                    //         //new array
+                    //         var offlineActivityArray = [SoaMessage2];
+                    //         localStorage.setItem("OfflineActivities",JSON.stringify(offlineActivityArray));
+                    //     }
+                    // }
                 }
             }
         }
@@ -338,71 +346,71 @@
 
             checkConnection();
             
-            function onOffline2() {
-                console.log("Offline");
-            }
-            function onOnline2() {
-                var offlineActivitiesFromLS = localStorage.getItem("OfflineActivities");
-                offlineActivitiesFromLS = JSON.parse(offlineActivitiesFromLS);
-                console.log("offlineActivitiesFromLS");
-                console.log(offlineActivitiesFromLS);
-                if(offlineActivitiesFromLS.length>0){
-                    for(var i=0;i<offlineActivitiesFromLS.length;i++){
-                        console.log(offlineActivitiesFromLS[i]);
-                        var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
-                        var SoaMessage2 = offlineActivitiesFromLS[i];
-                        $('#LoderImage').show();
-                        $.support.cors = true;
-                        $.ajax({
-                            type: "POST",
-                            url: url2,
-                            jsonpCallback: "MyCallbackDED",
-                            dataType: "xml",
-                            processData: false,
-                            contentType: "text/xml; charset=\"utf-8\"",
-                            data: SoaMessage2,
-                            success: function (msg) {
-                                var messageArray;
-                                if(localStorage.getItem('MessageArray')){
-                                    messageArray = localStorage.getItem('MessageArray');
-                                    messageArray = JSON.parse(messageArray);
-                                }
-                                else {
-                                    messageArray =[];
-                                }
-                                var messageArrayLength = messageArray.length;
-                                var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
-                                console.log(xml2);
-                                if($(xml2).find('Container SUCCESS')){
-                                    $(xml2).find('Container MessagePackage MESSAGE').each(function () {
-                                            messageArray.push('<h6>'+$(this).text()+'</h6>');
-                                    });
-                                    if(messageArray.length!==messageArrayLength){
-                                        alert("New Message");
-                                        localStorage.setItem("MessageArray",JSON.stringify(messageArray));
-                                        $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
-                                        $('#unreadIcon').css("color","yellow");
-                                    }
+            // function onOffline2() {
+            //     console.log("Offline");
+            // }
+            // function onOnline2() {
+            //     var offlineActivitiesFromLS = localStorage.getItem("OfflineActivities");
+            //     offlineActivitiesFromLS = JSON.parse(offlineActivitiesFromLS);
+            //     console.log("offlineActivitiesFromLS");
+            //     console.log(offlineActivitiesFromLS);
+            //     if(offlineActivitiesFromLS.length>0){
+            //         for(var i=0;i<offlineActivitiesFromLS.length;i++){
+            //             console.log(offlineActivitiesFromLS[i]);
+            //             var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
+            //             var SoaMessage2 = offlineActivitiesFromLS[i];
+            //             $('#LoderImage').show();
+            //             $.support.cors = true;
+            //             $.ajax({
+            //                 type: "POST",
+            //                 url: url2,
+            //                 jsonpCallback: "MyCallbackDED",
+            //                 dataType: "xml",
+            //                 processData: false,
+            //                 contentType: "text/xml; charset=\"utf-8\"",
+            //                 data: SoaMessage2,
+            //                 success: function (msg) {
+            //                     var messageArray;
+            //                     if(localStorage.getItem('MessageArray')){
+            //                         messageArray = localStorage.getItem('MessageArray');
+            //                         messageArray = JSON.parse(messageArray);
+            //                     }
+            //                     else {
+            //                         messageArray =[];
+            //                     }
+            //                     var messageArrayLength = messageArray.length;
+            //                     var xml2 = $.parseXML('<Container>'+$(msg).text()+'</Container>');
+            //                     console.log(xml2);
+            //                     if($(xml2).find('Container SUCCESS')){
+            //                         $(xml2).find('Container MessagePackage MESSAGE').each(function () {
+            //                                 messageArray.push('<h6>'+$(this).text()+'</h6>');
+            //                         });
+            //                         if(messageArray.length!==messageArrayLength){
+            //                             alert("New Message");
+            //                             localStorage.setItem("MessageArray",JSON.stringify(messageArray));
+            //                             $('#unreadMessageCount').text(messageArray.length - messageArrayLength);
+            //                             $('#unreadIcon').css("color","yellow");
+            //                         }
 
-                                }
-                                else {
-                                    alert($(msg).text());
-                                }
-                            },
-                            complete:function(){
-                                $('#LoderImage').hide();
-                            },
-                            error: function (msg) {
-                                alert("Failed: " + msg.status + ": " + msg.statusText);
-                            }
-                        });
-                    }
-                }
-            }
+            //                     }
+            //                     else {
+            //                         alert($(msg).text());
+            //                     }
+            //                 },
+            //                 complete:function(){
+            //                     $('#LoderImage').hide();
+            //                 },
+            //                 error: function (msg) {
+            //                     alert("Failed: " + msg.status + ": " + msg.statusText);
+            //                 }
+            //             });
+            //         }
+            //     }
+            // }
             
-            document.addEventListener("offline", onOffline2, false);
+            // document.addEventListener("offline", onOffline2, false);
 
-            document.addEventListener("online", onOnline2, false);
+            // document.addEventListener("online", onOnline2, false);
             
         var dataTree = [];
         var categoryIDArray = Object.keys(CategoryIDDict);
