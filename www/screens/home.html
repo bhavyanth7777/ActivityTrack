@@ -155,8 +155,8 @@
                 offlineCalls = JSON.parse(offlineCalls);
                 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                 if(offlineCalls.length > 0){
+
                     for (var i=0; i<offlineCalls.length; i++){
-                        console.log(i);
                         var soamessage = offlineCalls[i];
                         $.ajax({
                                 type: "POST",
@@ -166,19 +166,13 @@
                                 processData: false,
                                 contentType: "text/xml; charset=\"utf-8\"",
                                 data: soamessage,
+                                async: false,
                                 success: function (msg) {
                                     var xml = $.parseXML($(msg).text());
                                     console.log("IN SUCCESS MESSAGE ");
                                     if($(xml).find('SUCCESS')){
                                         // remove that particular item from the array.
                                         var splicedVal = offlineCalls.shift();
-                                        console.log("OFFLINE INSIDE");
-                                        console.log(offlineCalls);
-                                        console.log("SPLICED VAL");
-                                        console.log(splicedVal);
-                                    }
-                                    else {
-                                        alert($(msg).text());
                                     }
                                 },
                                 error: function (msg) {
@@ -186,8 +180,6 @@
                                 }
                         });
                     }
-                    console.log("OFFLINE CALLS OUTSIDE");
-                    console.log(offlineCalls);
                     localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                 }
                 

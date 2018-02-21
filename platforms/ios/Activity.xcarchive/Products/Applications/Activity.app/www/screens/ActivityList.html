@@ -214,6 +214,7 @@
                 else {
                     // no network push to localStorage
                     console.log("Offline activities");
+                    console.log(SoaMessage2);
                     var offlineActivities = localStorage.getItem("OfflineActivities");
                     if(offlineActivities){
                         offlineActivities = JSON.parse(offlineActivities);
@@ -291,6 +292,7 @@
                 }
                 else {
                     console.log("Offline activities");
+                    console.log(SoaMessage2);
                     var offlineActivities = localStorage.getItem("OfflineActivities");
                     if(offlineActivities){
                         offlineActivities = JSON.parse(offlineActivities);
@@ -336,12 +338,13 @@
 
             checkConnection();
             
-            function onOffline() {
+            function onOffline2() {
                 console.log("Offline");
             }
-            function onOnline() {
+            function onOnline2() {
                 var offlineActivitiesFromLS = localStorage.getItem("OfflineActivities");
                 offlineActivitiesFromLS = JSON.parse(offlineActivitiesFromLS);
+                console.log("offlineActivitiesFromLS");
                 console.log(offlineActivitiesFromLS);
                 if(offlineActivitiesFromLS.length>0){
                     for(var i=0;i<offlineActivitiesFromLS.length;i++){
@@ -397,9 +400,9 @@
                 }
             }
             
-            document.addEventListener("offline", onOffline, false);
+            document.addEventListener("offline", onOffline2, false);
 
-            document.addEventListener("online", onOnline, false);
+            document.addEventListener("online", onOnline2, false);
             
         var dataTree = [];
         var categoryIDArray = Object.keys(CategoryIDDict);
