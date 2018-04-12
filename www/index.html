@@ -262,7 +262,7 @@
                     console.log(SoaMessage2);
                     var networkState = navigator.connection.type;
                     if (networkState !== Connection.NONE) {
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -301,7 +301,7 @@
                             }
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);

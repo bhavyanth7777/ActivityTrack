@@ -158,26 +158,30 @@
 
                     for (var i=0; i<offlineCalls.length; i++){
                         var soamessage = offlineCalls[i];
-                        $.ajax({
-                                type: "POST",
-                                url: url,
-                                jsonpCallback: "MyCallbackDED",
-                                dataType: "xml",
-                                processData: false,
-                                contentType: "text/xml; charset=\"utf-8\"",
-                                data: soamessage,
-                                success: function (msg) {
-                                    var xml = $.parseXML($(msg).text());
-                                    console.log("IN SUCCESS MESSAGE ");
-                                    if($(xml).find('SUCCESS')){
-                                        // remove that particular item from the array.
-                                        var splicedVal = offlineCalls.shift();
-                                    }
-                                },
-                                error: function (msg) {
-                                    // alert("Failed try again: " + msg.status + ": " + msg.statusText);
-                                }
-                        });
+                        var client = new XMLHttpRequest();
+                        client.open("POST", url, false);
+                        client.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+                        client.send(soamessage);
+                        // $.ajax({
+                        //         type: "POST",
+                        //         url: url,
+                        //         jsonpCallback: "MyCallbackDED",
+                        //         dataType: "xml",
+                        //         processData: false,
+                        //         contentType: "text/xml; charset=\"utf-8\"",
+                        //         data: soamessage,
+                        //         success: function (msg) {
+                        //             var xml = $.parseXML($(msg).text());
+                        //             console.log("IN SUCCESS MESSAGE ");
+                        //             if($(xml).find('SUCCESS')){
+                        //                 // remove that particular item from the array.
+                        //                 var splicedVal = offlineCalls.shift();
+                        //             }
+                        //         },
+                        //         error: function (msg) {
+                        //             // alert("Failed try again: " + msg.status + ": " + msg.statusText);
+                        //         }
+                        // });
                     }
                     localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                 }

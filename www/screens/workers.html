@@ -64,7 +64,7 @@
             localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                     var SoaMessageLocation = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocations xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+ClientGUID+'</clientGUID><siteGUID>'+SiteGUID+'</siteGUID></GetLocations></soap12:Body></soap12:Envelope>';
                     var urlLocation = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetLocations";
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -84,7 +84,7 @@
 
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);
@@ -149,7 +149,7 @@
                             localStorage.setItem("Collapse", Collapse);
                         },
                         complete: function () {
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);
@@ -274,7 +274,7 @@
             console.log("WORKER LOCATION");
             console.log(SoaMessage2);
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     var networkState = navigator.connection.type;
                     if (networkState !== Connection.NONE) {
@@ -314,7 +314,7 @@
                                 }
                             },
                             complete:function(){
-                                $('#LoderImage').hide();
+                                // $('#LoderImage').hide();
                             },
                             error: function (msg) {
                                 alert("Failed: " + msg.status + ": " + msg.statusText);
@@ -345,7 +345,7 @@
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetWorkers";
                     console.log("GET WORKERS");
                     console.log(SoaMessage);
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     var ClientGUID = res.rows.item(0).ClientGUID;
                     var SiteGUID = res.rows.item(0).SiteGUID;
@@ -420,7 +420,7 @@
 
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);
