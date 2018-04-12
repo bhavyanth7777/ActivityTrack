@@ -207,7 +207,8 @@
                             $('#LoderImage').hide();
                         },
                         error: function (msg) {
-                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                            // alert("Failed: " + msg.status + ": " + msg.statusText);
+                            console.log("error in activity list");
                         }
                     });
                 }
@@ -290,7 +291,7 @@
                             $('#LoderImage').hide();
                         },
                         error: function (msg) {
-                            alert("Failed: " + msg.status + ": " + msg.statusText);
+                            console.log("error in activity list");
                         }
                     });
                 }

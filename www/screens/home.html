@@ -166,7 +166,6 @@
                                 processData: false,
                                 contentType: "text/xml; charset=\"utf-8\"",
                                 data: soamessage,
-                                async: false,
                                 success: function (msg) {
                                     var xml = $.parseXML($(msg).text());
                                     console.log("IN SUCCESS MESSAGE ");
