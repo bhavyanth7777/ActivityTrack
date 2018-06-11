@@ -123,7 +123,7 @@
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetEquipment xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>'+res.rows.item(0).ClientGUID+'</clientGUID><eqType>ALL</eqType></GetEquipment></soap12:Body></soap12:Envelope>';
                     var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=GetEquipment";
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -161,7 +161,7 @@
 
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);
@@ -185,7 +185,7 @@
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                     console.log("MESSAGE ");
                     console.log(SoaMessage2);
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -207,7 +207,7 @@
                                 }
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);

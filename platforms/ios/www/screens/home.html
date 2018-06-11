@@ -155,37 +155,39 @@
                 offlineCalls = JSON.parse(offlineCalls);
                 var url = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
                 if(offlineCalls.length > 0){
-
+                    var doneCalls = [];
                     for (var i=0; i<offlineCalls.length; i++){
                         var soamessage = offlineCalls[i];
-                        var client = new XMLHttpRequest();
-                        client.open("POST", url, false);
-                        client.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
-                        client.send(soamessage);
-                        // $.ajax({
-                        //         type: "POST",
-                        //         url: url,
-                        //         jsonpCallback: "MyCallbackDED",
-                        //         dataType: "xml",
-                        //         processData: false,
-                        //         contentType: "text/xml; charset=\"utf-8\"",
-                        //         data: soamessage,
-                        //         success: function (msg) {
-                        //             var xml = $.parseXML($(msg).text());
-                        //             console.log("IN SUCCESS MESSAGE ");
-                        //             if($(xml).find('SUCCESS')){
-                        //                 // remove that particular item from the array.
-                        //                 var splicedVal = offlineCalls.shift();
-                        //             }
-                        //         },
-                        //         error: function (msg) {
-                        //             // alert("Failed try again: " + msg.status + ": " + msg.statusText);
-                        //         }
-                        // });
+                        console.log("SOAMESSAGES SEQUENCE");
+                        console.log(soamessage);
+                        $.ajax({
+                                type: "POST",
+                                url: url,
+                                jsonpCallback: "MyCallbackDED",
+                                dataType: "xml",
+                                processData: false,
+                                async: false,
+                                contentType: "text/xml; charset=\"utf-8\"",
+                                data: soamessage,
+                                success: function (msg) {
+                                    var xml = $.parseXML($(msg).text());
+                                    console.log("IN SUCCESS MESSAGE ");
+                                    if($(xml).find('SUCCESS')){
+                                        // remove that particular item from the array.
+                                        // var splicedVal = offlineCalls.shift();
+                                        doneCalls.push(soamessage);
+                                    }
+                                },
+                                error: function (msg) {
+                                    // alert("Failed try again: " + msg.status + ": " + msg.statusText);
+                                }
+                        });
                     }
+                    console.log("DONE CALLS");
+                    console.log(doneCalls);
+                    offlineCalls = [];
                     localStorage.setItem("OfflineCalls",JSON.stringify(offlineCalls));
                 }
-                
             }
 
             document.addEventListener("offline", onOffline, false);
@@ -217,7 +219,7 @@
                 tx.executeSql("SELECT *  from Registration ", [], function (tx, res) {
                     var SoaMessage = '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><GetLocationData xmlns="https://www.SmarterASP.NET/UIF"><clientGUID>' + res.rows.item(0).ClientGUID + '</clientGUID><siteGUID>' + res.rows.item(0).SiteGUID + '</siteGUID><locationID>' + locFromLS + '</locationID></GetLocationData></soap12:Body></soap12:Envelope>';
                     var url = "https://www.uifsecure.com/UIFSecureWSClient/UIFequiptracking.asmx?op=GetLocationData";
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -241,7 +243,7 @@
                         
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             // alert("Failed: " + msg.status + ": " + msg.statusText);

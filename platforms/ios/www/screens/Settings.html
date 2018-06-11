@@ -159,7 +159,7 @@
             console.log("WORKER LOCATION");
             console.log(SoaMessage2);
                     var url2 = "https://www.uifsecure.com/UIFSecureWSClient-TEST/UIFequiptracking.asmx?op=SubmitTracking";
-                    $('#LoderImage').show();
+                    // $('#LoderImage').show();
                     $.support.cors = true;
                     $.ajax({
                         type: "POST",
@@ -197,7 +197,7 @@
                             }
                         },
                         complete:function(){
-                            $('#LoderImage').hide();
+                            // $('#LoderImage').hide();
                         },
                         error: function (msg) {
                             alert("Failed: " + msg.status + ": " + msg.statusText);
